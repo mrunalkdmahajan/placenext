@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import firebase from "@/config/firebase-config"; // Ensure correct path
+import firebase from "@/config/firebase-config";
 
 export default function Home() {
   const [user, setUser] = useState(null);
