@@ -20,9 +20,11 @@ export const signInWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
   try {
     const result = await signInWithPopup(auth, provider);
-    return result;
+    const token = await result.user.getIdToken();
+    return token; // Return only the token
   } catch (error) {
-    console.error(error);
+    console.error("Error during Google sign-in:", error);
+    throw new Error("Sign-in failed. Please try again.");
   }
 };
 

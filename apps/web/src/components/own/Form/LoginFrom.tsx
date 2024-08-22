@@ -9,9 +9,11 @@ import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { IoLogoApple } from "react-icons/io5";
 import { useState, useEffect } from "react";
-import firebase, { signInWithGoogle } from "@/config/firebase-config";
+import { useRouter } from "next/navigation";
 
+import firebase, { signInWithGoogle } from "@/config/firebase-config";
 const LoginForm = () => {
+  const router = useRouter();
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -25,17 +27,24 @@ const LoginForm = () => {
 
   const handleLoginWithGoogle = async () => {
     try {
-      const token = await signInWithGoogle();
-      if (token) {
-        // Send token to backend
-        const response = await axios.post("/api/protected-route/google_login", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+      const idToken = await signInWithGoogle();
 
-        const data = await response.data;
-        console.log(data);
+      if (idToken) {
+        console.log("ID Token:", idToken);
+        const response = await axios.post(
+          `${BackendUrl}/api/student/google_login`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
+          }
+        );
+
+        if (response.data.success === true) {
+          console.log("User logged in successfully");
+          router.push("/student/dashboard");
+        }
       }
     } catch (error) {
       console.error("Error during login:", error);
