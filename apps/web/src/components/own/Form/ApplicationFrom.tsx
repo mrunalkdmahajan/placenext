@@ -20,11 +20,19 @@ const ApplicationForm = () => {
 
   const onSubmit = async (data: any) => {
     try {
-      const res = await axios.post(`${BackendUrl}/api/customers/signup`, data);
-      // @ts-ignore
-
-      // @ts-ignore
-      if (res.data.success) navigator("/email-sent");
+      const token = localStorage.getItem("token");
+      if (token) {
+        const response = await axios.post(
+          "/api/student/google_login",
+          { data },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data);
+      }
     } catch (error: any) {
       console.error("Signup error:", error.message);
     }

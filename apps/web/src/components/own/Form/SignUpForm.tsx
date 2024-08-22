@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignValidation } from "@/utils/validations/SignValidation";
+import { useRouter } from "next/navigation";
 
 import axios from "axios";
 
@@ -11,8 +12,11 @@ import { useForm } from "react-hook-form";
 import { signInWithGoogle } from "@/config/firebase-config";
 import firebase from "firebase/compat/app";
 import { useEffect, useState } from "react";
+import { IoLogoApple } from "react-icons/io5";
+import { FcGoogle } from "react-icons/fc";
 
 const SignUpForm = () => {
+  const router = useRouter();
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -24,35 +28,41 @@ const SignUpForm = () => {
     return () => unsubscribe();
   }, []);
 
-  const handleSignUpWithGoogle = async () => {
+  const handleLoginWithGoogle = async () => {
     try {
-      const result: any = await signInWithGoogle();
-      const token = await result.user.getIdToken(); // Get the ID token for authentication with your backend
-
-      if (result.additionalUserInfo.isNewUser) {
-        console.log("User signed in for the first time");
-        // Handle first-time user logic here, e.g., setup initial user profile
-      } else {
-        console.log("Welcome back!");
+      const token: any = await signInWithGoogle();
+      console.log(token);
+      const isNewUser = token.additionalUserInfo?.isNewUser;
+      if (isNewUser) {
+        console.log(token.additionalUserInfo);
       }
+      // if (token) {
+      //   // Send token to backend
+      //   const response = await axios.post("/api/student/google_login", {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   });
 
-      if (token) {
-        // Send token to backend
-        const response = await axios.post(
-          "/api/student/google_login",
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const data = await response.data;
-        console.log(data);
-      }
+      //   const data = await response.data;
+      //   console.log(data);
+      // }
     } catch (error) {
       console.error("Error during login:", error);
+    }
+  };
+
+  const handleAppleLogin = () => {
+    // Add Apple OAuth login logic here
+    console.log("Apple login clicked");
+  };
+
+  const handleLogout = async () => {
+    try {
+      await firebase.auth().signOut();
+      console.log("User signed out");
+    } catch (error) {
+      console.error("Error during logout:", error);
     }
   };
 
@@ -84,26 +94,14 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-12 p-5  rounded-lg bg-transparent flex-col gap-4">
-      <h2 className="text-2xl font-bold mb-6">Sign Up</h2>
+    <div className="max-w-md mx-auto mt-12 p-2 rounded-lg bg-transparent md:p-5 flex flex-col gap-4">
+      <h2 className="text-2xl font-bold mb-6">Login</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mb-4">
-          <input
-            {...register("name")}
-            placeholder="Name"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]  "
-          />
-          {errors.name && (
-            <p className="text-red-500 text-sm mt-1">
-              {getErrorMessage(errors.name)}
-            </p>
-          )}
-        </div>
-
-        <div className="mb-4">
+        <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
           <input
             {...register("email")}
             placeholder="Email"
+            type="text"
             className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
           />
           {errors.email && (
@@ -112,8 +110,7 @@ const SignUpForm = () => {
             </p>
           )}
         </div>
-
-        <div className="mb-4">
+        <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
           <input
             type="password"
             {...register("password")}
@@ -126,87 +123,6 @@ const SignUpForm = () => {
             </p>
           )}
         </div>
-
-        <div className="mb-4">
-          <input
-            {...register("phone")}
-            placeholder="Phone"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
-          />
-          {errors.phone && (
-            <p className="text-red-500 text-sm mt-1">
-              {getErrorMessage(errors.phone)}
-            </p>
-          )}
-        </div>
-
-        <div className="mb-4">
-          <input
-            {...register("laneAddress")}
-            placeholder="Lane Address"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
-          />
-          {errors.laneAddress && (
-            <p className="text-red-500 text-sm mt-1">
-              {getErrorMessage(errors.laneAddress)}
-            </p>
-          )}
-        </div>
-
-        <div className="flex flex-row justify-between gap-4">
-          <div className="mb-4">
-            <input
-              {...register("city")}
-              placeholder="City"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
-            />
-            {errors.city && (
-              <p className="text-red-500 text-sm mt-1">
-                {getErrorMessage(errors.city)}
-              </p>
-            )}
-          </div>
-
-          <div className="mb-4">
-            <input
-              {...register("pincode")}
-              placeholder="Pincode"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
-            />
-            {errors.pincode && (
-              <p className="text-red-500 text-sm mt-1">
-                {getErrorMessage(errors.pincode)}
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="flex flex-row justify-between gap-4">
-          <div className="mb-4">
-            <input
-              {...register("state")}
-              placeholder="State"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
-            />
-            {errors.state && (
-              <p className="text-red-500 text-sm mt-1">
-                {getErrorMessage(errors.state)}
-              </p>
-            )}
-          </div>
-          <div className="mb-4">
-            <input
-              {...register("country")}
-              placeholder="Country"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
-            />
-            {errors.country && (
-              <p className="text-red-500 text-sm mt-1">
-                {getErrorMessage(errors.country)}
-              </p>
-            )}
-          </div>
-        </div>
-
         <button
           type="submit"
           className="w-full bg-[#56B280] text-white p-2 rounded hover:bg-green-700"
@@ -214,10 +130,26 @@ const SignUpForm = () => {
           Submit
         </button>
       </form>
+      <div className="mt-4">
+        <button
+          onClick={handleLoginWithGoogle}
+          className="w-full bg-white text-gray-700 border border-gray-300 p-2 rounded hover:bg-gray-100 flex items-center justify-center gap-2 font-semibold shadow-sm"
+        >
+          <FcGoogle size={20} />
+          Login with Google
+        </button>
+        <button
+          onClick={handleAppleLogin}
+          className="w-full bg-[#000000] text-white p-2 rounded hover:bg-gray-800 mt-2 flex items-center justify-center gap-2"
+        >
+          <IoLogoApple size={20} />
+          Login with Apple
+        </button>
+      </div>
       <p>
-        Already have an account?
-        <Link className="text-[#56B280] px-2" href="/login">
-          Login
+        Don't have an Account?
+        <Link className="text-[#56B280] px-2" href="/signup">
+          Sign Up
         </Link>
       </p>
     </div>

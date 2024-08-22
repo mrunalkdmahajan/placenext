@@ -20,8 +20,7 @@ export const signInWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
   try {
     const result = await signInWithPopup(auth, provider);
-    const token = await result.user.getIdToken(); // Get the JWT
-    return token;
+    return result;
   } catch (error) {
     console.error(error);
   }
