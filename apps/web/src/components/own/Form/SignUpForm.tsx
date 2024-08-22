@@ -8,8 +8,54 @@ import axios from "axios";
 import { BackendUrl } from "@/utils/constants";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { signInWithGoogle } from "@/config/firebase-config";
+import firebase from "firebase/compat/app";
+import { useEffect, useState } from "react";
 
 const SignUpForm = () => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((currentUser) => {
+      //@ts-ignore
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleSignUpWithGoogle = async () => {
+    try {
+      const result: any = await signInWithGoogle();
+      const token = await result.user.getIdToken(); // Get the ID token for authentication with your backend
+
+      if (result.additionalUserInfo.isNewUser) {
+        console.log("User signed in for the first time");
+        // Handle first-time user logic here, e.g., setup initial user profile
+      } else {
+        console.log("Welcome back!");
+      }
+
+      if (token) {
+        // Send token to backend
+        const response = await axios.post(
+          "/api/student/google_login",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.data;
+        console.log(data);
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
+  };
+
   const {
     register,
     handleSubmit,

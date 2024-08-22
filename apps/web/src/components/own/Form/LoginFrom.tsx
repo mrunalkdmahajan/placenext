@@ -2,19 +2,54 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginValidation } from "@/utils/validations/LoginValidatons";
-// import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-// import { login } from "../../store/authSlice";
-
 import { BackendUrl } from "@/utils/constants";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-// import { useAuth } from "../../contexts/AuthContext";
+import { FcGoogle } from "react-icons/fc";
+import { IoLogoApple } from "react-icons/io5";
+import { useState, useEffect } from "react";
+import firebase, { signInWithGoogle } from "@/config/firebase-config";
 
 const LoginForm = () => {
-  // const { login } = useAuth();
+  const [user, setUser] = useState(null);
 
-  // const navigator = useNavigate();
+  useEffect(() => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((currentUser) => {
+      //@ts-ignore
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleLoginWithGoogle = async () => {
+    try {
+      const token = await signInWithGoogle();
+      if (token) {
+        // Send token to backend
+        const response = await axios.post("/api/protected-route/google_login", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.data;
+        console.log(data);
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await firebase.auth().signOut();
+      console.log("User signed out");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
 
   const {
     register,
@@ -23,25 +58,6 @@ const LoginForm = () => {
   } = useForm({
     resolver: zodResolver(LoginValidation),
   });
-
-  // const onSubmit = async (data: any) => {
-  //   try {
-  //     const res = await axios.post(`${backendUrl}/api/customers/login`, data);
-  //     if (res.data.success) {
-  //       // dispatch(login(res.data));
-  //       login(res.data.accessToken, res.data.refreshToken);
-  //       localStorage.setItem("isAdmin", res.data.customer.isAdmin);
-  //       if (res.data.customer.isAdmin) {
-  //         navigator("/admin/overview");
-  //       } else {
-  //         navigator("/");
-  //       }
-  //     }
-  //   } catch (error: any) {
-  //     console.error("Login error:", error.message);
-  //     // Handle axios request error (e.g., show error message)
-  //   }
-  // };
 
   const onSubmit = async (data: any) => {
     console.log(data);
@@ -55,6 +71,11 @@ const LoginForm = () => {
       return error.message;
     }
     return "Invalid value";
+  };
+
+  const handleAppleLogin = () => {
+    // Add Apple OAuth login logic here
+    console.log("Apple login clicked");
   };
 
   return (
@@ -94,6 +115,22 @@ const LoginForm = () => {
           Submit
         </button>
       </form>
+      <div className="mt-4">
+        <button
+          onClick={handleLoginWithGoogle}
+          className="w-full bg-white text-gray-700 border border-gray-300 p-2 rounded hover:bg-gray-100 flex items-center justify-center gap-2 font-semibold shadow-sm"
+        >
+          <FcGoogle size={20} />
+          Login with Google
+        </button>
+        <button
+          onClick={handleAppleLogin}
+          className="w-full bg-[#000000] text-white p-2 rounded hover:bg-gray-800 mt-2 flex items-center justify-center gap-2"
+        >
+          <IoLogoApple size={20} />
+          Login with Apple
+        </button>
+      </div>
       <p>
         Don't have an Account?
         <Link className="text-[#56B280] px-2" href="/signup">

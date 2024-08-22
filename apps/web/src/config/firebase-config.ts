@@ -1,18 +1,30 @@
 // firebase-config.js
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC6WJfXLAuGHaNAcVcpXEzooDUJWuH-op8",
-  authDomain: "placenext-17bb0.firebaseapp.com",
-  projectId: "placenext-17bb0",
-  storageBucket: "placenext-17bb0.appspot.com",
-  messagingSenderId: "225265442811",
-  appId: "1:225265442811:web:98d279c9f20b2b9adab55e",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+const app = firebase.initializeApp(firebaseConfig);
+
+export const auth = getAuth(app);
+
+export const signInWithGoogle = async () => {
+  const provider = new GoogleAuthProvider();
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const token = await result.user.getIdToken(); // Get the JWT
+    return token;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 export default firebase;
