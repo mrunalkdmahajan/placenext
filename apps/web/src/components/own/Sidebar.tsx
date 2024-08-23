@@ -37,9 +37,9 @@ const drawerVariants = {
 
 const options: Option[] = [
   { name: "Overview", path: "/dashboard" },
-  { name: "Appointments", path: "/appointments" },
-  { name: "Doctors", path: "/doctors" },
+  { name: "nApplicatioins", path: "/appointments" },
   { name: "Messages", path: "/messages" },
+  { name: "Profile", path: "/doctors" },
   { name: "Settings", path: "/settings" },
 ];
 

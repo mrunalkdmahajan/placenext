@@ -36,17 +36,6 @@ const SignUpForm = () => {
       if (isNewUser) {
         console.log(token.additionalUserInfo);
       }
-      // if (token) {
-      //   // Send token to backend
-      //   const response = await axios.post("/api/student/google_login", {
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   });
-
-      //   const data = await response.data;
-      //   console.log(data);
-      // }
     } catch (error) {
       console.error("Error during login:", error);
     }

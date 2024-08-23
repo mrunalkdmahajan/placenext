@@ -61,3 +61,6 @@ const IStudentSchema = new Schema<IStudent>({
   //   required: true,
   // },
 });
+
+const Student = model<IStudent>("Student", IStudentSchema);
+export default Student;

@@ -29,6 +29,15 @@ const LoginForm = () => {
     try {
       const idToken = await signInWithGoogle();
 
+      const signCheckResponse = await axios.get(
+        `${BackendUrl}/api/student/is_first_signin`,
+        {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        }
+      );
+
       if (idToken) {
         console.log("ID Token:", idToken);
         const response = await axios.post(
@@ -40,6 +49,12 @@ const LoginForm = () => {
             },
           }
         );
+
+        if (signCheckResponse.data.success === true) {
+          if (signCheckResponse.data.isFirstSignIn) {
+            router.push("/student/applicationform");
+          }
+        }
 
         if (response.data.success === true) {
           console.log("User logged in successfully");
