@@ -1,7 +1,13 @@
 // firebase-config.js
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  GoogleAuthProvider,
+  sendEmailVerification,
+  signInWithPopup,
+} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -25,6 +31,24 @@ export const signInWithGoogle = async () => {
   } catch (error) {
     console.error("Error during Google sign-in:", error);
     throw new Error("Sign-in failed. Please try again.");
+  }
+};
+
+export const signUpAndVerifyEmail = async (email: string, password: string) => {
+  try {
+    // Create user with email and password
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = userCredential.user;
+
+    // Send verification email
+    await sendEmailVerification(user);
+    console.log("Verification email sent to " + email);
+  } catch (error) {
+    console.error("Error signing up: ", error);
   }
 };
 

@@ -11,7 +11,10 @@ import { IoLogoApple } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import firebase, { signInWithGoogle } from "@/config/firebase-config";
+import firebase, {
+  signInWithGoogle,
+  signUpAndVerifyEmail,
+} from "@/config/firebase-config";
 const LoginForm = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
@@ -66,15 +69,6 @@ const LoginForm = () => {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await firebase.auth().signOut();
-      console.log("User signed out");
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
-  };
-
   const {
     register,
     handleSubmit,
@@ -84,7 +78,11 @@ const LoginForm = () => {
   });
 
   const onSubmit = async (data: any) => {
-    console.log(data);
+    localStorage.setItem("email", data.email);
+    localStorage.setItem("password", data.password);
+    await signUpAndVerifyEmail(data.email, data.password).then(() => {
+      router.push("/student/applicationform");
+    });
   };
 
   const getErrorMessage = (error: any) => {
@@ -95,11 +93,6 @@ const LoginForm = () => {
       return error.message;
     }
     return "Invalid value";
-  };
-
-  const handleAppleLogin = () => {
-    // Add Apple OAuth login logic here
-    console.log("Apple login clicked");
   };
 
   return (
@@ -146,13 +139,6 @@ const LoginForm = () => {
         >
           <FcGoogle size={20} />
           Login with Google
-        </button>
-        <button
-          onClick={handleAppleLogin}
-          className="w-full bg-[#000000] text-white p-2 rounded hover:bg-gray-800 mt-2 flex items-center justify-center gap-2"
-        >
-          <IoLogoApple size={20} />
-          Login with Apple
         </button>
       </div>
       <p>

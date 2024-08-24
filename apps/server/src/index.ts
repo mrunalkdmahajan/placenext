@@ -8,7 +8,7 @@ const port = process.env.PORT || 8000;
 connectDB()
   .then(() => {
     app.listen(port, () => {
-      console.log(`Server Started at port : 3000  http://localhost:${port}`);
+      console.log(`Server Started at port : ${port}  http://localhost:${port}`);
     });
   })
   .catch((error) => {

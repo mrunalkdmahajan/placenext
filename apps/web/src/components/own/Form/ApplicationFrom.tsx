@@ -51,8 +51,8 @@ const ApplicationForm = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-2 w-full ">
           <h1>Personal Details</h1>
-          <div className="flex flex-row gap-2 w-full justify-around">
-            <div className="mb-4">
+          <div className="flex flex-col md:flex-row gap-2 w-full justify-around">
+            <div className="mb-4 w-68">
               <input
                 {...register("firstName")}
                 placeholder="First Name"
@@ -64,7 +64,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68">
               <input
                 {...register("middleName")}
                 placeholder="Middle Name"
@@ -77,7 +77,7 @@ const ApplicationForm = () => {
               )}
             </div>
 
-            <div className="mb-4">
+            <div className="mb-4 w-68">
               <input
                 {...register("lastName")}
                 placeholder="Last Name"
@@ -103,8 +103,8 @@ const ApplicationForm = () => {
               )}
             </div> */}
           </div>
-          <div className="flex flex-row gap-2 justify-around">
-            <div className="mb-4">
+          <div className="flex flex-col md:flex-row gap-2 justify-around">
+            <div className="mb-4 w-68">
               <input
                 {...register("rollNumber")}
                 placeholder="Roll Number"
@@ -116,7 +116,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68">
               <input
                 {...register("division")}
                 placeholder="Division"
@@ -128,7 +128,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68">
               <input
                 {...register("gender")}
                 placeholder="Gender"
@@ -141,8 +141,8 @@ const ApplicationForm = () => {
               )}
             </div>
           </div>
-          <div className="flex flex-row gap-2 w-full justify-around">
-            <div className="mb-4">
+          <div className="flex flex-col md:flex-row gap-2 w-full justify-around">
+            <div className="mb-4 w-68">
               <input
                 {...register("fatherName")}
                 placeholder="Father Name"
@@ -154,7 +154,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68">
               <input
                 {...register("motherName")}
                 placeholder="Mother Name"
@@ -166,7 +166,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68">
               <input
                 {...register("dateOfBirth")}
                 placeholder="Date Of Birth"
@@ -179,8 +179,8 @@ const ApplicationForm = () => {
               )}
             </div>
           </div>
-          <div className="flex flex-row gap-2 w-full justify-around">
-            <div className="mb-4">
+          <div className="flex flex-col md:flex-row gap-2 w-full justify-around">
+            <div className="mb-4 w-68">
               <input
                 {...register("religion")}
                 placeholder="Religion"
@@ -192,7 +192,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68">
               <input
                 {...register("caste")}
                 placeholder="Caste"
@@ -204,7 +204,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68">
               <input
                 {...register("areYouSpeaciallyAbled")}
                 placeholder="Are You Speacially Abled"
@@ -221,8 +221,8 @@ const ApplicationForm = () => {
 
         <div>
           <h1 className="text-lg font-bold ">Contact Details</h1>
-          <div className="flex flex-row gap-2 justify-around">
-            <div className="mb-4">
+          <div className="flex flex-col md:flex-row gap-2 justify-around">
+            <div className="mb-4 w-68">
               <input
                 {...register("alternateEmail")}
                 placeholder="Alternate Email"
@@ -259,7 +259,7 @@ const ApplicationForm = () => {
               )}
             </div>
           </div>
-          <div className="flex flex-row gap-2 justify-around w-full">
+          <div className="flex flex-col md:flex-row gap-2 justify-around w-full">
             <div className="mb-4">
               <input
                 {...register("address")}
@@ -313,8 +313,8 @@ const ApplicationForm = () => {
 
         <div>
           <h1>Academic Details</h1>
-          <div className="flex flex-row gap-2 justify-around">
-            <div className="mb-4">
+          <div className="flex flex-col md:flex-row gap-2 justify-around">
+            <div className="mb-4 w-68">
               <input
                 {...register("tenthPercentage")}
                 placeholder="Tenth Percentage"
@@ -326,7 +326,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68">
               <input
                 {...register("Twelth Percentage")}
                 placeholder="Twelth Percentage"
@@ -338,7 +338,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68">
               <input
                 {...register("cetPercentile")}
                 placeholder="CET Percentile"
@@ -351,8 +351,8 @@ const ApplicationForm = () => {
               )}
             </div>
           </div>
-          <div className="flex flex-row gap-2 justify-around">
-            <div className="mb-4">
+          <div className="flex flex-col md:flex-row gap-2 justify-around">
+            <div className="mb-4 w-68">
               <input
                 {...register("admissionYear")}
                 placeholder="Admission Year"
@@ -364,7 +364,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68">
               <input
                 {...register("admissionCategory")}
                 placeholder="Admission Category"
@@ -376,7 +376,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68">
               <input
                 {...register("gapInEducation")}
                 placeholder="Gap In Education"
@@ -389,8 +389,8 @@ const ApplicationForm = () => {
               )}
             </div>
           </div>
-          <div className="flex flex-row gap-2 justify-around">
-            <div className="mb-4">
+          <div className="flex flex-col md:flex-row gap-2 justify-around">
+            <div className="mb-4 w-68">
               <input
                 {...register("aggregateCgpi")}
                 placeholder="Aggregate Cgpi"
@@ -402,7 +402,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68">
               <input
                 {...register("liveKt")}
                 placeholder="Live Kt"
@@ -414,7 +414,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68">
               <input
                 {...register("deadKt")}
                 placeholder="Dead Kt"
@@ -428,79 +428,7 @@ const ApplicationForm = () => {
             </div>
           </div>
         </div>
-        {/* previous */}
 
-        <div className="flex flex-row gap-2 w-full justify-around">
-          <div className="mb-4">
-            <input
-              {...register("universityPRN")}
-              placeholder="University PRN"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]  "
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">
-                {getErrorMessage(errors.name)}
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="flex flex-row gap-2 w-full justify-around">
-          <div className="mb-4">
-            <input
-              {...register("passportSizePhoto")}
-              type="file"
-              placeholder="Passport Size Photo"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]  "
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">
-                {getErrorMessage(errors.name)}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div className="flex flex-row gap-2 w-full justify-around"></div>
-        <div className="flex flex-row gap-2 justify-around"></div>
-
-        <div className="mb-4">
-          <input
-            {...register("sem1Sgpi")}
-            placeholder="Sem 1 SGPI"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]  "
-          />
-          {errors.name && (
-            <p className="text-red-500 text-sm mt-1">
-              {getErrorMessage(errors.name)}
-            </p>
-          )}
-        </div>
-
-        <div className="mb-4">
-          <input
-            {...register("admissionType")}
-            placeholder="Admission Type"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]  "
-          />
-          {errors.name && (
-            <p className="text-red-500 text-sm mt-1">
-              {getErrorMessage(errors.name)}
-            </p>
-          )}
-        </div>
-
-        <div className="mb-4">
-          <input
-            {...register("signature")}
-            placeholder="Signature"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]  "
-          />
-          {errors.name && (
-            <p className="text-red-500 text-sm mt-1">
-              {getErrorMessage(errors.name)}
-            </p>
-          )}
-        </div>
         <button
           type="submit"
           className="w-full bg-[#56B280] text-white p-2 rounded hover:bg-green-700"
@@ -508,12 +436,6 @@ const ApplicationForm = () => {
           Submit
         </button>
       </form>
-      <p>
-        Already have an account?
-        <Link className="text-[#56B280] px-2" href="/login">
-          Login
-        </Link>
-      </p>
     </div>
   );
 };

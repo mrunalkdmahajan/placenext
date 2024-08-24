@@ -7,15 +7,15 @@ const LogoText = () => {
   return (
     <Link href={"/"}>
       <div className="flex flex-row items-center gap-2  p-4">
-        {/* <div>
+        <div>
           <Image
-            src="/assets/Logo.png"
+            src="/assets/PlaceNext_logo.png"
             alt="Logo"
             width={34}
             height={34}
             className="h-auto w-auto lg:h-12 lg:w-12"
           />
-        </div> */}
+        </div>
         <div>
           <h1 className="text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-semibold">
             Place<span className="font-extrabold">Next</span>
