@@ -81,7 +81,7 @@ const LoginForm = () => {
     localStorage.setItem("email", data.email);
     localStorage.setItem("password", data.password);
     await signUpAndVerifyEmail(data.email, data.password).then(() => {
-      router.push("/student/applicationform");
+      router.push("/student/verifyemail");
     });
   };
 

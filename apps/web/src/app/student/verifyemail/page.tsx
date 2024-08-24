@@ -1,6 +1,7 @@
-import { signUpAndVerifyEmail } from "@/config/firebase-config";
+"use client";
+import { useEffect } from "react";
+import { signUpAndVerifyEmail, isUserVerified } from "@/config/firebase-config"; // Ensure you have a function to check verification status
 import Link from "next/link";
-import React from "react";
 
 export default function VerifyEmail() {
   const resendEmail = async () => {
@@ -9,6 +10,25 @@ export default function VerifyEmail() {
     //@ts-ignore
     await signUpAndVerifyEmail(email, password);
   };
+
+  const checkVerification = async () => {
+    const email = localStorage.getItem("email");
+    //@ts-ignore
+    const isVerified = await isUserVerified(email);
+    if (isVerified) {
+      window.location.href = "/student/dashboard";
+    }
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      checkVerification();
+    }, 3000); // Check every 3 seconds
+
+    // Cleanup the interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
@@ -22,7 +42,10 @@ export default function VerifyEmail() {
         <p className="text-gray-600 text-center mb-6">
           If you didn't receive the email, click the button below to resend it.
         </p>
-        <button className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700">
+        <button
+          onClick={resendEmail}
+          className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700"
+        >
           Resend Verification Email
         </button>
         <p className="text-gray-600 text-center mt-4">

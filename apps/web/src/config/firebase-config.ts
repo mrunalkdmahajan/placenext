@@ -52,4 +52,12 @@ export const signUpAndVerifyEmail = async (email: string, password: string) => {
   }
 };
 
+export const isUserVerified = (email: string) => {
+  const user = auth.currentUser;
+  if (user) {
+    return user.emailVerified;
+  }
+  return false;
+};
+
 export default firebase;
