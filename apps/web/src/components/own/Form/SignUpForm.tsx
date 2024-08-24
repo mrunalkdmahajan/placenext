@@ -136,7 +136,7 @@ const SignUpForm = () => {
         </button>
       </div>
       <p>
-        Don't have an Account?
+        Don&apos;t have an Account?
         <Link className="text-[#56B280] px-2" href="/signup">
           Sign Up
         </Link>

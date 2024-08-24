@@ -52,7 +52,7 @@ const ApplicationForm = () => {
         <div className="flex flex-col gap-2 w-full ">
           <h1>Personal Details</h1>
           <div className="flex flex-col md:flex-row gap-2 w-full justify-around">
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("firstName")}
                 placeholder="First Name"
@@ -64,7 +64,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("middleName")}
                 placeholder="Middle Name"
@@ -77,7 +77,7 @@ const ApplicationForm = () => {
               )}
             </div>
 
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("lastName")}
                 placeholder="Last Name"
@@ -104,7 +104,7 @@ const ApplicationForm = () => {
             </div> */}
           </div>
           <div className="flex flex-col md:flex-row gap-2 justify-around">
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("rollNumber")}
                 placeholder="Roll Number"
@@ -116,7 +116,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("division")}
                 placeholder="Division"
@@ -128,7 +128,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("gender")}
                 placeholder="Gender"
@@ -142,7 +142,7 @@ const ApplicationForm = () => {
             </div>
           </div>
           <div className="flex flex-col md:flex-row gap-2 w-full justify-around">
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("fatherName")}
                 placeholder="Father Name"
@@ -154,7 +154,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("motherName")}
                 placeholder="Mother Name"
@@ -166,7 +166,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("dateOfBirth")}
                 placeholder="Date Of Birth"
@@ -180,7 +180,7 @@ const ApplicationForm = () => {
             </div>
           </div>
           <div className="flex flex-col md:flex-row gap-2 w-full justify-around">
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("religion")}
                 placeholder="Religion"
@@ -192,7 +192,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("caste")}
                 placeholder="Caste"
@@ -204,7 +204,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("areYouSpeaciallyAbled")}
                 placeholder="Are You Speacially Abled"
@@ -222,7 +222,7 @@ const ApplicationForm = () => {
         <div>
           <h1 className="text-lg font-bold ">Contact Details</h1>
           <div className="flex flex-col md:flex-row gap-2 justify-around">
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("alternateEmail")}
                 placeholder="Alternate Email"
@@ -234,7 +234,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("phoneNumber")}
                 placeholder="Phone Number"
@@ -246,7 +246,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("alternatePhoneNo")}
                 placeholder="Alternate PhoneNo"
@@ -260,7 +260,7 @@ const ApplicationForm = () => {
             </div>
           </div>
           <div className="flex flex-col md:flex-row gap-2 justify-around w-full">
-            <div className="mb-4">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("address")}
                 placeholder="Address"
@@ -272,7 +272,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("state")}
                 placeholder="State"
@@ -284,7 +284,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("country")}
                 placeholder="Country"
@@ -296,7 +296,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("pincode")}
                 placeholder="Pincode"
@@ -314,7 +314,7 @@ const ApplicationForm = () => {
         <div>
           <h1>Academic Details</h1>
           <div className="flex flex-col md:flex-row gap-2 justify-around">
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("tenthPercentage")}
                 placeholder="Tenth Percentage"
@@ -326,7 +326,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("Twelth Percentage")}
                 placeholder="Twelth Percentage"
@@ -338,7 +338,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("cetPercentile")}
                 placeholder="CET Percentile"
@@ -352,7 +352,7 @@ const ApplicationForm = () => {
             </div>
           </div>
           <div className="flex flex-col md:flex-row gap-2 justify-around">
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("admissionYear")}
                 placeholder="Admission Year"
@@ -364,7 +364,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("admissionCategory")}
                 placeholder="Admission Category"
@@ -376,7 +376,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("gapInEducation")}
                 placeholder="Gap In Education"
@@ -390,7 +390,7 @@ const ApplicationForm = () => {
             </div>
           </div>
           <div className="flex flex-col md:flex-row gap-2 justify-around">
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("aggregateCgpi")}
                 placeholder="Aggregate Cgpi"
@@ -402,7 +402,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("liveKt")}
                 placeholder="Live Kt"
@@ -414,7 +414,7 @@ const ApplicationForm = () => {
                 </p>
               )}
             </div>
-            <div className="mb-4 w-68">
+            <div className="mb-4 w-68 lg:w-72 xl:w-96">
               <input
                 {...register("deadKt")}
                 placeholder="Dead Kt"

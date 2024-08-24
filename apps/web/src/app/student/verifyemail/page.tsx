@@ -7,16 +7,36 @@ export default function VerifyEmail() {
   const resendEmail = async () => {
     const email = localStorage.getItem("email");
     const password = localStorage.getItem("password");
-    //@ts-ignore
-    await signUpAndVerifyEmail(email, password);
+
+    if (email && password) {
+      try {
+        // @ts-ignore
+        await signUpAndVerifyEmail(email, password);
+        alert("Verification email resent. Please check your inbox.");
+      } catch (error) {
+        console.error("Error resending email:", error);
+        alert("Failed to resend verification email. Please try again.");
+      }
+    } else {
+      alert("Email or password not found in local storage.");
+    }
   };
 
   const checkVerification = async () => {
     const email = localStorage.getItem("email");
-    //@ts-ignore
-    const isVerified = await isUserVerified(email);
-    if (isVerified) {
-      window.location.href = "/student/dashboard";
+
+    if (email) {
+      try {
+        // @ts-ignore
+        const isVerified = await isUserVerified(email);
+        if (isVerified) {
+          window.location.href = "/student/dashboard";
+        }
+      } catch (error) {
+        console.error("Error checking verification status:", error);
+      }
+    } else {
+      console.error("Email not found in local storage.");
     }
   };
 
@@ -40,7 +60,8 @@ export default function VerifyEmail() {
           Opportunities! Please check your email to verify your account.
         </p>
         <p className="text-gray-600 text-center mb-6">
-          If you didn't receive the email, click the button below to resend it.
+          If you didn&apos;t receive the email, click the button below to resend
+          it.
         </p>
         <button
           onClick={resendEmail}

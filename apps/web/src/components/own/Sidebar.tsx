@@ -42,13 +42,12 @@ const options: Option[] = [
   { name: "Profile", path: "/doctors" },
   { name: "Settings", path: "/settings" },
 ];
-
 const OptionsIcon = [
-  <ImportContactsTwoToneIcon />,
-  <BiCategoryAlt />,
-  <FaUserDoctor />,
-  <BiMessageSquareMinus />,
-  <CiSettings />,
+  <ImportContactsTwoToneIcon key="import-contacts" />,
+  <BiCategoryAlt key="category-alt" />,
+  <FaUserDoctor key="user-doctor" />,
+  <BiMessageSquareMinus key="message-square-minus" />,
+  <CiSettings key="settings" />,
 ];
 
 export default function Sidebar({ isIcon }: any) {
