@@ -21,6 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-5-=^c+h0vc2wdqd*)*9^24rubk8#tfhjgnuv(8&g6(+3t3c6)_"
+ALLOWED_HOSTS = ['https://placenext-doc-server.onrender.com/','*', 'localhost','http://localhost:3000','https://placenext.onrender.com']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
