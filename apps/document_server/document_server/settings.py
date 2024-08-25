@@ -21,27 +21,29 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-5-=^c+h0vc2wdqd*)*9^24rubk8#tfhjgnuv(8&g6(+3t3c6)_"
-ALLOWED_HOSTS = ['.onrender.com', 'localhost', 'localhost:3000','placenext-doc-server']
+ALLOWED_HOSTS = ['.onrender.com', 'localhost', 'localhost:3000','placenext-doc-server','127.0.0.1']
 
 
-print("ALLOWED_HOSTS:", ALLOWED_HOSTS)
+
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'corsheaders',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
