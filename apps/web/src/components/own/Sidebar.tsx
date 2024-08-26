@@ -37,11 +37,18 @@ const drawerVariants = {
 
 const options: Option[] = [
   { name: "Overview", path: "/dashboard" },
-  { name: "nApplicatioins", path: "/appointments" },
+  { name: "Applicatioins", path: "/appointments" },
   { name: "Messages", path: "/messages" },
   { name: "Profile", path: "/doctors" },
   { name: "Settings", path: "/settings" },
 ];
+
+
+// const dashSidebarOptions = 
+
+// const tpodashSidebarOptions = 
+
+
 const OptionsIcon = [
   <ImportContactsTwoToneIcon key="import-contacts" />,
   <BiCategoryAlt key="category-alt" />,
