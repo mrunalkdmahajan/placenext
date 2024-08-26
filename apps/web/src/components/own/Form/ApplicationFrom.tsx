@@ -23,7 +23,7 @@ const ApplicationForm = () => {
       const token = localStorage.getItem("token");
       if (token) {
         const response = await axios.post(
-          "/api/student/google_login",
+          `${BackendUrl}/api/student/google_login`,
           { data },
           {
             headers: {

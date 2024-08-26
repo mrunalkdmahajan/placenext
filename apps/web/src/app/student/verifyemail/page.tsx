@@ -1,16 +1,22 @@
 "use client";
-import { useEffect } from "react";
-import { signUpAndVerifyEmail, isUserVerified } from "@/config/firebase-config"; // Ensure you have a function to check verification status
+import { useEffect, useState } from "react";
+import { signUpAndVerifyEmail, isUserVerified } from "@/config/firebase-config";
 import Link from "next/link";
+import { useRouter } from "next/navigation"; // Use useRouter for navigation
+import axios from "axios";
+import { BackendUrl } from "@/utils/constants";
 
 export default function VerifyEmail() {
+  const [attempts, setAttempts] = useState(0);
+  const maxAttempts = 6;
+  const router = useRouter(); // Initialize router
+
   const resendEmail = async () => {
     const email = localStorage.getItem("email");
     const password = localStorage.getItem("password");
 
     if (email && password) {
       try {
-        // @ts-ignore
         await signUpAndVerifyEmail(email, password);
         alert("Verification email resent. Please check your inbox.");
       } catch (error) {
@@ -27,10 +33,24 @@ export default function VerifyEmail() {
 
     if (email) {
       try {
-        // @ts-ignore
         const isVerified = await isUserVerified(email);
+
+        const userCheck = await axios.get(
+          `${BackendUrl}/api/student/is_first_signin`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        if (userCheck.data.success && userCheck.data.isFirstSignIn) {
+          router.push("/student/applicationform"); // Use router.push for navigation
+          return;
+        }
+
         if (isVerified) {
-          window.location.href = "/student/dashboard";
+          router.push("/student/dashboard"); // Use router.push for navigation
         }
       } catch (error) {
         console.error("Error checking verification status:", error);
@@ -41,13 +61,19 @@ export default function VerifyEmail() {
   };
 
   useEffect(() => {
+    if (attempts >= maxAttempts) {
+      alert("Verification email not received. Please try again.");
+      router.push("/student/login"); // Use router.push for navigation
+      return;
+    }
+
     const intervalId = setInterval(() => {
       checkVerification();
-    }, 3000); // Check every 3 seconds
+      setAttempts((prev) => prev + 1);
+    }, 3000);
 
-    // Cleanup the interval on component unmount
     return () => clearInterval(intervalId);
-  }, []);
+  }, [attempts]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

@@ -1,14 +1,13 @@
 import re
+import tempfile
+import os
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
 from django.http import JsonResponse
 from PyPDF2 import PdfReader
 from pdf2image import convert_from_path
 from pytesseract import image_to_string
-import tempfile
-import os
 
 @api_view(['GET'])
 def test(request):
@@ -24,9 +23,16 @@ def upload_pdf(request):
             return JsonResponse({'error': 'The uploaded file is not a PDF.'}, status=400)
         
         try:
-            # Initialize the PdfReader
-            reader = PdfReader(pdf_file)
             text = ''
+            
+            # Save the uploaded PDF to a temporary file
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_pdf:
+                for chunk in pdf_file.chunks():
+                    temp_pdf.write(chunk)
+                temp_pdf_path = temp_pdf.name
+            
+            # Initialize the PdfReader
+            reader = PdfReader(temp_pdf_path)
             
             # Extract text from each page
             for page in reader.pages:
@@ -36,12 +42,15 @@ def upload_pdf(request):
                 else:
                     # If no text is extracted, use OCR on the page's image
                     with tempfile.TemporaryDirectory() as temp_dir:
-                        images = convert_from_path(pdf_file.temporary_file_path(), output_folder=temp_dir)
+                        images = convert_from_path(temp_pdf_path, output_folder=temp_dir)
                         for image in images:
                             text += image_to_string(image)
                         # Clean up temporary images
                         for image in images:
                             os.remove(image.filename)
+            
+            # Remove the temporary PDF file
+            os.remove(temp_pdf_path)
             
             # Search for SGPI in the extracted text
             sgpi_match = re.search(r'SGPI\s*:\s*(\d+(\.\d+)?)', text, re.IGNORECASE)

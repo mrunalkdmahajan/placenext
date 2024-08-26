@@ -7,9 +7,13 @@ export const authenticateToken = async (
   next: NextFunction
 ) => {
   const token = req.headers.authorization?.split(" ")[1];
+  console.log(req.headers.authorization);
+
   if (!token) {
     return res.status(401).json({ error: "Access Denied" });
   }
+
+  console.log("Token:", token);
 
   try {
     const decodedUser = await admin.auth().verifyIdToken(token);

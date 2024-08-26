@@ -80,7 +80,8 @@ const LoginForm = () => {
   const onSubmit = async (data: any) => {
     localStorage.setItem("email", data.email);
     localStorage.setItem("password", data.password);
-    await signUpAndVerifyEmail(data.email, data.password).then(() => {
+    await signUpAndVerifyEmail(data.email, data.password).then((idToken) => {
+      localStorage.setItem("token", idToken);
       router.push("/student/verifyemail");
     });
   };

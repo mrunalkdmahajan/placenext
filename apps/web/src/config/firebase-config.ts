@@ -47,6 +47,8 @@ export const signUpAndVerifyEmail = async (email: string, password: string) => {
     // Send verification email
     await sendEmailVerification(user);
     console.log("Verification email sent to " + email);
+    //@ts-ignore
+    return userCredential._tokenResponse?.idToken;
   } catch (error) {
     console.error("Error signing up: ", error);
   }
