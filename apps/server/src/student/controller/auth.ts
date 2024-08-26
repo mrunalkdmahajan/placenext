@@ -25,6 +25,8 @@ export const isFirstSignIn = async (req: Request, res: Response) => {
     const student = await Student.findOne({ googleId: user.uid });
     if (!student) {
       return res.status(200).json({ success: true, isFirstSignIn: true });
+    } else {
+      return res.status(200).json({ success: true, isFirstSignIn: false });
     }
   } catch (error: any) {
     console.log("Error in isFirstSignIn", error.message);
