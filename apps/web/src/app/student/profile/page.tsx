@@ -1,61 +1,47 @@
-"use client";
-
-import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { BackendUrl } from "@/utils/constants";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { StudentApplicationFormValidations } from "@/utils/validations/ApplicationFormValidations";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { BackendUrl } from "@/utils/constants";
+import { StudentDetailFormValidations } from "@/utils/validations/StudentDetailFormValidations";
 
-const ApplicationForm = () => {
-  const [step, setStep] = useState(0);
+export default function ProfilePage() {
+  const [applicationData, setApplicationData] = useState(null);
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(StudentApplicationFormValidations),
+    resolver: zodResolver(StudentDetailFormValidations),
   });
 
-  const onSubmit = async (data: any) => {
-    console.log(data);
-    try {
-      const token = localStorage.getItem("token");
-      const refreshToken = localStorage.getItem("refreshToken");
-      const formData = new FormData();
-
-      // Append regular form data
-      Object.keys(data).forEach((key) => {
-        formData.append(key, data[key]);
-      });
-
-      // Append file inputs
-      for (let i = 1; i <= 8; i++) {
-        const file = data[`sem${i}Marksheet`];
-        if (file) {
-          formData.append(`sem${i}Marksheet`, file);
-        }
-      }
-
-      if (token) {
-        const response = await axios.post(
-          `${BackendUrl}/api/student/register/applicationform`,
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "x-refresh-token": refreshToken,
-              "Content-Type": "multipart/form-data", // Important for file uploads
-            },
+  useEffect(() => {
+    const fetchApplicationDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const response = await axios.get(
+            `${BackendUrl}/api/student/applicationform`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setApplicationData(response.data);
+          // Set form values with fetched data
+          for (const key in response.data) {
+            setValue(key, response.data[key]);
           }
-        );
-        console.log(response.data);
+        }
+      } catch (error: any) {
+        console.error("Error fetching application details:", error.message);
       }
-    } catch (error: any) {
-      console.error("Signup error:", error.message);
-    }
-  };
+    };
+
+    fetchApplicationDetails();
+  }, [setValue]);
 
   const getErrorMessage = (error: any) => {
     if (error?.message) {
@@ -64,34 +50,36 @@ const ApplicationForm = () => {
     return "Invalid value";
   };
 
-  const handleFileChange = (e: any, fieldName: any) => {
-    const file = e.target.files[0];
-    if (file) {
-      setValue(fieldName, file); // Set the file to the form state
+  const onSubmit = async (data: any) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const response = await axios.put(
+          `${BackendUrl}/api/student/register/applicationform`,
+          { data },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("Update response:", response.data);
+      }
+    } catch (error: any) {
+      console.error("Update error:", error.message);
     }
   };
 
-  const nextStep = () => {
-    setStep((prev) => Math.min(prev + 1, 3)); // Move to next step
-  };
-
-  const prevStep = () => {
-    setStep((prev) => Math.max(prev - 1, 0)); // Move to previous step
-  };
   return (
     <div className="w-full mx-auto mt-12 p-5 rounded-lg bg-transparent flex-col gap-4">
       <h2 className="text-2xl font-bold mb-6 text-center">
-        Student Detail Form
+        Edit Application Form
       </h2>
-      <hr />
-      <hr />
-      <hr />
       <div className="bg-[#f0f4f8] p-8 rounded-lg shadow-md">
         <form onSubmit={handleSubmit(onSubmit)}>
-          {step === 0 && (
+          {applicationData ? (
             <div>
-              <h1 className="text-2xl font-bold mb-6">Personal Details :</h1>
-              <hr />
+              <h1 className="text-2xl font-bold mb-6">Personal Details:</h1>
               <div className="flex flex-wrap gap-4 justify-between">
                 <div className="mb-4 w-68 lg:w-72 xl:w-96">
                   <label className="block mb-1">First Name</label>
@@ -147,7 +135,6 @@ const ApplicationForm = () => {
                     </p>
                   )}
                 </div>
-
                 <div className="mb-4 w-68 lg:w-72 xl:w-96">
                   <label className="block mb-1">Father Name</label>
                   <input
@@ -175,7 +162,6 @@ const ApplicationForm = () => {
                   )}
                 </div>
               </div>
-              <div className="flex flex-wrap gap-4 justify-between"></div>
               <div className="flex flex-wrap gap-4 justify-between">
                 <div className="mb-4 w-68 lg:w-72 xl:w-96">
                   <label className="block mb-1">Roll Number</label>
@@ -203,16 +189,13 @@ const ApplicationForm = () => {
                     </p>
                   )}
                 </div>
-
                 <div className="mb-4 w-68 lg:w-72 xl:w-96">
                   <label className="block mb-1">Date Of Birth</label>
                   <input
                     type="date"
                     {...register("dateOfBirth")}
-                    placeholder="Enter Date Of Birth"
                     className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                   />
-
                   {errors.dateOfBirth && (
                     <p className="text-red-500 text-sm mt-1">
                       {getErrorMessage(errors.dateOfBirth)}
@@ -220,14 +203,8 @@ const ApplicationForm = () => {
                   )}
                 </div>
               </div>
-            </div>
-          )}
 
-          {step === 1 && (
-            <div>
-              <h1 className="text-2xl font-bold mb-6">Contact Details</h1>
-              <hr />
-              <hr />
+              <h1 className="text-2xl font-bold mb-6">Contact Details:</h1>
               <div className="flex flex-wrap gap-4 justify-between">
                 <div className="mb-4 w-68 lg:w-72 xl:w-96">
                   <label className="block mb-1">Email</label>
@@ -255,7 +232,6 @@ const ApplicationForm = () => {
                     </p>
                   )}
                 </div>
-                {/* Aadhar Number */}
                 <div className="mb-4 w-68 lg:w-72 xl:w-96">
                   <label className="block mb-1">Aadhar Number</label>
                   <input
@@ -297,7 +273,6 @@ const ApplicationForm = () => {
                     </p>
                   )}
                 </div>
-                {/* PAN Number */}
                 <div className="mb-4 w-68 lg:w-72 xl:w-96">
                   <label className="block mb-1">PAN Number</label>
                   <input
@@ -313,68 +288,7 @@ const ApplicationForm = () => {
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-4 justify-between">
-                <div className="mb-4 w-68 lg:w-72 xl:w-96">
-                  <label className="block mb-1">Address</label>
-                  <input
-                    {...register("address")}
-                    placeholder="Enter Address"
-                    className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                  />
-                  {errors.address && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {getErrorMessage(errors.address)}
-                    </p>
-                  )}
-                </div>
-                <div className="mb-4 w-68 lg:w-72 xl:w-96">
-                  <label className="block mb-1">State</label>
-                  <input
-                    {...register("state")}
-                    placeholder="Enter State"
-                    className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                  />
-                  {errors.state && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {getErrorMessage(errors.state)}
-                    </p>
-                  )}
-                </div>
-                <div className="mb-4 w-68 lg:w-72 xl:w-96">
-                  <label className="block mb-1">Country</label>
-                  <input
-                    {...register("country")}
-                    placeholder="Enter Country"
-                    className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                  />
-                  {errors.country && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {getErrorMessage(errors.country)}
-                    </p>
-                  )}
-                </div>
-                <div className="mb-4 w-68 lg:w-72 xl:w-96">
-                  <label className="block mb-1">Pincode</label>
-                  <input
-                    {...register("pincode")}
-                    placeholder="Enter Pincode"
-                    className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                  />
-                  {errors.pincode && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {getErrorMessage(errors.pincode)}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {step === 2 && (
-            <div>
-              <h1 className="text-2xl font-bold mb-6">Academic Details</h1>
-              <hr />
-              <hr />
+              <h1 className="text-2xl font-bold mb-6">Academic Details:</h1>
               <div className="flex flex-wrap gap-4 justify-between">
                 <div className="mb-4 w-68 lg:w-72 xl:w-96">
                   <label className="block mb-1">Course Type</label>
@@ -415,6 +329,8 @@ const ApplicationForm = () => {
                     </p>
                   )}
                 </div>
+              </div>
+              <div className="flex flex-wrap gap-4 justify-between">
                 <div className="mb-4 w-68 lg:w-72 xl:w-96">
                   <label className="block mb-1">Tenth Percentage</label>
                   <input
@@ -454,222 +370,22 @@ const ApplicationForm = () => {
                     </p>
                   )}
                 </div>
-                {/* SSC Board */}
-                <div className="mb-4 w-68 lg:w-72 xl:w-96">
-                  <label className="block mb-1">SSC Board</label>
-                  <input
-                    {...register("sscBoard")}
-                    placeholder="Enter SSC Board"
-                    className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                  />
-                  {errors.sscBoard && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {getErrorMessage(errors.sscBoard)}
-                    </p>
-                  )}
-                </div>
+              </div>
+
+              <div className="flex justify-end mt-4">
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
+                >
+                  Update
+                </button>
               </div>
             </div>
+          ) : (
+            <p>Loading application data...</p>
           )}
-
-          {step === 3 && (
-            <div>
-              <h1>Academic Details</h1>
-              <div className="flex flex-wrap gap-4 justify-between">
-                <div className="mb-4 w-72 lg:w-72 xl:w-96">
-                  <label className="block mb-1">Admission Year</label>
-                  <input
-                    {...register("admissionYear")}
-                    placeholder="Enter Admission Year"
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  {errors.admissionYear && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {getErrorMessage(errors.admissionYear)}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <h2 className="mt-4">Enter Semester Grades</h2>
-              <div className="flex flex-wrap gap-4 justify-between">
-                <div className="mb-4 w-72 lg:w-72 xl:w-96">
-                  <label className="block mb-1">Sem 1 Grade</label>
-                  <input
-                    {...register("sem1")}
-                    placeholder="Enter Sem 1 Grade"
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  {errors.sem1 && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {getErrorMessage(errors.sem1)}
-                    </p>
-                  )}
-                </div>
-                <div className="mb-4 w-72 lg:w-72 xl:w-96">
-                  <label className="block mb-1">Sem 2 Grade</label>
-                  <input
-                    {...register("sem2")}
-                    placeholder="Enter Sem 2 Grade"
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  {errors.sem2 && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {getErrorMessage(errors.sem2)}
-                    </p>
-                  )}
-                </div>
-                <div className="mb-4 w-72 lg:w-72 xl:w-96">
-                  <label className="block mb-1">Sem 3 Grade</label>
-                  <input
-                    {...register("sem3")}
-                    placeholder="Enter Sem 3 Grade"
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  {errors.sem3 && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {getErrorMessage(errors.sem3)}
-                    </p>
-                  )}
-                </div>
-                <div className="mb-4 w-72 lg:w-72 xl:w-96">
-                  <label className="block mb-1">Sem 4 Grade</label>
-                  <input
-                    {...register("sem4")}
-                    placeholder="Enter Sem 4 Grade"
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  {errors.sem4 && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {getErrorMessage(errors.sem4)}
-                    </p>
-                  )}
-                </div>
-                <div className="mb-4 w-72 lg:w-72 xl:w-96">
-                  <label className="block mb-1">Sem 5 Grade</label>
-                  <input
-                    {...register("sem5")}
-                    placeholder="Enter Sem 5 Grade"
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  {errors.sem5 && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {getErrorMessage(errors.sem5)}
-                    </p>
-                  )}
-                </div>
-                <div className="mb-4 w-72 lg:w-72 xl:w-96">
-                  <label className="block mb-1">Sem 6 Grade</label>
-                  <input
-                    {...register("sem6")}
-                    placeholder="Enter Sem 6 Grade"
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  {errors.sem6 && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {getErrorMessage(errors.sem6)}
-                    </p>
-                  )}
-                </div>
-                <div className="mb-4 w-72 lg:w-72 xl:w-96">
-                  <label className="block mb-1">Sem 7 Grade</label>
-                  <input
-                    {...register("sem7")}
-                    placeholder="Enter Sem 7 Grade"
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  {errors.sem7 && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {getErrorMessage(errors.sem7)}
-                    </p>
-                  )}
-                </div>
-                <div className="mb-4 w-72 lg:w-72 xl:w-96">
-                  <label className="block mb-1">Sem 8 Grade</label>
-                  <input
-                    {...register("sem8")}
-                    placeholder="Enter Sem 8 Grade"
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  {errors.sem8 && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {getErrorMessage(errors.sem8)}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <h1 className="text-2xl font-bold mb-6">
-                Upload Semester Marksheet
-              </h1>
-              <div className="flex flex-wrap gap-4 justify-between">
-                {Array.from({ length: 8 }, (_, index) => {
-                  const semNumber = index + 1;
-                  return (
-                    <div key={semNumber} className="mb-4 w-72 lg:w-72 xl:w-96">
-                      <label className="block mb-1">
-                        Upload Sem {semNumber} Marksheet
-                      </label>
-                      <input
-                        type="file"
-                        accept=".pdf" // Accept only PDF files
-                        onChange={(e) => handleFileChange(e, semNumber)}
-                        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="flex flex-wrap gap-4 justify-between">
-                <div className="mb-4 w-72 lg:w-72 xl:w-96">
-                  <label className="block mb-1">CET</label>
-                  <input
-                    {...register("cet")}
-                    placeholder="Enter CET Score"
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  {errors.cet && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {getErrorMessage(errors.cet)}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="flex justify-between mt-4">
-            {step > 0 && (
-              <button
-                type="button"
-                onClick={prevStep}
-                className="bg-gray-300 text-black p-2 rounded hover:bg-gray-400"
-              >
-                Previous
-              </button>
-            )}
-            {step < 3 ? (
-              <button
-                type="button"
-                onClick={nextStep}
-                className="bg-primary text-white p-2 rounded hover:bg-green-700"
-              >
-                Next
-              </button>
-            ) : (
-              <button
-                type="submit"
-                className="bg-primary text-white p-2 rounded hover:bg-green-700"
-              >
-                Submit
-              </button>
-            )}
-          </div>
         </form>
       </div>
     </div>
   );
-};
-
-export default ApplicationForm;
+}

@@ -26,8 +26,19 @@ export const signInWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
   try {
     const result = await signInWithPopup(auth, provider);
+
+    // Get the ID token (JWT) from the signed-in user
     const token = await result.user.getIdToken();
-    return token; // Return only the token
+
+    // Firebase typically handles the refresh token internally, but you can still access it like this:
+    // @ts-ignore
+    const refreshToken = result.user.stsTokenManager.refreshToken;
+
+    console.log("Access Token:", token);
+    console.log("Refresh Token:", refreshToken); // This is usually not necessary to log in production.
+
+    // You can return both tokens if needed:
+    return { token, refreshToken };
   } catch (error) {
     console.error("Error during Google sign-in:", error);
     throw new Error("Sign-in failed. Please try again.");
@@ -42,13 +53,15 @@ export const signUpAndVerifyEmail = async (email: string, password: string) => {
       email,
       password
     );
+    console.log("User signed up:", userCredential.user);
+
     const user = userCredential.user;
 
     // Send verification email
     await sendEmailVerification(user);
     console.log("Verification email sent to " + email);
     //@ts-ignore
-    return userCredential._tokenResponse?.idToken;
+    return userCredential.user.stsTokenManager.refreshToken;
   } catch (error) {
     console.error("Error signing up: ", error);
   }

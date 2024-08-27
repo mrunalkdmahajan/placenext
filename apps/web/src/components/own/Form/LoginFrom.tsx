@@ -30,25 +30,27 @@ const LoginForm = () => {
 
   const handleLoginWithGoogle = async () => {
     try {
-      const idToken = await signInWithGoogle();
+      const { token, refreshToken } = await signInWithGoogle();
+
+      localStorage.setItem("refreshToken", refreshToken);
 
       const signCheckResponse = await axios.get(
         `${BackendUrl}/api/student/is_first_signin`,
         {
           headers: {
-            Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
-      if (idToken) {
-        console.log("ID Token:", idToken);
+      if (token) {
+        console.log("ID Token:", token);
         const response = await axios.post(
           `${BackendUrl}/api/student/google_login`,
           {},
           {
             headers: {
-              Authorization: `Bearer ${idToken}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -80,10 +82,12 @@ const LoginForm = () => {
   const onSubmit = async (data: any) => {
     localStorage.setItem("email", data.email);
     localStorage.setItem("password", data.password);
-    await signUpAndVerifyEmail(data.email, data.password).then((idToken) => {
-      localStorage.setItem("token", idToken);
-      router.push("/student/verifyemail");
-    });
+    await signUpAndVerifyEmail(data.email, data.password).then(
+      (refreshToken) => {
+        localStorage.setItem("token", refreshToken);
+        router.push("/student/verifyemail");
+      }
+    );
   };
 
   const getErrorMessage = (error: any) => {
