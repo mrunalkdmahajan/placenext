@@ -38,6 +38,8 @@ export const isFirstSignIn = async (req: Request, res: Response) => {
 
 export const applicationFrom = async (req: Request, res: Response) => {
   try {
+    // @ts-ignore
+    const user = req.user;
     const {
       firstName,
       middleName,
@@ -198,7 +200,7 @@ export const applicationFrom = async (req: Request, res: Response) => {
       stud_year: year,
       stud_department: department,
       stud_college_id: college,
-      googleId: "",
+      googleId: user.uid,
       stud_info_id: savedStudentInfo._id,
     });
 
