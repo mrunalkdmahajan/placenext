@@ -246,47 +246,47 @@ const ApplicationForm = () => {
                     </p>
                   )}
                 </div>
-                <div className="flex flex-wrap gap-4 justify-between">
-                  <div className="mb-4 w-68 lg:w-72 xl:w-96">
-                    <label className="block mb-1">Phone Number</label>
-                    <input
-                      {...register("phoneNumber")}
-                      placeholder="Enter Phone Number"
-                      className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                    />
-                    {errors.phoneNumber && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {getErrorMessage(errors.phoneNumber)}
-                      </p>
-                    )}
-                  </div>
-                  <div className="mb-4 w-68 lg:w-72 xl:w-96">
-                    <label className="block mb-1">Alternate Phone No</label>
-                    <input
-                      {...register("alternatePhoneNo")}
-                      placeholder="Enter Alternate Phone No"
-                      className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                    />
-                    {errors.alternatePhoneNo && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {getErrorMessage(errors.alternatePhoneNo)}
-                      </p>
-                    )}
-                  </div>
-                  {/* PAN Number */}
-                  <div className="mb-4 w-68 lg:w-72 xl:w-96">
-                    <label className="block mb-1">PAN Number</label>
-                    <input
-                      {...register("panNumber")}
-                      placeholder="Enter PAN Number"
-                      className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                    />
-                    {errors.panNumber && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {getErrorMessage(errors.panNumber)}
-                      </p>
-                    )}
-                  </div>
+              </div>
+              <div className="flex flex-wrap gap-4 justify-between">
+                <div className="mb-4 w-68 lg:w-72 xl:w-96">
+                  <label className="block mb-1">Phone Number</label>
+                  <input
+                    {...register("phoneNumber")}
+                    placeholder="Enter Phone Number"
+                    className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  />
+                  {errors.phoneNumber && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {getErrorMessage(errors.phoneNumber)}
+                    </p>
+                  )}
+                </div>
+                <div className="mb-4 w-68 lg:w-72 xl:w-96">
+                  <label className="block mb-1">Alternate Phone No</label>
+                  <input
+                    {...register("alternatePhoneNo")}
+                    placeholder="Enter Alternate Phone No"
+                    className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  />
+                  {errors.alternatePhoneNo && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {getErrorMessage(errors.alternatePhoneNo)}
+                    </p>
+                  )}
+                </div>
+                {/* PAN Number */}
+                <div className="mb-4 w-68 lg:w-72 xl:w-96">
+                  <label className="block mb-1">PAN Number</label>
+                  <input
+                    {...register("panNumber")}
+                    placeholder="Enter PAN Number"
+                    className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  />
+                  {errors.panNumber && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {getErrorMessage(errors.panNumber)}
+                    </p>
+                  )}
                 </div>
               </div>
 
