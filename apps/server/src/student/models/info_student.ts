@@ -4,14 +4,22 @@ export interface IStudentInfo extends Document {
   _id?: string;
   stud_resume: string;
   stud_addmission_year: number;
-  stud_sem1: string;
-  stud_sem2: string;
-  stud_sem3: string;
-  stud_sem4: string;
-  stud_sem5: string;
-  stud_sem6: string;
-  stud_sem7: string;
-  stud_sem8: string;
+  stud_sem1_grade: string;
+  stud_sem2_grade: string;
+  stud_sem3_grade: string;
+  stud_sem4_grade: string;
+  stud_sem5_grade: string;
+  stud_sem6_grade: string;
+  stud_sem7_grade: string;
+  stud_sem8_grade: string;
+  stud_sem1_marksheet: string;
+  stud_sem2_marksheet: string;
+  stud_sem3_marksheet: string;
+  stud_sem4_marksheet: string;
+  stud_sem5_marksheet: string;
+  stud_sem6_marksheet: string;
+  stud_sem7_marksheet: string;
+  stud_sem8_marksheet: string;
   stud_cet: string;
   stud_jee: string;
   stud_hsc: string;
@@ -36,8 +44,8 @@ export interface IStudentInfo extends Document {
   stud_placement_company: string;
   stud_placement_date: Date;
   student_skills: string[];
-  stud_linkedIn: string;
-  stud_github: string;
+  stud_linkedIn?: string; // Optional
+  stud_github?: string; // Optional
 }
 
 const Student_InfoSchema = new Schema<IStudentInfo>({
@@ -49,35 +57,67 @@ const Student_InfoSchema = new Schema<IStudentInfo>({
     type: Number,
     required: true,
   },
-  stud_sem1: {
+  stud_sem1_grade: {
     type: String,
     required: true,
   },
-  stud_sem2: {
+  stud_sem2_grade: {
     type: String,
     required: true,
   },
-  stud_sem3: {
+  stud_sem3_grade: {
     type: String,
     required: true,
   },
-  stud_sem4: {
+  stud_sem4_grade: {
     type: String,
     required: true,
   },
-  stud_sem5: {
+  stud_sem5_grade: {
     type: String,
     required: true,
   },
-  stud_sem6: {
+  stud_sem6_grade: {
     type: String,
     required: true,
   },
-  stud_sem7: {
+  stud_sem7_grade: {
     type: String,
     required: true,
   },
-  stud_sem8: {
+  stud_sem8_grade: {
+    type: String,
+    required: true,
+  },
+  stud_sem1_marksheet: {
+    type: String,
+    required: true,
+  },
+  stud_sem2_marksheet: {
+    type: String,
+    required: true,
+  },
+  stud_sem3_marksheet: {
+    type: String,
+    required: true,
+  },
+  stud_sem4_marksheet: {
+    type: String,
+    required: true,
+  },
+  stud_sem5_marksheet: {
+    type: String,
+    required: true,
+  },
+  stud_sem6_marksheet: {
+    type: String,
+    required: true,
+  },
+  stud_sem7_marksheet: {
+    type: String,
+    required: true,
+  },
+  stud_sem8_marksheet: {
     type: String,
     required: true,
   },

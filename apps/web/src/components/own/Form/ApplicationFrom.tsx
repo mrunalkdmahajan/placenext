@@ -7,46 +7,60 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { StudentApplicationFormValidations } from "@/utils/validations/ApplicationFormValidations";
 
+interface UploadedDocuments {
+  sem1Marksheet?: File | null;
+  sem2Marksheet?: File | null;
+  sem3Marksheet?: File | null;
+  sem4Marksheet?: File | null;
+  sem5Marksheet?: File | null;
+  sem6Marksheet?: File | null;
+  sem7Marksheet?: File | null;
+  sem8Marksheet?: File | null;
+}
+
 const ApplicationForm = () => {
+  const [sem1Marksheet, setSem1Marksheet] = useState<File | null>(null);
+  const [sem2Marksheet, setSem2Marksheet] = useState<File | null>(null);
+  const [sem3Marksheet, setSem3Marksheet] = useState<File | null>(null);
+  const [sem4Marksheet, setSem4Marksheet] = useState<File | null>(null);
+  const [sem5Marksheet, setSem5Marksheet] = useState<File | null>(null);
+  const [sem6Marksheet, setSem6Marksheet] = useState<File | null>(null);
+  const [sem7Marksheet, setSem7Marksheet] = useState<File | null>(null);
+  const [sem8Marksheet, setSem8Marksheet] = useState<File | null>(null);
+
   const [step, setStep] = useState(0);
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(StudentApplicationFormValidations),
+    // resolver: zodResolver(StudentApplicationFormValidations),
   });
 
   const onSubmit = async (data: any) => {
-    console.log(data);
+    const formData = new FormData();
+    formData.append("sem1Marksheet", sem1Marksheet as File);
+    formData.append("sem2Marksheet", sem2Marksheet as File);
+    formData.append("sem3Marksheet", sem3Marksheet as File);
+    formData.append("sem4Marksheet", sem4Marksheet as File);
+    formData.append("sem5Marksheet", sem5Marksheet as File);
+    formData.append("sem6Marksheet", sem6Marksheet as File);
+    formData.append("sem7Marksheet", sem7Marksheet as File);
+    formData.append("sem8Marksheet", sem8Marksheet as File);
+
     try {
       const token = localStorage.getItem("token");
       const refreshToken = localStorage.getItem("refreshToken");
-      const formData = new FormData();
-
-      // Append regular form data
-      Object.keys(data).forEach((key) => {
-        formData.append(key, data[key]);
-      });
-
-      // Append file inputs
-      for (let i = 1; i <= 8; i++) {
-        const file = data[`sem${i}Marksheet`];
-        if (file) {
-          formData.append(`sem${i}Marksheet`, file);
-        }
-      }
-
+      console.log(formData, data);
       if (token) {
         const response = await axios.post(
           `${BackendUrl}/api/student/register/applicationform`,
-          formData,
+          { formData, ...data },
           {
             headers: {
               Authorization: `Bearer ${token}`,
               "x-refresh-token": refreshToken,
-              "Content-Type": "multipart/form-data", // Important for file uploads
+              "Content-Type": "multipart/form-data",
             },
           }
         );
@@ -62,13 +76,6 @@ const ApplicationForm = () => {
       return error.message;
     }
     return "Invalid value";
-  };
-
-  const handleFileChange = (e: any, fieldName: any) => {
-    const file = e.target.files[0];
-    if (file) {
-      setValue(fieldName, file); // Set the file to the form state
-    }
   };
 
   const nextStep = () => {
@@ -602,8 +609,18 @@ const ApplicationForm = () => {
               <h1 className="text-2xl font-bold mb-6">
                 Upload Semester Marksheet
               </h1>
+              {/* 
+              <label htmlFor="avatar">Avatar</label>
+              <input
+                id="avatar"
+                name="avatar"
+                onChange={(e) => setAvatar(e.target.files[0])}
+                className="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300"
+                type="file"
+              />
+              */}
               <div className="flex flex-wrap gap-4 justify-between">
-                {Array.from({ length: 8 }, (_, index) => {
+                {/* {Array.from({ length: 8 }, (_, index) => {
                   const semNumber = index + 1;
                   return (
                     <div key={semNumber} className="mb-4 w-72 lg:w-72 xl:w-96">
@@ -618,9 +635,20 @@ const ApplicationForm = () => {
                       />
                     </div>
                   );
-                })}
+                })} */}
+                <div className="mb-4 w-72 lg:w-72 xl:w-96">
+                  <label className="block mb-1">Sem 1 Marksheet</label>
+                  <input
+                    type="file"
+                    accept=".pdf" // Accept only PDF files
+                    //@ts-ignore
+                    value={sem1Marksheet}
+                    //@ts-ignore
+                    onChange={(e) => setSem1Marksheet(e.target.files[0])}
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
               </div>
-
               <div className="flex flex-wrap gap-4 justify-between">
                 <div className="mb-4 w-72 lg:w-72 xl:w-96">
                   <label className="block mb-1">CET</label>
