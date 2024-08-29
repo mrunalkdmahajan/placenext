@@ -31,7 +31,7 @@ const LoginForm = () => {
   const handleLoginWithGoogle = async () => {
     try {
       const { token, refreshToken } = await signInWithGoogle();
-
+      localStorage.setItem("token", token);
       localStorage.setItem("refreshToken", refreshToken);
 
       const signCheckResponse = await axios.get(
