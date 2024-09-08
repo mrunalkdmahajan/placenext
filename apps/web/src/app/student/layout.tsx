@@ -24,10 +24,10 @@ export default function RootLayout({
             {/* this will contain sidebar */}
             <Sidebar />
           </div>
-          <div className="w-full px-10 py-4 flex flex-col">
+          <div className="w-full flex flex-col">
             {/* this will contain navbar and main content */}
             <MainNav />
-            <MainDashboard />
+            <div className="mt-20">{children}</div>
           </div>
         </div>
       </body>

@@ -36,18 +36,16 @@ const drawerVariants = {
 };
 
 const options: Option[] = [
-  { name: "Overview", path: "/dashboard" },
-  { name: "Applicatioins", path: "/appointments" },
+  { name: "Overview", path: "/student/dashboard" },
+  { name: "Applications", path: "/jobs" },
   { name: "Messages", path: "/messages" },
   { name: "Profile", path: "/doctors" },
   { name: "Settings", path: "/settings" },
 ];
 
+// const dashSidebarOptions =
 
-// const dashSidebarOptions = 
-
-// const tpodashSidebarOptions = 
-
+// const tpodashSidebarOptions =
 
 const OptionsIcon = [
   <ImportContactsTwoToneIcon key="import-contacts" />,

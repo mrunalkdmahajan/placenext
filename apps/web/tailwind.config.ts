@@ -28,6 +28,12 @@ const config = {
         primary_background: "#EDEDFF",
         secondary_background: "#FFFFFF",
         secondary_text: "#202224",
+        third_back: "#CCF0EB",
+        third_text: "#00B69B",
+        four_back: "#FCD7D4",
+        four_text: "#EF3826",
+        five_back: "#E0D4FC",
+        five_text: "#6226EF",
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",

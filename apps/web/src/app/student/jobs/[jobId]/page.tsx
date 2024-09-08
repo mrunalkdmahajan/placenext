@@ -1,5 +1,7 @@
 "use client";
 
+import ApplicationCard from "@/components/own/Dashboard/ApplicationCard";
+import { sampleJob } from "@/components/own/Dashboard/ApplicationCards";
 import React from "react";
 
 // Dummy profile insights
@@ -90,48 +92,55 @@ Experience:
 
 const JobDetails = () => {
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Profile Insights</h1>
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold">Certifications</h2>
-        <p>{profileInsights.certifications}</p>
-      </div>
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold">Skills</h2>
-        <ul className="list-disc list-inside">
-          {profileInsights.skills.map((skill, index) => (
-            <li key={index}>{skill}</li>
-          ))}
-        </ul>
-      </div>
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold">Education</h2>
-        <p>{profileInsights.education}</p>
-      </div>
-      <h1 className="text-2xl font-bold mb-4">Job Details</h1>
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold">Pay</h2>
-        <p>{jobData.pay}</p>
-      </div>
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold">Job Type</h2>
-        <p>{jobData.jobType}</p>
-      </div>
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold">Shift and Schedule</h2>
-        <p>{jobData.shiftAndSchedule}</p>
-      </div>
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold">Location</h2>
-        <p>{jobData.location}</p>
-      </div>
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold">Benefits</h2>
-        <ul className="list-disc list-inside">
-          {jobData.benefits.map((benefit, index) => (
-            <li key={index}>{benefit}</li>
-          ))}
-        </ul>
+    <div className="p-6 max-w-screen mx-auto bg-primary_background">
+      <div className="flex flex-row justify-between">
+        <div>
+          <h1 className="text-2xl font-bold mb-4">Profile Insights</h1>
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold">Certifications</h2>
+            <p>{profileInsights.certifications}</p>
+          </div>
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold">Skills</h2>
+            <ul className="list-disc list-inside">
+              {profileInsights.skills.map((skill, index) => (
+                <li key={index}>{skill}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold">Education</h2>
+            <p>{profileInsights.education}</p>
+          </div>
+          <h1 className="text-2xl font-bold mb-4">Job Details</h1>
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold">Pay</h2>
+            <p>{jobData.pay}</p>
+          </div>
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold">Job Type</h2>
+            <p>{jobData.jobType}</p>
+          </div>
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold">Shift and Schedule</h2>
+            <p>{jobData.shiftAndSchedule}</p>
+          </div>
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold">Location</h2>
+            <p>{jobData.location}</p>
+          </div>
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold">Benefits</h2>
+            <ul className="list-disc list-inside">
+              {jobData.benefits.map((benefit, index) => (
+                <li key={index}>{benefit}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div>
+          <ApplicationCard job={sampleJob} />
+        </div>
       </div>
       <div className="mb-6">
         <h2 className="text-xl font-semibold">Description</h2>

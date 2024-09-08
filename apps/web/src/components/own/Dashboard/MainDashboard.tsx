@@ -1,4 +1,6 @@
 import Sidebar from "../Sidebar";
+import JobList from "./ApplicationCard";
+import ApplicationCards from "./ApplicationCards";
 
 const StudentInfo = [
   {
@@ -12,5 +14,9 @@ const StudentInfo = [
 ];
 
 export default function MainDashboard() {
-  return <div className=""></div>;
+  return (
+    <div className=" bg-primary_background">
+      <ApplicationCards />
+    </div>
+  );
 }
