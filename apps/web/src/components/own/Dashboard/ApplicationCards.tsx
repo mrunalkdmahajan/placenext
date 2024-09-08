@@ -8,14 +8,12 @@ export interface JobPosting {
   description: string;
   location: string;
   postedDate: string;
-
-  deadline: string; // Application deadline
-  salary: string; // Salary information
-  workingHours: string; // Working hours
-  basicRequirements: string[]; // List of basic job requirements
+  deadline: string;
+  salary: string;
+  workingHours: string;
+  basicRequirements: string[];
 }
 
-// Sample job data with additional fields
 export const sampleJob: JobPosting = {
   id: "1",
   title: "Software Engineer",
@@ -24,20 +22,17 @@ export const sampleJob: JobPosting = {
     "Join our dynamic team to develop innovative software solutions for global clients. Knowledge of React and Node.js required.",
   location: "San Francisco, CA",
   postedDate: "2024-09-05",
-  //   image:
-  //     "https://via.placeholder.com/150", // Sample image URL (replace with actual image URL)
-  deadline: "2024-09-30", // Deadline
-  salary: "$100,000 - $120,000 per year", // Salary
-  workingHours: "9 AM - 5 PM, Monday to Friday", // Working hours
+  deadline: "2024-09-30",
+  salary: "$100,000 - $120,000 per year",
+  workingHours: "9 AM - 5 PM, Monday to Friday",
   basicRequirements: [
     "Bachelor's degree in Computer Science or related field",
     "3+ years of experience in software development",
     "Proficiency in React, Node.js, and RESTful APIs",
-  ], // Basic requirements
+  ],
 };
 
 const ApplicationCards = () => {
-  // You can now use the single data sample for the ApplicationCard
   return (
     <div className="w-full mx-auto py-2">
       <h2 className="text-2xl font-bold mb-6">Job Postings</h2>
