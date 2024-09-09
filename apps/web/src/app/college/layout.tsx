@@ -1,4 +1,5 @@
 import MainDashboard from "@/components/own/Dashboard/MainDashboard";
+import FacultySidebar from "@/components/own/FacultySidebar";
 import MainNav from "@/components/own/Nav/MainNav";
 
 import StudentSidebar from "@/components/own/StudentSidebar";
@@ -23,7 +24,7 @@ export default function RootLayout({
         <div className="flex flex-row w-full h-full">
           <div>
             {/* this will contain sidebar */}
-            <StudentSidebar />
+            <FacultySidebar />
           </div>
           <div className="w-full h-full flex flex-col bg-primary_background">
             {/* this will contain navbar and main content */}

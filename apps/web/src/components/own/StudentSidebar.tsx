@@ -55,7 +55,7 @@ const OptionsIcon = [
   <CiSettings key="settings" />,
 ];
 
-export default function Sidebar({ isIcon }: any) {
+export default function StudentSidebar({ isIcon }: any) {
   const router = useRouter();
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
   const [open, setOpen] = useState(isLargeScreen);

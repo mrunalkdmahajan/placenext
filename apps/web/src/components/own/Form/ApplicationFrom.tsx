@@ -33,14 +33,14 @@ const ApplicationForm = () => {
     twelfthPercentage: "",
     sscBoard: "",
     cet: "",
-    sem1Grade: "",
-    sem2Grade: "",
-    sem3Grade: "",
-    sem4Grade: "",
-    sem5Grade: "",
-    sem6Grade: "",
-    sem7Grade: "",
-    sem8Grade: "",
+    sem1CGPI: "",
+    sem2CGPI: "",
+    sem3CGPI: "",
+    sem4CGPI: "",
+    sem5CGPI: "",
+    sem6CGPI: "",
+    sem7CGPI: "",
+    sem8CGPI: "",
   });
 
   const [documents, setDocuments] = useState({
@@ -92,7 +92,7 @@ const ApplicationForm = () => {
       if (file) data.append(key, file);
     });
 
-    // Debug FormData contents
+    //@ts-ignore
     for (const pair of data.entries()) {
       console.log(`${pair[0]}: ${pair[1]}`);
     }
@@ -153,6 +153,7 @@ const ApplicationForm = () => {
                     <input
                       type={field === "dateOfBirth" ? "date" : "text"}
                       name={field}
+                      //@ts-ignore
                       value={formData[field]}
                       onChange={handleChange}
                       placeholder={`Enter ${field.replace(/([A-Z])/g, " $1")}`}
@@ -194,6 +195,7 @@ const ApplicationForm = () => {
                     <input
                       type="text"
                       name={field}
+                      //@ts-ignore
                       value={formData[field]}
                       onChange={handleChange}
                       placeholder={`Enter ${field.replace(/([A-Z])/g, " $1")}`}
@@ -232,6 +234,7 @@ const ApplicationForm = () => {
                     <input
                       type="text"
                       name={field}
+                      //@ts-ignore
                       value={formData[field]}
                       onChange={handleChange}
                       placeholder={`Enter ${field.replace(/([A-Z])/g, " $1")}`}
@@ -250,17 +253,17 @@ const ApplicationForm = () => {
 
           {step === 3 && (
             <div>
-              <h1>Fill your Grade</h1>
+              <h1>Fill your CGPI</h1>
               <div className="flex flex-wrap gap-4 justify-between">
                 {[
-                  "sem1Grade",
-                  "sem2Grade",
-                  "sem3Grade",
-                  "sem4Grade",
-                  "sem5Grade",
-                  "sem6Grade",
-                  "sem7Grade",
-                  "sem8Grade",
+                  "sem1CGPI",
+                  "sem2CGPI",
+                  "sem3CGPI",
+                  "sem4CGPI",
+                  "sem5CGPI",
+                  "sem6CGPI",
+                  "sem7CGPI",
+                  "sem8CGPI",
                 ].map((key) => (
                   <div key={key} className="mb-4 w-72 lg:w-72 xl:w-96">
                     <label className="block mb-1">
@@ -271,6 +274,7 @@ const ApplicationForm = () => {
                     <input
                       type="text"
                       name={key}
+                      //@ts-ignore
                       value={formData[key]}
                       onChange={handleChange}
                       placeholder={`Enter ${key.replace(/([A-Z])/g, " $1")}`}
