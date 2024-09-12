@@ -46,7 +46,6 @@ const CollegeSchema = new Schema<ICollege>({
   },
   coll_departments: {
     type: [String],
-    required: true,
   },
   coll_no_of_stud: {
     type: Number,

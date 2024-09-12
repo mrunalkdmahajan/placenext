@@ -44,8 +44,8 @@ export interface IStudentInfo extends Document {
   stud_placement_company: string;
   stud_placement_date: Date;
   student_skills: string[];
-  stud_linkedIn?: string; // Optional
-  stud_github?: string; // Optional
+  stud_linkedIn?: string;
+  stud_github?: string;
 }
 
 const Student_InfoSchema = new Schema<IStudentInfo>({
