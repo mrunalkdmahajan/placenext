@@ -2,8 +2,7 @@ import { Request, Response } from "express";
 import admin from "../../config/firebaseAdmin";
 import Student from "../models/student";
 import StudentInfo from "../models/info_student";
-import { uploadOnCloudinary } from "../../config/Cloudinary";
-
+import { uploadToGoogleDrive } from "../../config/Google";
 const requiredFields = [
   "firstName",
   "middleName",
@@ -38,8 +37,7 @@ const requiredFields = [
 const uploadMarksheet = async (file: any, label: string) => {
   if (file && Array.isArray(file) && file.length > 0) {
     const filePath = file[0].path;
-    console.log(`${label} Path:`, filePath);
-    return await uploadOnCloudinary(filePath);
+    return await uploadToGoogleDrive(filePath);
   }
   return null;
 };
@@ -123,7 +121,6 @@ export const applicationFrom = async (req: Request, res: Response) => {
       sem7sheet,
       sem8sheet,
     ] = await Promise.all(marksheetPromises);
-    console.log(sem1sheet);
 
     const studentInfo = new StudentInfo({
       // stud_resume: fields.resume, // this is remaining
@@ -136,14 +133,14 @@ export const applicationFrom = async (req: Request, res: Response) => {
       stud_sem6_grade: fields.sem6CGPI,
       stud_sem7_grade: fields.sem7CGPI,
       stud_sem8_grade: fields.sem8CGPI,
-      stud_sem1_marksheet: sem1sheet?.url,
-      stud_sem2_marksheet: sem2sheet?.url,
-      stud_sem3_marksheet: sem3sheet?.url,
-      stud_sem4_marksheet: sem4sheet?.url,
-      stud_sem5_marksheet: sem5sheet?.url,
-      stud_sem6_marksheet: sem6sheet?.url,
-      stud_sem7_marksheet: sem7sheet?.url,
-      stud_sem8_marksheet: sem8sheet?.url,
+      stud_sem1_marksheet: sem1sheet,
+      stud_sem2_marksheet: sem2sheet,
+      stud_sem3_marksheet: sem3sheet,
+      stud_sem4_marksheet: sem4sheet,
+      stud_sem5_marksheet: sem5sheet,
+      stud_sem6_marksheet: sem6sheet,
+      stud_sem7_marksheet: sem7sheet,
+      stud_sem8_marksheet: sem8sheet,
       stud_cet: fields.cet,
       // stud_jee: fields.jee, // this is remaining
       stud_hsc: fields.twelfthPercentage,
