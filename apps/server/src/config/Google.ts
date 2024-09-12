@@ -44,6 +44,7 @@ export const uploadToGoogleDrive = async (file: any) => {
         type: "anyone",
       },
     });
+    fs.unlinkSync(file);
     //@ts-ignore
     return response.data.webViewLink;
   } catch (error) {

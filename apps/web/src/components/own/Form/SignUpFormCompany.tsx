@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { IoLogoApple } from "react-icons/io5";
 import { FcGoogle } from "react-icons/fc";
 
-const SignUpForm = () => {
+const SignUpFormCompany = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
 
@@ -145,4 +145,4 @@ const SignUpForm = () => {
   );
 };
 
-export default SignUpForm;
+export default SignUpFormCompany;

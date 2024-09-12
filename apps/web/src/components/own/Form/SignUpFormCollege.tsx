@@ -1,22 +1,24 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginValidation } from "@/utils/validations/LoginValidatons";
+import { SignValidation } from "@/utils/validations/SignValidation";
+import { useRouter } from "next/navigation";
+
 import axios from "axios";
+
 import { BackendUrl } from "@/utils/constants";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { FcGoogle } from "react-icons/fc";
-import { IoLogoApple } from "react-icons/io5";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-
 import firebase, {
   signInWithGoogle,
   signUpAndVerifyEmail,
 } from "@/config/firebase-config";
 
-const LoginForm = () => {
+import { useEffect, useState } from "react";
+import { IoLogoApple } from "react-icons/io5";
+import { FcGoogle } from "react-icons/fc";
+
+const SignUpFormCollege = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
 
@@ -36,7 +38,7 @@ const LoginForm = () => {
       localStorage.setItem("refreshToken", refreshToken);
 
       const signCheckResponse = await axios.get(
-        `${BackendUrl}/api/student/is_first_signin`,
+        `${BackendUrl}/api/college/is_first_signin`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -47,7 +49,7 @@ const LoginForm = () => {
       if (token) {
         console.log("ID Token:", token);
         const response = await axios.post(
-          `${BackendUrl}/api/student/google_login`,
+          `${BackendUrl}/api/college/google_login`,
           {},
           {
             headers: {
@@ -58,13 +60,13 @@ const LoginForm = () => {
 
         if (signCheckResponse.data.success === true) {
           if (signCheckResponse.data.isFirstSignIn) {
-            router.push("/student/applicationform");
+            router.push("/college/applicationform");
           }
         }
 
         if (response.data.success === true) {
           console.log("User logged in successfully");
-          router.push("/student/dashboard");
+          router.push("/college/dashboard");
         }
       }
     } catch (error) {
@@ -77,25 +79,25 @@ const LoginForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(LoginValidation),
+    resolver: zodResolver(SignValidation),
   });
 
   const onSubmit = async (data: any) => {
-    localStorage.setItem("email", data.email);
-    localStorage.setItem("password", data.password);
-    await signUpAndVerifyEmail(data.email, data.password).then(
-      (refreshToken) => {
-        localStorage.setItem("token", refreshToken);
-        router.push("/student/verifyemail");
-      }
-    );
+    try {
+      const res = await axios.post(
+        `${BackendUrl}/api/college/is_first_signin_with_email`,
+        data
+      );
+
+      // @ts-ignore
+      if (res.data.success) navigator("/college/verifyemail");
+    } catch (error: any) {
+      console.error("Signup error:", error.message);
+    }
   };
 
   const getErrorMessage = (error: any) => {
-    if (typeof error === "string") {
-      return error;
-    }
-    if (error && error.message) {
+    if (error?.message) {
       return error.message;
     }
     return "Invalid value";
@@ -103,7 +105,7 @@ const LoginForm = () => {
 
   return (
     <div className="max-w-md mx-auto mt-12 p-2 rounded-lg bg-transparent md:p-5 flex flex-col gap-4">
-      <h2 className="text-2xl font-bold mb-6">Login</h2>
+      <h2 className="text-2xl font-bold mb-6">Faculty Signup</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
           <input
@@ -147,14 +149,19 @@ const LoginForm = () => {
           Login with Google
         </button>
       </div>
+
       <p>
         Don&apos;t have an Account?
         <Link className="text-[#56B280] px-2" href="/signup">
           Sign Up
         </Link>
       </p>
+      <p className="text-[12px]">
+        <span className="text-red-500 font-bold">Note:</span> that the email you
+        are using to register college will be the admin email.
+      </p>
     </div>
   );
 };
 
-export default LoginForm;
+export default SignUpFormCollege;
