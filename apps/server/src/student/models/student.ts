@@ -46,7 +46,6 @@ const IStudentSchema = new Schema<IStudent>({
   },
   stud_year: {
     type: Number,
-    required: true,
   },
   stud_department: {
     type: String,
@@ -55,7 +54,6 @@ const IStudentSchema = new Schema<IStudent>({
   stud_college_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "College",
-    required: true,
   },
   googleId: {
     type: String,

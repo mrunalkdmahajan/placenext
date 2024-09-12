@@ -51,7 +51,6 @@ export interface IStudentInfo extends Document {
 const Student_InfoSchema = new Schema<IStudentInfo>({
   stud_resume: {
     type: String,
-    required: true,
   },
   stud_addmission_year: {
     type: Number,
@@ -127,35 +126,27 @@ const Student_InfoSchema = new Schema<IStudentInfo>({
   },
   stud_jee: {
     type: String,
-    required: true,
   },
   stud_hsc: {
     type: String,
-    required: true,
   },
   stud_hsc_board: {
     type: String,
-    required: true,
   },
   stud_ssc: {
     type: String,
-    required: true,
   },
   stud_ssc_board: {
     type: String,
-    required: true,
   },
   stud_diploma: {
     type: String,
-    required: true,
   },
   stud_diploma_board: {
     type: String,
-    required: true,
   },
   stud_diploma_stream: {
     type: String,
-    required: true,
   },
   stud_alternate_email: {
     type: String,
@@ -167,15 +158,12 @@ const Student_InfoSchema = new Schema<IStudentInfo>({
   },
   stud_capAllotment: {
     type: String,
-    required: true,
   },
   stud_photoWithSignature: {
     type: String,
-    required: true,
   },
   stud_gapCertificate: {
     type: String,
-    required: true,
   },
   stud_aadhar: {
     type: String,
@@ -191,31 +179,24 @@ const Student_InfoSchema = new Schema<IStudentInfo>({
   },
   no_of_live_backlogs: {
     type: Number,
-    required: true,
   },
   no_of_dead_backlogs: {
     type: Number,
-    required: true,
   },
   stud_placement_status: {
     type: Boolean,
-    required: true,
   },
   stud_placement_package: {
     type: Number,
-    required: true,
   },
   stud_placement_company: {
     type: String,
-    required: true,
   },
   stud_placement_date: {
     type: Date,
-    required: true,
   },
   student_skills: {
     type: [String],
-    required: true,
   },
   stud_linkedIn: {
     type: String,

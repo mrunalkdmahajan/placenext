@@ -123,7 +123,7 @@ const ApplicationForm = () => {
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
   return (
-    <div className="w-full mx-auto mt-12 p-5 rounded-lg bg-transparent flex-col gap-4">
+    <div className="w-full mx-auto  p-5 rounded-lg bg-transparent flex-col gap-4">
       <h2 className="text-2xl font-bold mb-6 text-center">
         Student Detail Form
       </h2>
