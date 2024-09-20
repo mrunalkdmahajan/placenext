@@ -19,20 +19,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <div className="flex flex-row w-full h-full">
-          <div>
-            {/* this will contain sidebar */}
-            <FacultySidebar />
-          </div>
-          <div className="w-full h-full flex flex-col bg-primary_background">
-            {/* this will contain navbar and main content */}
-            <MainNav />
-            <div className="mt-20">{children}</div>
-          </div>
-        </div>
-      </body>
-    </html>
+    <div className="flex flex-row w-full h-full">
+      <div>
+        {/* this will contain sidebar */}
+        <FacultySidebar />
+      </div>
+      <div className="w-full h-full flex flex-col bg-primary_background">
+        {/* this will contain navbar and main content */}
+        <MainNav />
+        <div className="mt-20">{children}</div>
+      </div>
+    </div>
   );
 }
