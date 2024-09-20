@@ -10,6 +10,7 @@ import {
   ListItemText,
   IconButton,
   useMediaQuery,
+  Button,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import ImportContactsTwoToneIcon from "@mui/icons-material/ImportContactsTwoTone";
@@ -17,13 +18,13 @@ import { BiCategoryAlt } from "react-icons/bi";
 import { FaUserDoctor } from "react-icons/fa6";
 import { BiMessageSquareMinus } from "react-icons/bi";
 import { CiSettings } from "react-icons/ci";
-
 import { motion } from "framer-motion";
 import MenuIcon from "@mui/icons-material/Menu";
-
 import { useRouter } from "next/navigation";
 import HelpCard from "./HelpCard";
 import LogoText from "./LogoText";
+import { getAuth, signOut } from "firebase/auth";
+import { logout } from "@/config/firebase-config";
 
 interface Option {
   name: string;
@@ -42,10 +43,6 @@ const options: Option[] = [
   { name: "Profile", path: "/doctors" },
   { name: "Settings", path: "/settings" },
 ];
-
-// const dashSidebarOptions =
-
-// const tpodashSidebarOptions =
 
 const OptionsIcon = [
   <ImportContactsTwoToneIcon key="import-contacts" />,
@@ -70,6 +67,17 @@ export default function StudentSidebar({ isIcon }: any) {
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
+  };
+
+  const handleLogout = async () => {
+    const auth = getAuth();
+    try {
+      logout();
+      console.log("User signed out");
+      router.push("/authentication/studentLogin");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   const DrawerList = (
@@ -98,6 +106,7 @@ export default function StudentSidebar({ isIcon }: any) {
         <div className="p-2 h-full flex items-center justify-center">
           <HelpCard />
         </div>
+        <Button onClick={handleLogout}>Logout</Button>
       </div>
     </Box>
   );

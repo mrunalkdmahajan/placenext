@@ -12,9 +12,9 @@ interface IStudent extends Document {
   stud_course: string;
   stud_year: number;
   stud_department: string;
-  stud_college_id: ICollege["_id"];
+  stud_college_id: mongoose.Types.ObjectId;
   googleId: string;
-  stud_info_id: IStudentInfo["_id"];
+  stud_info_id: mongoose.Types.ObjectId;
 }
 
 const IStudentSchema = new Schema<IStudent>({
@@ -54,6 +54,7 @@ const IStudentSchema = new Schema<IStudent>({
   stud_college_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "College",
+    required: true,
   },
   googleId: {
     type: String,
@@ -62,7 +63,7 @@ const IStudentSchema = new Schema<IStudent>({
   },
   stud_info_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "IStudentInfo",
+    ref: "StudentInfo",
     required: true,
   },
 });

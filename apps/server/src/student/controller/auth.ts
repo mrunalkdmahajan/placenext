@@ -3,6 +3,7 @@ import admin from "../../config/firebaseAdmin";
 import Student from "../models/student";
 import StudentInfo from "../models/info_student";
 import { uploadToGoogleDrive } from "../../config/Google";
+import College from "../../college/models/college";
 const requiredFields = [
   "firstName",
   "middleName",
@@ -188,9 +189,38 @@ export const applicationFrom = async (req: Request, res: Response) => {
     const savedStudent = await student.save();
     console.log("Student filled application form", savedStudent.id);
 
-    return res.status(200).json({ success: true, student: savedStudent });
+    console.log(
+      "Application From Submitted Successfully by Student",
+      savedStudent.id
+    );
+
+    return res.status(200).json({
+      success: true,
+      student: savedStudent,
+      message: "Application From Submitted Successfully",
+    });
   } catch (error: any) {
     console.log("Error in applicationFrom", error.message);
     return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+export const getAllCollegeList = async (req: Request, res: Response) => {
+  try {
+    const colleges = await College.find({}, "coll_name");
+
+    const collegeList = colleges.map((college) => ({
+      id: college._id,
+      name: college.coll_name,
+    }));
+
+    return res.status(200).json({ success: true, colleges: collegeList });
+  } catch (error: any) {
+    console.error("Error in getAllCollegeList:", error.stack || error.message);
+
+    // Return a standardized error response
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
   }
 };

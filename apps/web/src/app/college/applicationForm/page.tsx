@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
@@ -23,26 +25,24 @@ export default function ApplicationForm() {
   };
 
   return (
-    // fields we are going to take are   coll_id string pk
-    //   coll_name string
-    //   coll_website url
-    //   coll_no_of_stud number
-    //   coll_location string
-    //   coll_contact_no string
-    //   coll_no_employ string
-    //   coll_address string
-    //   coll_affiliation string
-    //   coll_courses_offered string[]
-    //   coll_departments string[] fk
-    <div className="max-w-md mx-auto mt-12 p-2 rounded-lg bg-transparent md:p-5 flex flex-col gap-4">
-      <h2 className="text-2xl font-bold mb-6">Login</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
+    <div className="max-w-md mx-auto mt-12 p-6 rounded-lg shadow-lg bg-white">
+      <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">
+        College Application Form
+      </h2>
+
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="grid grid-cols-1 gap-6"
+      >
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">
+            College Name
+          </label>
           <input
             {...register("collegeName")}
-            placeholder="College Name"
+            placeholder="Enter College Name"
             type="text"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           {errors.collegeName && (
             <p className="text-red-500 text-sm mt-1">
@@ -50,12 +50,16 @@ export default function ApplicationForm() {
             </p>
           )}
         </div>
-        <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">
+            College Website URL
+          </label>
           <input
-            type="text"
+            type="url"
             {...register("collegeWebsite")}
-            placeholder="College Website URL"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
+            placeholder="https://example.com"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           {errors.collegeWebsite && (
             <p className="text-red-500 text-sm mt-1">
@@ -63,25 +67,52 @@ export default function ApplicationForm() {
             </p>
           )}
         </div>
-        <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
-          <input
-            type="number"
-            {...register("collegeNoOfStudents")}
-            placeholder="Number of Students"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
-          />
-          {errors.collegeNoOfStudents && (
-            <p className="text-red-500 text-sm mt-1">
-              {getErrorMessage(errors.collegeNoOfStudents)}
-            </p>
-          )}
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Number of Students
+            </label>
+            <input
+              type="number"
+              {...register("collegeNoOfStudents")}
+              placeholder="e.g., 2000"
+              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+            {errors.collegeNoOfStudents && (
+              <p className="text-red-500 text-sm mt-1">
+                {getErrorMessage(errors.collegeNoOfStudents)}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              College Contact No
+            </label>
+            <input
+              type="text"
+              {...register("collegeContactNo")}
+              placeholder="e.g., +1-123-456-7890"
+              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+            {errors.collegeContactNo && (
+              <p className="text-red-500 text-sm mt-1">
+                {getErrorMessage(errors.collegeContactNo)}
+              </p>
+            )}
+          </div>
         </div>
-        <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">
+            College Location
+          </label>
           <input
             type="text"
             {...register("collegeLocation")}
-            placeholder="College Location"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
+            placeholder="Enter Location"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           {errors.collegeLocation && (
             <p className="text-red-500 text-sm mt-1">
@@ -89,38 +120,16 @@ export default function ApplicationForm() {
             </p>
           )}
         </div>
-        <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
-          <input
-            type="text"
-            {...register("collegeContactNo")}
-            placeholder="College Contact Number"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
-          />
-          {errors.collegeContactNo && (
-            <p className="text-red-500 text-sm mt-1">
-              {getErrorMessage(errors.collegeContactNo)}
-            </p>
-          )}
-        </div>
-        <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
-          <input
-            type="text"
-            {...register("collegeNoOfEmployees")}
-            placeholder="Number of Employees"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
-          />
-          {errors.collegeNoOfEmployees && (
-            <p className="text-red-500 text-sm mt-1">
-              {getErrorMessage(errors.collegeNoOfEmployees)}
-            </p>
-          )}
-        </div>
-        <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">
+            College Address
+          </label>
           <input
             type="text"
             {...register("collegeAddress")}
-            placeholder="College Address"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
+            placeholder="Enter Full Address"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           {errors.collegeAddress && (
             <p className="text-red-500 text-sm mt-1">
@@ -128,12 +137,16 @@ export default function ApplicationForm() {
             </p>
           )}
         </div>
-        <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">
+            Affiliation
+          </label>
           <input
             type="text"
             {...register("collegeAffiliation")}
-            placeholder="College Affiliation"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
+            placeholder="e.g., AICTE, UGC"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           {errors.collegeAffiliation && (
             <p className="text-red-500 text-sm mt-1">
@@ -141,12 +154,16 @@ export default function ApplicationForm() {
             </p>
           )}
         </div>
-        <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">
+            Courses Offered
+          </label>
           <input
             type="text"
             {...register("collegeCoursesOffered")}
-            placeholder="College Courses Offered"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
+            placeholder="e.g., B.Tech, MBA"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           {errors.collegeCoursesOffered && (
             <p className="text-red-500 text-sm mt-1">
@@ -154,51 +171,16 @@ export default function ApplicationForm() {
             </p>
           )}
         </div>
-        <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">
+            Departments
+          </label>
           <input
             type="text"
             {...register("collegeDepartment")}
-            placeholder="College Department"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
-          />
-          {errors.collegeDepartment && (
-            <p className="text-red-500 text-sm mt-1">
-              {getErrorMessage(errors.collegeDepartment)}
-            </p>
-          )}
-        </div>
-        <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
-          <input
-            type="text"
-            {...register("collegeDepartment")}
-            placeholder="College Department"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
-          />
-          {errors.collegeDepartment && (
-            <p className="text-red-500 text-sm mt-1">
-              {getErrorMessage(errors.collegeDepartment)}
-            </p>
-          )}
-        </div>
-        <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
-          <input
-            type="text"
-            {...register("collegeDepartment")}
-            placeholder="College Department"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
-          />
-          {errors.collegeDepartment && (
-            <p className="text-red-500 text-sm mt-1">
-              {getErrorMessage(errors.collegeDepartment)}
-            </p>
-          )}
-        </div>
-        <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
-          <input
-            type="text"
-            {...register("collegeDepartment")}
-            placeholder="College Department"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
+            placeholder="e.g., Engineering, Arts"
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           {errors.collegeDepartment && (
             <p className="text-red-500 text-sm mt-1">
@@ -209,14 +191,15 @@ export default function ApplicationForm() {
 
         <button
           type="submit"
-          className="w-full bg-[#56B280] text-white p-2 rounded hover:bg-green-700"
+          className="w-full bg-green-500 text-white p-3 rounded-md hover:bg-green-600 transition duration-300"
         >
-          Submit
+          Submit Application
         </button>
       </form>
-      <p>
-        Don&apos;t have an Account?
-        <Link className="text-[#56B280] px-2" href="/signup">
+
+      <p className="mt-6 text-center text-gray-700">
+        Don&apos;t have an account?{" "}
+        <Link href="/signup" className="text-green-500 font-semibold">
           Sign Up
         </Link>
       </p>

@@ -1,7 +1,7 @@
 import { model, Schema, Document } from "mongoose";
 
 export interface IStudentInfo extends Document {
-  _id?: string;
+  _id: string;
   stud_resume: string;
   stud_addmission_year: number;
   stud_sem1_grade: string;

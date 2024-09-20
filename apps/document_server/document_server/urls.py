@@ -22,5 +22,5 @@ from .views import test,upload_pdf
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("test/",test),
-     path('upload_pdf', upload_pdf, name='upload_pdf'),
+    path('upload_pdf', upload_pdf, name='upload_pdf'),
 ]

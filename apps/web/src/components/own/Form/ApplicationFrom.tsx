@@ -3,8 +3,12 @@
 import axios from "axios";
 import { BackendUrl } from "@/utils/constants";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const ApplicationForm = () => {
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     firstName: "",
     middleName: "",
@@ -41,6 +45,7 @@ const ApplicationForm = () => {
     sem6CGPI: "",
     sem7CGPI: "",
     sem8CGPI: "",
+    college: "",
   });
 
   const [documents, setDocuments] = useState({
@@ -74,8 +79,6 @@ const ApplicationForm = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    // Add validation logic here
-    // Example: if (!formData.firstName) newErrors.firstName = "First name is required.";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -112,7 +115,10 @@ const ApplicationForm = () => {
             },
           }
         );
-        console.log(response.data);
+        if (response.data.success) {
+          toast.success(response.data.message);
+          router.push("/student/dashboard");
+        }
       }
     } catch (error: any) {
       console.error("Signup error:", error.message);
@@ -248,6 +254,7 @@ const ApplicationForm = () => {
                   </div>
                 ))}
               </div>
+              <div></div>
             </div>
           )}
 

@@ -11,6 +11,7 @@ export default function StudentList() {
       year: "3rd",
       cgpa: 8.5,
       placed: "Yes",
+      verified: "Yes",
     },
     {
       rollNo: 2,
@@ -19,6 +20,7 @@ export default function StudentList() {
       year: "4th",
       cgpa: 9.0,
       placed: "No",
+      verified: "No",
     },
     {
       rollNo: 3,
@@ -27,6 +29,7 @@ export default function StudentList() {
       year: "3rd",
       cgpa: 8.0,
       placed: "Yes",
+      verified: "Yes",
     },
     {
       rollNo: 4,
@@ -35,6 +38,7 @@ export default function StudentList() {
       year: "4th",
       cgpa: 8.5,
       placed: "No",
+      verified: "Yes",
     },
     {
       rollNo: 5,
@@ -43,6 +47,7 @@ export default function StudentList() {
       year: "3rd",
       cgpa: 9.0,
       placed: "Yes",
+      verified: "Yes",
     },
     {
       rollNo: 6,
@@ -51,6 +56,7 @@ export default function StudentList() {
       year: "4th",
       cgpa: 8.0,
       placed: "No",
+      verified: "Yes",
     },
   ]);
 
@@ -109,6 +115,7 @@ export default function StudentList() {
               <th className="px-4 py-2 border">Year</th>
               <th className="px-4 py-2 border">CGPA</th>
               <th className="px-4 py-2 border">Placed</th>
+              <th className="px-4 py-2 border">Verifed</th>
             </tr>
           </thead>
           <tbody>
@@ -119,12 +126,22 @@ export default function StudentList() {
                 <td className="px-4 py-2 border">{student.branch}</td>
                 <td className="px-4 py-2 border">{student.year}</td>
                 <td className="px-4 py-2 border">{student.cgpa}</td>
+
                 <td
                   className={`px-4 py-2 border ${
                     student.placed === "Yes" ? "text-green-600" : "text-red-600"
                   }`}
                 >
                   {student.placed}
+                </td>
+                <td
+                  className={`px-4 py-2 border ${
+                    student.verified === "Yes"
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {student.verified}
                 </td>
               </tr>
             ))}
