@@ -1,5 +1,12 @@
 "use client";
 
+import { useParams } from "next/navigation";
+import { useEffect } from "react";
+
 export default function StudentById() {
-  return <div></div>;
+  const { student_Id } = useParams();
+  useEffect(() => {
+    // const fetchStudent = async () => {
+  }, []);
+  return <div>{student_Id}</div>;
 }

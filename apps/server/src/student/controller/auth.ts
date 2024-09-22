@@ -32,6 +32,7 @@ const requiredFields = [
   "skills",
   "linkedIn",
   "github",
+  "collegeId",
 ];
 
 // Helper function to upload file and handle errors
@@ -181,7 +182,7 @@ export const applicationFrom = async (req: Request, res: Response) => {
       stud_course: fields.courseType,
       // stud_year: fields.year, // this is remaining
       stud_department: fields.departmentName,
-      // stud_college_id: fields.college, // this is remaining
+      stud_college_id: fields.college,
       googleId: user.uid,
       stud_info_id: savedStudentInfo._id,
     });

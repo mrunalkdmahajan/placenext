@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import College from "../models/college";
+import Student from "../../student/models/student";
+import StudentInfo from "../../student/models/info_student";
 
 export const isFirstSignIn = async (req: Request, res: Response) => {
   try {
@@ -93,3 +95,85 @@ export const applicationFrom = async (req: Request, res: Response) => {
 //     return res.status(500).json({ msg: "Internal Server Error" });
 //   }
 // };
+
+export const getAllStudentList = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+    console.log("User UID:", user.uid);
+
+    // Find college by Google ID
+    const college = await College.find({ googleId: user.uid });
+    if (!college.length) {
+      return res.status(404).json({ success: false, msg: "College not found" });
+    }
+
+    console.log("College ID:", college[0]._id.toString());
+
+    // Find all students associated with the college
+    const students = await Student.find({
+      stud_college_id: college[0]._id.toString(),
+    });
+    if (!students.length) {
+      return res.status(404).json({ success: false, msg: "No students found" });
+    }
+
+    // Fetch placement statuses
+    const placementStatus = await Promise.all(
+      students.map(async (student) => {
+        const studentInfo = await StudentInfo.findById(student.stud_info_id);
+        console.log("Student Info:", studentInfo);
+
+        return studentInfo ? studentInfo.stud_placement_status : null; // Handle case where studentInfo is not found
+      })
+    );
+
+    console.log("Students:", students);
+
+    return res.status(200).json({ success: true, students, placementStatus });
+  } catch (error: any) {
+    console.error("Error in getAllStudentList:", error);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+export const getStudentById = async (req: Request, res: Response) => {
+  try {
+    const student = await College.findById(req.params.id);
+    return res.status(200).json({ success: true, student });
+  } catch (error: any) {
+    console.log("Error in getStudentById", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+export const verifyStudent = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+    const { studentId } = req.params;
+
+    // Find college by Google ID
+    const student = await Student.findById(studentId);
+    if (!student) {
+      return res.status(404).json({ success: false, msg: "Student not found" });
+    }
+    if (!student.isSystemVerified) {
+      return res
+        .status(400)
+        .json({ success: false, msg: "Student not verified by system" });
+    }
+    if (student.isCollegeVerified) {
+      return res
+        .status(400)
+        .json({ success: false, msg: "Student already verified" });
+    }
+    student.isCollegeVerified = true;
+    await student.save();
+    console.log("Student Verified with Id:", student.id);
+    return res.status(200).json({ success: true, student });
+  } catch (error: any) {
+    console.log("Error in verifyStudents", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};

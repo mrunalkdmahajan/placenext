@@ -15,6 +15,8 @@ interface IStudent extends Document {
   stud_college_id: mongoose.Types.ObjectId;
   googleId: string;
   stud_info_id: mongoose.Types.ObjectId;
+  isSystemVerified: boolean;
+  isCollegeVerified: boolean;
 }
 
 const IStudentSchema = new Schema<IStudent>({
@@ -65,6 +67,14 @@ const IStudentSchema = new Schema<IStudent>({
     type: mongoose.Schema.Types.ObjectId,
     ref: "StudentInfo",
     required: true,
+  },
+  isSystemVerified: {
+    type: Boolean,
+    default: false,
+  },
+  isCollegeVerified: {
+    type: Boolean,
+    default: false,
   },
 });
 

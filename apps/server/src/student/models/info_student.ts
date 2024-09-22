@@ -185,6 +185,7 @@ const Student_InfoSchema = new Schema<IStudentInfo>({
   },
   stud_placement_status: {
     type: Boolean,
+    default: false,
   },
   stud_placement_package: {
     type: Number,
