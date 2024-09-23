@@ -36,12 +36,12 @@ const drawerVariants = {
 };
 
 const options: Option[] = [
-  { name: "Overview", path: "/student/dashboard" },
+  { name: "Overview", path: "/college/dashboard" },
   { name: "Manage Students", path: "/college/student_list" },
-  { name: "Job Postings", path: "/messages" },
-  { name: "Messages", path: "/doctors" },
-  { name: "Profile", path: "/profile" },
-  { name: "Settings", path: "/settings" },
+  { name: "Job Postings", path: "/college/messages" },
+  { name: "Messages", path: "/college/doctors" },
+  { name: "Profile", path: "/college/profile" },
+  { name: "Settings", path: "/college/settings" },
 ];
 
 // const dashSidebarOptions =
