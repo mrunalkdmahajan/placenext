@@ -260,6 +260,7 @@ const ApplicationForm = () => {
                         {college.name}
                       </option>
                     ))}
+                    <option>66edbf3b7298265cb469ca2d</option>
                   </select>
                 </div>
                 {[
@@ -388,7 +389,7 @@ const ApplicationForm = () => {
                 Previous
               </button>
             )}
-            {step < 4 ? (
+            {step < 3 ? (
               <button
                 type="button"
                 onClick={nextStep}

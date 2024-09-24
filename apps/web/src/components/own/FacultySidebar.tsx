@@ -44,10 +44,6 @@ const options: Option[] = [
   { name: "Settings", path: "/college/settings" },
 ];
 
-// const dashSidebarOptions =
-
-// const tpodashSidebarOptions =
-
 const OptionsIcon = [
   <ImportContactsTwoToneIcon key="import-contacts" />,
   <BiCategoryAlt key="category-alt" />,
