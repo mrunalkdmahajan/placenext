@@ -1,10 +1,9 @@
-import StudentStatisticsChart from "@/components/own/Dashboard/StudentStatisticsChart";
+import MainDashboard from "@/components/own/Dashboard/MainDashboard";
 
-export default function CollegeDashboard() {
+export default function Dashboard() {
   return (
     <div>
-      <h1>College Dashboard</h1>
-      <StudentStatisticsChart />
+      <h1>TPO Dashboard</h1>
     </div>
   );
 }
