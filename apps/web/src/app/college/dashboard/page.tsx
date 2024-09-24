@@ -1,7 +1,9 @@
-export default function CollegeDashboard() {
+import MainDashboard from "@/components/own/Dashboard/MainDashboard";
+
+export default function Dashboard() {
   return (
     <div>
-      <h1>College Dashboard</h1>
+      <h1>TPO Dashboard</h1>
     </div>
   );
 }
