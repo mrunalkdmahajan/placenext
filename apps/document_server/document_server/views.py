@@ -33,6 +33,7 @@ lock = threading.Lock()  # To manage access to the processing list
 def create_service_account_file():
     # Get the base64-encoded service account JSON from environment variables
     service_account_base64 = os.getenv('GOOGLE_SERVICE_ACCOUNT_JSON_BASE64')
+
     
     if not service_account_base64:
         raise ValueError("Base64 encoded service account key is missing.")
@@ -145,6 +146,7 @@ def verify_user(request):
             for i in range(1, 9):  # Assuming 8 semesters
                 sem_name = stud_info.get(f'{i}')
                 if sem_name and f"Semester {i}" in extracted_text:
+                    print(extracted_text)
                     sem_n_check = True
                     break
 
