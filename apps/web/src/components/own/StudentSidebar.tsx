@@ -40,7 +40,7 @@ const options: Option[] = [
   { name: "Overview", path: "/student/dashboard" },
   { name: "Applications", path: "/jobs" },
   { name: "Messages", path: "/messages" },
-  { name: "Profile", path: "/doctors" },
+  { name: "Profile", path: "/student/profile" },
   { name: "Settings", path: "/settings" },
 ];
 
@@ -59,9 +59,9 @@ export default function StudentSidebar({ isIcon }: any) {
 
   useEffect(() => {
     if (isLargeScreen) {
-      setOpen(true); // Automatically open on large screens
+      setOpen(true);
     } else {
-      setOpen(false); // Automatically close on small screens
+      setOpen(false);
     }
   }, [isLargeScreen]);
 

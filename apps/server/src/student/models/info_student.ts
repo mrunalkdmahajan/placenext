@@ -74,19 +74,19 @@ const Student_InfoSchema = new Schema<IStudentInfo>({
   },
   stud_sem5_grade: {
     type: String,
-    required: true,
+    default: null,
   },
   stud_sem6_grade: {
     type: String,
-    required: true,
+    default: null,
   },
   stud_sem7_grade: {
     type: String,
-    required: true,
+    default: null,
   },
   stud_sem8_grade: {
     type: String,
-    required: true,
+    default: null,
   },
   stud_sem1_marksheet: {
     type: String,
@@ -106,19 +106,19 @@ const Student_InfoSchema = new Schema<IStudentInfo>({
   },
   stud_sem5_marksheet: {
     type: String,
-    required: true,
+    default: null,
   },
   stud_sem6_marksheet: {
     type: String,
-    required: true,
+    default: null,
   },
   stud_sem7_marksheet: {
     type: String,
-    required: true,
+    default: null,
   },
   stud_sem8_marksheet: {
     type: String,
-    required: true,
+    default: null,
   },
   stud_cet: {
     type: String,
