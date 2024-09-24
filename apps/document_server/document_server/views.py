@@ -108,61 +108,73 @@ def verify_user(request):
             stud_info.get('stud_sem8_marksheet'),
         ]
 
+        sem_names = [
+            "sem1",
+            "sem2",
+            "sem3",
+            "sem4",
+            "sem5",
+            "sem6",
+            "sem7",
+            "sem8",
+        ]
+
         verification_success = False
 
-        # Iterate through each marksheet URL
-        for pdf_url in marksheets:
+        # Iterate through each marksheet URL with index
+        for i, pdf_url in enumerate(marksheets):
             if not pdf_url:  # Skip if the URL is None
                 continue
 
-            # Download the PDF from Google Drive
-            drive_service = get_drive_service()
-            file_id = pdf_url.split('/')[-2]  # Extract file ID from URL
-            request = drive_service.files().get_media(fileId=file_id)
+            try:
+                # Download the PDF from Google Drive
+                drive_service = get_drive_service()
+                file_id = pdf_url.split('/')[-2]  # Extract file ID from URL
+                request = drive_service.files().get_media(fileId=file_id)
 
-            # Use an in-memory buffer to download the PDF
-            pdf_stream = io.BytesIO()
-            downloader = MediaIoBaseDownload(pdf_stream, request)
-            done = False
-            while not done:
-                status, done = downloader.next_chunk()
+                # Use an in-memory buffer to download the PDF
+                pdf_stream = io.BytesIO()
+                downloader = MediaIoBaseDownload(pdf_stream, request)
+                done = False
+                while not done:
+                    status, done = downloader.next_chunk()
 
-            pdf_stream.seek(0)  # Reset buffer position
+                pdf_stream.seek(0)  # Reset buffer position
 
-            # Extract text from the PDF
-            reader = PdfReader(pdf_stream)
-            extracted_text = ""
-            for page in reader.pages:
-                extracted_text += page.extract_text() or ""
+                # Extract text from the PDF
+                reader = PdfReader(pdf_stream)
+                extracted_text = ""
+                for page in reader.pages:
+                    extracted_text += page.extract_text() or ""
 
-            print(extracted_text, user_data.get('name'))
 
-            # Extract and compare additional details
-            name_check = user_data.get('stud_name') in extracted_text
-            branch_check = user_data.get('branch') in extracted_text  # Assuming 'branch' is a field in user_data
-            
+                # Extract and compare additional details
+                # name_check = user_data.get('stud_name') in extracted_text
+                # branch_check = user_data.get('stud_department') in extracted_text  # Assuming 'branch' is a field in user_data
+                
+                # # Check for semester name and SGPI
+                # sem_n_check = False
+                # sem_name = sem_names[i]  # Get the semester name corresponding to the index
+                # if sem_name and f"Semester {i + 1}" in extracted_text:  # i+1 because semesters are 1-indexed
+                #     print(extracted_text)
+                #     sem_n_check = True
 
-            sem_n_check = False
-            for i in range(1, 9):  # Assuming 8 semesters
-                sem_name = stud_info.get(f'{i}')
-                if sem_name and f"Semester {i}" in extracted_text:
-                    print(extracted_text)
-                    sem_n_check = True
-                    break
-
-            # Dynamic SGPI check
-            sgpi_check = False
-            for i in range(1, 9):  # Assuming 8 semesters
-                sgpi_value = stud_info.get(f'stud_sem{i}_grade')
+                # Dynamic SGPI check
+                sgpi_check = False
+                sgpi_value = stud_info.get(f'stud_sem{i + 1}_grade')
+                print(sgpi_value)  # Get SGPI value corresponding to the semester
                 if sgpi_value and f"SGPI: {sgpi_value}" in extracted_text:
                     sgpi_check = True
-                    break  # If any SGPI matches, break out of the loop
 
-            # If all checks pass for this marksheet, set verification_success to True
-            if name_check and sgpi_check and branch_check and sem_name_check:
-                verification_success = True
-                break  # No need to check further marksheets
+                # If all checks pass for this marksheet, set verification_success to True
+                # if name_check and sgpi_check and branch_check and sem_n_check:
+                if sgpi_check:
+                    verification_success = True
+                    break  # No need to check further marksheets
 
+            except Exception as e:
+                print(f"Error processing marksheet for semester {i + 1}: {e}")
+                continue  
         # Determine final verification status
         if verification_success:
             # Update verification status in MongoDB
@@ -176,7 +188,6 @@ def verify_user(request):
     finally:
         with lock:
             processing_users.remove(user_id)
-
 
 
 def convert_objectid(data):
