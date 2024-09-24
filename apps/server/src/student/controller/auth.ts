@@ -4,6 +4,8 @@ import Student from "../models/student";
 import StudentInfo from "../models/info_student";
 import { uploadToGoogleDrive } from "../../config/Google";
 import College from "../../college/models/college";
+import axios from "axios";
+import { Document_server_url } from "../../app";
 const requiredFields = [
   "firstName",
   "middleName",
@@ -194,6 +196,13 @@ export const applicationFrom = async (req: Request, res: Response) => {
       "Application From Submitted Successfully by Student",
       savedStudent.id
     );
+
+    const doc_res = await axios.post(`${Document_server_url}/verify_user`, {
+      userId: savedStudent.id,
+    });
+    if (doc_res.data.success) {
+      console.log("User added for verified successfully");
+    }
 
     return res.status(200).json({
       success: true,

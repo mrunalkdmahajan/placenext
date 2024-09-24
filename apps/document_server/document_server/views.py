@@ -170,7 +170,7 @@ def verify_user(request):
                 # if name_check and sgpi_check and branch_check and sem_n_check:
                 if sgpi_check:
                     verification_success = True
-                    break  # No need to check further marksheets
+                    
 
             except Exception as e:
                 print(f"Error processing marksheet for semester {i + 1}: {e}")
