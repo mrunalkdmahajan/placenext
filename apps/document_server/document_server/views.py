@@ -13,6 +13,7 @@ import io
 import base64
 import tempfile
 from bson import ObjectId 
+
 load_dotenv()
 
 # MongoDB setup
@@ -34,36 +35,28 @@ def create_service_account_file():
     # Get the base64-encoded service account JSON from environment variables
     service_account_base64 = os.getenv('GOOGLE_SERVICE_ACCOUNT_JSON_BASE64')
 
-    
     if not service_account_base64:
         raise ValueError("Base64 encoded service account key is missing.")
-    
-    # Decode the base64 string
+
+    # Decode the base64 string and create a temporary JSON file
     service_account_json = base64.b64decode(service_account_base64)
-    
-    # Create a temporary file to store the service account JSON
     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".json")
     temp_file.write(service_account_json)
     temp_file.flush()
-    
+
     return temp_file.name  # Return the path to the temporary file
 
 def get_drive_service():
     # Create the service account file from the base64-encoded string
     service_account_json_path = create_service_account_file()
     
-    # Ensure the file exists
     if not os.path.exists(service_account_json_path):
         raise FileNotFoundError(f"Service account file not found: {service_account_json_path}")
     
-    # Load the credentials using the temporary service account file
     creds = Credentials.from_service_account_file(service_account_json_path)
-    
-    # Build the Drive API client
     drive_service = build('drive', 'v3', credentials=creds)
     
     return drive_service
-
 
 @api_view(['POST'])
 def verify_user(request):
@@ -78,48 +71,31 @@ def verify_user(request):
     with lock:  # Locking to ensure thread safety
         if user_id in processing_users:
             return Response({'message': 'User is already being processed'}, status=400)
+        
         processing_users.append(user_id)
 
+    # Perform verification in a background thread
+    threading.Thread(target=perform_verification, args=(user_id,), daemon=True).start()
+
+    return Response({'success': True, 'message': f'User with Id: {user_id} added to queue for verification'}, status=200)
+
+def perform_verification(user_id):
+    verification_success = False  # Track if verification is successful
     try:
-        # Fetch user data from MongoDB
         user_data = student_collection.find_one({'_id': user_id})
         if not user_data:
             return Response({'message': 'User not found'}, status=404)
 
-        # Fetch user info using stud_info_id
         stud_info_id = user_data.get('stud_info_id')
         if not stud_info_id:
             return Response({'message': 'User info not found'}, status=404)
 
-        # Fetch student info from the studentinfos collection
         stud_info = stud_info_collection.find_one({'_id': ObjectId(stud_info_id)})
         if not stud_info:
             return Response({'message': 'Student info not found'}, status=404)
 
-        # Fetch marksheet URLs
-        marksheets = [
-            stud_info.get('stud_sem1_marksheet'),
-            stud_info.get('stud_sem2_marksheet'),
-            stud_info.get('stud_sem3_marksheet'),
-            stud_info.get('stud_sem4_marksheet'),
-            stud_info.get('stud_sem5_marksheet'),
-            stud_info.get('stud_sem6_marksheet'),
-            stud_info.get('stud_sem7_marksheet'),
-            stud_info.get('stud_sem8_marksheet'),
-        ]
-
-        sem_names = [
-            "sem1",
-            "sem2",
-            "sem3",
-            "sem4",
-            "sem5",
-            "sem6",
-            "sem7",
-            "sem8",
-        ]
-
-        verification_success = False
+        marksheets = [stud_info.get(f'stud_sem{i + 1}_marksheet') for i in range(8)]
+        verification_results = []
 
         # Iterate through each marksheet URL with index
         for i, pdf_url in enumerate(marksheets):
@@ -127,7 +103,6 @@ def verify_user(request):
                 continue
 
             try:
-                # Download the PDF from Google Drive
                 drive_service = get_drive_service()
                 file_id = pdf_url.split('/')[-2]  # Extract file ID from URL
                 request = drive_service.files().get_media(fileId=file_id)
@@ -147,38 +122,19 @@ def verify_user(request):
                 for page in reader.pages:
                     extracted_text += page.extract_text() or ""
 
-
-                # Extract and compare additional details
-                # name_check = user_data.get('stud_name') in extracted_text
-                # branch_check = user_data.get('stud_department') in extracted_text  # Assuming 'branch' is a field in user_data
-                
-                # # Check for semester name and SGPI
-                # sem_n_check = False
-                # sem_name = sem_names[i]  # Get the semester name corresponding to the index
-                # if sem_name and f"Semester {i + 1}" in extracted_text:  # i+1 because semesters are 1-indexed
-                #     print(extracted_text)
-                #     sem_n_check = True
-
                 # Dynamic SGPI check
-                sgpi_check = False
                 sgpi_value = stud_info.get(f'stud_sem{i + 1}_grade')
-                print(sgpi_value)  # Get SGPI value corresponding to the semester
                 if sgpi_value and f"SGPI: {sgpi_value}" in extracted_text:
-                    sgpi_check = True
-
-                # If all checks pass for this marksheet, set verification_success to True
-                # if name_check and sgpi_check and branch_check and sem_n_check:
-                if sgpi_check:
                     verification_success = True
-                    
 
             except Exception as e:
                 print(f"Error processing marksheet for semester {i + 1}: {e}")
                 continue  
+
         # Determine final verification status
         if verification_success:
-            # Update verification status in MongoDB
-            student_collection.update_one({'_id': user_id}, {'$set': {'isVerified': True}})
+            print(f"Verification successful for user: {user_id}")
+            student_collection.update_one({'_id': user_id}, {'$set': {'isSystemVerified': True}})
             response_message = 'Verification successful'
         else:
             response_message = 'Verification failed'
@@ -188,7 +144,6 @@ def verify_user(request):
     finally:
         with lock:
             processing_users.remove(user_id)
-
 
 def convert_objectid(data):
     if isinstance(data, dict):
@@ -200,14 +155,9 @@ def convert_objectid(data):
     else:
         return data
 
-
 @api_view(['GET'])
 def test(request):
     # Fetch all users from the MongoDB collection
     users = student_collection.find()
-
-    # Convert MongoDB cursor to a list of dictionaries and recursively handle ObjectId
     users_list = [convert_objectid(user) for user in users]
-
-    # Return the list of users as a JSON response
     return Response({'users': users_list})
