@@ -16,7 +16,7 @@ export async function sendEmail(
         pass: process.env.APP_PASSWORD,
       },
     });
-
+    // test
     const info = await transporter.sendMail(template(email, username, token));
   } catch (error: any) {
     console.error(`Error: ${error.message}`);
