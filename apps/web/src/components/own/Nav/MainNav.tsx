@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function MainNav() {
   return (
-    <div className="flex flex-row items-center justify-between w-full max-w-screen-xl px-10 py-2 fixed z-50 bg-white">
+    <div className="flex flex-row items-center justify-between w-full max-w-screen-xl px-10 py-2 fixed z-20 bg-white">
       <div className="flex flex-row items-center justify-center gap-2">
         <div className="flex flex-row items-center justify-center border-2 border-gray-400 rounded-lg p-1 m-2 gap-1">
           <label htmlFor="search_bar">

@@ -16,8 +16,9 @@ const StudentInfo = [
 export default function MainDashboard() {
   return (
     <div className="bg-primary_background h-full">
-      <ApplicationCards />
-      <ApplicationCards />
+     <h1>Student Statistics</h1>
+     {/* <ApplicationCards />
+      <ApplicationCards /> */}
     </div>
   );
 }

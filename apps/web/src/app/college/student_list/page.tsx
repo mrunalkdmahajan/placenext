@@ -1,58 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { BackendUrl } from "@/utils/constants";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+
+interface StudentData {
+  _id: string;
+  stud_name: string;
+  stud_department: string;
+  stud_year: string;
+  cgpa: number;
+  isSystemVerified: boolean;
+  isCollegeVerified: boolean;
+}
 
 export default function StudentList() {
-  const [students, setStudents] = useState([
-    {
-      rollNo: 1,
-      name: "John Doe",
-      branch: "CSE",
-      year: "3rd",
-      cgpa: 8.5,
-      placed: "Yes",
-    },
-    {
-      rollNo: 2,
-      name: "Jane Doe",
-      branch: "ECE",
-      year: "4th",
-      cgpa: 9.0,
-      placed: "No",
-    },
-    {
-      rollNo: 3,
-      name: "Alice",
-      branch: "CSE",
-      year: "3rd",
-      cgpa: 8.0,
-      placed: "Yes",
-    },
-    {
-      rollNo: 4,
-      name: "Bob",
-      branch: "ECE",
-      year: "4th",
-      cgpa: 8.5,
-      placed: "No",
-    },
-    {
-      rollNo: 5,
-      name: "Charlie",
-      branch: "CSE",
-      year: "3rd",
-      cgpa: 9.0,
-      placed: "Yes",
-    },
-    {
-      rollNo: 6,
-      name: "David",
-      branch: "ECE",
-      year: "4th",
-      cgpa: 8.0,
-      placed: "No",
-    },
-  ]);
+  const router = useRouter();
+  const [students, setStudents] = useState<StudentData[]>([]);
+  const [placementStatus, setPlacementStatus] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const res = await axios.get(`${BackendUrl}/api/college/get_students`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        if (res.data.success) {
+          setStudents(res.data.students);
+          setPlacementStatus(res.data.placementStatus);
+        } else {
+          toast.error(res.data.message);
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to fetch student data.");
+      }
+    };
+
+    fetchStudents();
+  }, []);
 
   return (
     <div className="flex flex-col py-4 px-8">
@@ -103,28 +94,48 @@ export default function StudentList() {
         <table className="table-auto w-full text-left border border-gray-200">
           <thead className="bg-gray-200">
             <tr className="text-center">
-              <th className="px-4 py-2 border">Roll No</th>
+              <th className="px-4 py-2 border">ID</th>
               <th className="px-4 py-2 border">Name</th>
               <th className="px-4 py-2 border">Branch</th>
               <th className="px-4 py-2 border">Year</th>
               <th className="px-4 py-2 border">CGPA</th>
               <th className="px-4 py-2 border">Placed</th>
+              <th className="px-4 py-2 border">Verified</th>
             </tr>
           </thead>
           <tbody>
-            {students.map((student) => (
-              <tr key={student.rollNo} className="text-center">
-                <td className="px-4 py-2 border">{student.rollNo}</td>
-                <td className="px-4 py-2 border">{student.name}</td>
-                <td className="px-4 py-2 border">{student.branch}</td>
-                <td className="px-4 py-2 border">{student.year}</td>
+            {students.map((student, index) => (
+              <tr
+                key={student._id}
+                className="text-center hover:bg-gray-100 cursor-pointer"
+                onClick={() =>
+                  router.push(`/college/student_list/${student._id}`)
+                }
+              >
+                <td className="px-4 py-2 border">{student._id}</td>
+                <td className="px-4 py-2 border">{student.stud_name}</td>
+                <td className="px-4 py-2 border">{student.stud_department}</td>
+                <td className="px-4 py-2 border">{student.stud_year}</td>
                 <td className="px-4 py-2 border">{student.cgpa}</td>
                 <td
                   className={`px-4 py-2 border ${
-                    student.placed === "Yes" ? "text-green-600" : "text-red-600"
+                    placementStatus[index] === "true"
+                      ? "text-green-600"
+                      : "text-red-600"
                   }`}
                 >
-                  {student.placed}
+                  {placementStatus[index] === "true" ? "Yes" : "No"}
+                </td>
+                <td
+                  className={`px-4 py-2 border ${
+                    student.isSystemVerified && student.isCollegeVerified
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {student.isSystemVerified && student.isCollegeVerified
+                    ? "Yes"
+                    : "No"}
                 </td>
               </tr>
             ))}
