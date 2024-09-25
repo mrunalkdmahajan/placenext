@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <div className="flex flex-row w-full h-full">
-      <div>
+      <div className="fixed top-0 left-0 z-50 lg:relative lg:block">
         {/* this will contain sidebar */}
         <StudentSidebar />
       </div>

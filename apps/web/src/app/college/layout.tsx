@@ -1,8 +1,6 @@
 import MainDashboard from "@/components/own/Dashboard/MainDashboard";
 import FacultySidebar from "@/components/own/FacultySidebar";
 import MainNav from "@/components/own/Nav/MainNav";
-
-import StudentSidebar from "@/components/own/StudentSidebar";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 

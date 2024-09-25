@@ -3,8 +3,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { BackendUrl } from "@/utils/constants";
+import { useRouter } from "next/navigation";
 
 const ApplicationForm: React.FC = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     comp_name: "",
     comp_start_date: "",
@@ -42,10 +44,26 @@ const ApplicationForm: React.FC = () => {
     setFormData({ ...formData, [field]: [...(formData as any)[field], ""] });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log(formData);
-    // Process form submission here (e.g., sending formData to the backend)
+
+    try {
+      const response = await axios.post(
+        `${BackendUrl}/api/company/applicationForm`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (response.data.success) {
+        router.push("/company/dashboard");
+      }
+    } catch (error) {
+      console.error(error); // Handle error response
+    }
   };
 
   return (
