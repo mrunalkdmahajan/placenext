@@ -57,10 +57,9 @@ class _LoginFormState extends State<LoginForm> {
           ElevatedButton(
             onPressed: () {
               // Handle login logic here
-              String username = _usernameController.text;
-              String password = _passwordController.text;
+
               // Add your login logic
-              Navigator.pushNamed(context, '/student_dashboard');
+              Navigator.pushNamed(context, '/college_dashboard');
             },
             child: const Text("Login"),
           ),
