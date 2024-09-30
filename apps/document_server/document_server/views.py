@@ -12,6 +12,7 @@ import threading
 import io
 import base64
 import tempfile
+import requests
 from bson import ObjectId 
 
 load_dotenv()
@@ -81,19 +82,27 @@ def verify_user(request):
 
 def perform_verification(user_id):
     verification_success = False  # Track if verification is successful
+    failed_semesters = []  # To track which semester's verification failed
+
     try:
+        # Fetch the user data from MongoDB
         user_data = student_collection.find_one({'_id': user_id})
         if not user_data:
-            return Response({'message': 'User not found'}, status=404)
+            print(f"User with ID {user_id} not found in the database.")
+            return
 
         stud_info_id = user_data.get('stud_info_id')
         if not stud_info_id:
-            return Response({'message': 'User info not found'}, status=404)
+            print(f"User info not found for user: {user_id}")
+            return
 
+        # Fetch the student info document
         stud_info = stud_info_collection.find_one({'_id': ObjectId(stud_info_id)})
         if not stud_info:
-            return Response({'message': 'Student info not found'}, status=404)
+            print(f"Student info document not found for stud_info_id: {stud_info_id}")
+            return
 
+        # Retrieve the list of marksheets from the student info document
         marksheets = [stud_info.get(f'stud_sem{i + 1}_marksheet') for i in range(8)]
         verification_results = []
 
@@ -124,10 +133,15 @@ def perform_verification(user_id):
 
                 # Dynamic SGPI check
                 sgpi_value = stud_info.get(f'stud_sem{i + 1}_grade')
+
                 if sgpi_value and f"SGPI: {sgpi_value}" in extracted_text:
                     verification_success = True
+                else:
+                    failed_semesters.append(i + 1)
+                    print(f"Validation failed for semester {i + 1}: SGPI value {sgpi_value} not found in marksheet text.")
 
             except Exception as e:
+                failed_semesters.append(i + 1)
                 print(f"Error processing marksheet for semester {i + 1}: {e}")
                 continue  
 
@@ -137,13 +151,28 @@ def perform_verification(user_id):
             student_collection.update_one({'_id': user_id}, {'$set': {'isSystemVerified': True}})
             response_message = 'Verification successful'
         else:
-            response_message = 'Verification failed'
+            print(f"Verification failed for user: {user_id}, failed semesters: {failed_semesters}")
+            response_message = f'Verification failed for semesters: {failed_semesters}'
+            
+            # Send notification for verification failure
+            send_notification(user_data['email'], response_message)  # Assume user_data contains email
 
         return Response({'message': response_message})
-
     finally:
         with lock:
             processing_users.remove(user_id)
+
+def send_notification(user_email, message):
+    notification_url = f"{os.getenv('NOTIFICATION_SERVICE_URL')}/notifications/send_notification"
+    payload = {
+        "userId": user_email,
+        "message": message
+    }
+    try:
+        response = requests.post(notification_url, json=payload)
+        print(f"Notification response: {response.status_code} - {response.json()}")
+    except Exception as e:
+        print(f"Failed to send notification: {e}")
 
 def convert_objectid(data):
     if isinstance(data, dict):

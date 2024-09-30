@@ -10,7 +10,10 @@ import {
   CategoryScale,
   LinearScale,
   ArcElement,
+  ChartOptions,
+  Plugin,
 } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels"; // Import the data labels plugin
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -23,7 +26,8 @@ ChartJS.register(
   BarElement,
   CategoryScale,
   LinearScale,
-  ArcElement
+  ArcElement,
+  ChartDataLabels // Register the data labels plugin
 );
 
 const StudentStatisticsChart: React.FC = () => {
@@ -39,20 +43,17 @@ const StudentStatisticsChart: React.FC = () => {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }
-        ); // Adjust the API endpoint as needed
+        );
         if (response.data.success) {
           const stats = response.data;
 
+          const totalStudents = stats.totalStudents;
           const barData = {
             labels: ["Total Students", "Total Placed", "Total Not Placed"],
             datasets: [
               {
                 label: "Student Placement Statistics",
-                data: [
-                  stats.totalStudents,
-                  stats.totalPlaced,
-                  stats.totalNotPlaced,
-                ],
+                data: [totalStudents, stats.totalPlaced, stats.totalNotPlaced],
                 backgroundColor: [
                   "rgba(75, 192, 192, 0.6)",
                   "rgba(153, 102, 255, 0.6)",
@@ -80,7 +81,7 @@ const StudentStatisticsChart: React.FC = () => {
             ],
           };
 
-          setData({ barData, pieData });
+          setData({ barData, pieData, totalStudents });
         } else {
           toast.error(response.data.msg);
         }
@@ -97,6 +98,56 @@ const StudentStatisticsChart: React.FC = () => {
     return <div>Loading...</div>; // Loading state
   }
 
+  // Custom tooltip for Bar chart
+  const barOptions: ChartOptions<"bar"> = {
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: (tooltipItem) => {
+            const value = tooltipItem.raw as number;
+            return `${tooltipItem.label}: ${value}`;
+          },
+        },
+      },
+      legend: {
+        display: true,
+      },
+      datalabels: {
+        display: true,
+        align: "end",
+        anchor: "end",
+        formatter: (value: number) => {
+          return `${value}`; // Display count
+        },
+      },
+    },
+  };
+
+  // Custom tooltip for Pie chart
+  const pieOptions: ChartOptions<"pie"> = {
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: (tooltipItem) => {
+            const value = tooltipItem.raw as number;
+            const percentage = ((value / data.totalStudents) * 100).toFixed(2);
+            return `${tooltipItem.label}: ${value} (${percentage}%)`;
+          },
+        },
+      },
+      legend: {
+        display: true,
+      },
+      datalabels: {
+        display: true,
+        formatter: (value: number, context: any) => {
+          const percentage = ((value / data.totalStudents) * 100).toFixed(2);
+          return `${value} (${percentage}%)`; // Display count and percentage
+        },
+      },
+    },
+  };
+
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Student Placement Statistics</h1>
@@ -104,13 +155,13 @@ const StudentStatisticsChart: React.FC = () => {
       <div className="flex flex-row">
         <div className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Overall Statistics</h2>
-          <Bar data={data.barData} />
+          <Bar data={data.barData} options={barOptions} />
         </div>
         <div>
           <h2 className="text-2xl font-semibold mb-4">
             Students by Department
           </h2>
-          <Pie data={data.pieData} />
+          <Pie data={data.pieData} options={pieOptions} />
         </div>
       </div>
     </div>
