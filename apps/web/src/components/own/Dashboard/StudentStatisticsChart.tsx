@@ -150,17 +150,15 @@ const StudentStatisticsChart: React.FC = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Student Placement Statistics</h1>
+      <h1 className="text-lg font-bold mb-6">Student Placement Statistics</h1>
 
-      <div className="flex flex-row">
+      <div className="flex flex-col">
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Overall Statistics</h2>
+          <h2 className="text-lg font-semibold mb-4">Overall Statistics</h2>
           <Bar data={data.barData} options={barOptions} />
         </div>
         <div>
-          <h2 className="text-2xl font-semibold mb-4">
-            Students by Department
-          </h2>
+          <h2 className="text-lg font-semibold mb-4">Students by Department</h2>
           <Pie data={data.pieData} options={pieOptions} />
         </div>
       </div>

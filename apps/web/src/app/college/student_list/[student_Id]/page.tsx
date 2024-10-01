@@ -122,12 +122,12 @@ export default function StudentById() {
   }
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto py-2 px-2 md:px-8">
       <h1 className="text-3xl font-bold text-center mb-8">Student Profile</h1>
 
       <div className="bg-white shadow-md rounded-lg p-6 mb-6">
         <h2 className="text-2xl font-semibold mb-4">Basic Information</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <p>
             <strong>Name:</strong> {student.stud_name || "N/A"}
           </p>
@@ -163,7 +163,7 @@ export default function StudentById() {
         <h2 className="text-2xl font-semibold mb-4 text-center">
           Verification Status
         </h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <p className="flex items-center">
             <strong>System Verified:</strong>{" "}
             {student.isSystemVerified ? (
@@ -202,7 +202,7 @@ export default function StudentById() {
             <strong>Admission Year:</strong>{" "}
             {student.stud_info_id.stud_addmission_year || "N/A"}
           </p>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[...Array(8)].map((_, index) => {
               const gradeKey =
                 `stud_sem${index + 1}_grade` as keyof Student["stud_info_id"];
@@ -215,7 +215,7 @@ export default function StudentById() {
             })}
           </div>
           <h3 className="text-xl font-semibold mt-4">Marksheet Links</h3>
-          <div className="grid grid-cols-2 gap-4 mt-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
             {[...Array(8)].map((_, index) => {
               const marksheetKey =
                 `stud_sem${index + 1}_marksheet` as keyof Student["stud_info_id"];
@@ -235,11 +235,17 @@ export default function StudentById() {
         </div>
       )}
 
-      <div className="flex justify-between mt-4">
-        <Button onClick={() => router.back()}>Back</Button>
-        <div className="space-x-4">
-          <Button onClick={handleAccept}>Accept</Button>
-          <Button onClick={handleReject}>Reject</Button>
+      <div className="flex flex-col md:flex-row justify-between mt-4">
+        <Button onClick={() => router.back()} className="mb-4 md:mb-0">
+          Back
+        </Button>
+        <div className="flex space-x-4">
+          <Button onClick={handleAccept} className="bg-green-500">
+            Accept
+          </Button>
+          <Button onClick={handleReject} className="bg-red-500">
+            Reject
+          </Button>
         </div>
       </div>
     </div>

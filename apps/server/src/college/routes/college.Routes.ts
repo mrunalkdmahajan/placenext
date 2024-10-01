@@ -3,6 +3,7 @@ import {
   acceptStudent,
   applicationFrom,
   getAllStudentList,
+  getCollegeJobs,
   getStudentById,
   getStudentStatistics,
   isFirstSignIn,
@@ -31,5 +32,10 @@ collegeRoutes.get(
 );
 
 // general routes
+
+// college job routes
+
+collegeRoutes.get("/get_jobs", authenticateToken, getCollegeJobs);
+collegeRoutes.get("/get_job/:id", authenticateToken);
 
 export default collegeRoutes;

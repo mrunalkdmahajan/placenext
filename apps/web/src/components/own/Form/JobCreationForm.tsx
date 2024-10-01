@@ -76,7 +76,7 @@ const JobCreationForm: React.FC = () => {
     try {
       console.log(formData);
       const response = await axios.post(
-        `${BackendUrl}/api/company/create_job`,
+        `${BackendUrl}/api/college/create_job`,
         formData,
         {
           headers: {

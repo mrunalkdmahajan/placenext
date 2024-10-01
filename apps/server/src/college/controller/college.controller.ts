@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import College from "../models/college";
 import Student from "../../student/models/student";
 import StudentInfo from "../../student/models/info_student";
+import Job from "../../company/models/job";
 
 export const isFirstSignIn = async (req: Request, res: Response) => {
   try {
@@ -304,6 +305,119 @@ export const getStudentStatistics = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.error("Error in getStudentStatistics:", error);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+export const getCollegeJobs = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+    console.log(user);
+
+    // Find college by Google ID
+    const college = await College.findOne({ googleId: user.uid });
+    if (!college) {
+      return res.status(404).json({ success: false, msg: "College not found" });
+    }
+    console.log(college);
+
+    // Find all jobs associated with the college
+    const jobs = await Job.find({
+      job_college_id: college._id.toString(),
+    });
+    if (!jobs.length) {
+      return res.status(404).json({ success: false, msg: "No jobs found" });
+    }
+
+    return res.status(200).json({ success: true, jobs });
+  } catch (error: any) {
+    console.error("Error in getCollegeJobs:", error);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+export const createJobByCompany = async (req: Request, res: Response) => {
+  try {
+    //    _id?: string;
+    // job_title: string;
+    // job_type: string;
+    // job_location: string;
+    // job_salary: number;
+    // job_description: string;
+    // job_requirements: string[];
+    // job_posted_date: Date;
+    // yr_of_exp_req: number;
+    // job_timing: string;
+    // status: string;
+    // @ts-ignore
+    const company = req.user;
+    const {
+      job_title,
+      job_type,
+      job_location,
+      job_salary,
+      job_description,
+      job_requirements,
+      job_posted_date,
+      yr_of_exp_req,
+      job_timing,
+      status,
+      college,
+    } = req.body;
+
+    if (
+      [
+        job_title,
+        job_type,
+        job_location,
+        job_salary,
+        job_description,
+        job_requirements,
+        job_posted_date,
+        yr_of_exp_req,
+        job_timing,
+        status,
+      ].some((field) => field === "")
+    ) {
+      return res.status(400).json({ msg: "All fields are required" });
+    }
+    const exsistingJob = await Job.findOne({ job_title, job_location });
+
+    if (exsistingJob) {
+      return res.status(400).json({ msg: "Job already exists" });
+    }
+
+    const newJob = new Job({
+      job_title,
+      job_type,
+      job_location,
+      job_salary,
+      job_description,
+      job_requirements,
+      job_posted_date,
+      yr_of_exp_req,
+      job_timing,
+      status,
+    });
+    await newJob.save();
+    return res.status(200).json({ success: true, msg: "Job created" });
+  } catch (error: any) {
+    console.log("Error in createJobByCompany", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+export const getCollegeJobById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const job = await Job.findById(id);
+    if (!job) {
+      return res.status(404).json({ success: false, msg: "Job not found" });
+    }
+    return res.status(200).json({ success: true, job });
+  } catch (error: any) {
+    console.log("Error in getCollegeJobById", error.message);
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 };

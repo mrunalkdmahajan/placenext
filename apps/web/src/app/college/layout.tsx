@@ -18,14 +18,14 @@ export default function RootLayout({
 }>) {
   return (
     <div className="flex flex-row w-full h-full">
-      <div>
-        {/* this will contain sidebar */}
-        <FacultySidebar />
-      </div>
+      {/* <div>this will contain sidebar</div> */}
       <div className="w-full h-full flex flex-col bg-primary_background">
         {/* this will contain navbar and main content */}
-        <MainNav />
-        <div className="mt-20">{children}</div>
+        <div className="fixed z-50 py-2 flex items-center justify-between">
+          <FacultySidebar />
+          <MainNav />
+        </div>
+        <div className="mt-20 mx-4">{children}</div>
       </div>
     </div>
   );
