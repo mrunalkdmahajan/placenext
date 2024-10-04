@@ -1,6 +1,3 @@
-import withStudentAuth from "@/config/services/Student_Auth_service";
-
-function Student() {
+export default function Student() {
   return <div></div>;
 }
-export default  withStudentAuth(Student);
