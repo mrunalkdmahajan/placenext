@@ -80,7 +80,6 @@ export const applicationFrom = async (req: Request, res: Response) => {
   try {
     // @ts-ignore
     const user = req.user;
-    console.log(req.body);
 
     const fields = req.body;
 
@@ -192,7 +191,6 @@ export const applicationFrom = async (req: Request, res: Response) => {
     });
 
     const savedStudent = await student.save();
-    console.log("Student filled application form", savedStudent.id);
 
     console.log(
       "Application From Submitted Successfully by Student",
@@ -380,14 +378,8 @@ export const getStudentStatistics = async (req: Request, res: Response) => {
     const student = await Student.findOne({ googleId: user.uid }).populate(
       "stud_info_id"
     );
-    console.log(student?._id);
-    console.log(student);
-
     //@ts-ignore
-    const appliedJobs = await Job.find({ student: student._id });
-    console.log(await Job.find());
-
-    console.log(appliedJobs);
+    const appliedJobs = await Application.find({ student: student?._id });
 
     if (!student) {
       return res.status(404).json({ success: false, msg: "Student not found" });
@@ -398,8 +390,7 @@ export const getStudentStatistics = async (req: Request, res: Response) => {
 
     const companiesCameToCollege = await Job.find({
       college: student.stud_college_id,
-    }).distinct("company");
-    console.log(companiesCameToCollege);
+    });
 
     return res
       .status(200)
@@ -485,6 +476,23 @@ export const getJobForCollege = async (req: Request, res: Response) => {
   }
 };
 
+export const getJobDetailsById = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+    const { id } = req.params;
+    const job = await Job.findById(id);
+
+    if (!job) {
+      return res.status(404).json({ success: false, msg: "Job not found" });
+    }
+    return res.status(200).json({ success: true, job });
+  } catch (error: any) {
+    console.log("Error in getJobDetailsById", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
 export const authStudent = async (req: Request, res: Response) => {
   try {
     // @ts-ignore
@@ -559,5 +567,64 @@ export const applyToJob = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error("Error in applyToJob", error.message);
     return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+export const getStudentsJobStatistics = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+    const student = await Student.findOne({ googleId: user.uid }).populate(
+      "stud_info_id"
+    );
+
+    console.log("Student", student);
+
+    if (!student) {
+      return res.status(404).json({ success: false, msg: "Student not found" });
+    }
+
+    const appliedJobs = await Application.find({ student: student._id });
+    const studentInfo = {
+      //@ts-ignore
+      no_of_dead_backlogs: student.stud_info_id.no_of_dead_backlogs,
+      //@ts-ignore
+      no_of_live_backlogs: student.stud_info_id.no_of_live_backlogs,
+      //@ts-ignore
+      // averageCGPI: student.stud_info_id.averageCGPI,
+      stud_department: student.stud_department,
+      stud_year: student.stud_year, // if needed for additional checks
+    };
+
+    // Assuming jobs is retrieved from the database
+    const jobs = await Job.find(); // Fetch all jobs
+
+    let eligibleCount = 0;
+    let notEligibleCount = 0;
+
+    jobs.forEach((job) => {
+      const isEligible =
+        studentInfo.no_of_dead_backlogs <= job.max_no_dead_kt &&
+        studentInfo.no_of_live_backlogs <= job.max_no_live_kt &&
+        // studentInfo.averageCGPI >= job.min_CGPI && // Use average CGPI
+        job.branch_allowed.includes(studentInfo.stud_department);
+      // Add branch allowed or passing year check if needed
+
+      if (isEligible) {
+        eligibleCount++;
+      } else {
+        notEligibleCount++;
+      }
+    });
+
+    return res.status(200).json({
+      success: true,
+      eligibleCount,
+      notEligibleCount,
+      appliedJobs: appliedJobs.length, // Additional info if needed
+    });
+  } catch (error: any) {
+    console.log("Error in getStudentsJobStatistics", error.message);
+    return res.status(500).json({ success: false, msg: "Server Error" });
   }
 };
