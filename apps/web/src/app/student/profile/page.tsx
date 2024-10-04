@@ -4,6 +4,7 @@ import { BackendUrl } from "@/utils/constants"; // Ensure this constant is defin
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import withStudentAuth from "@/config/services/Student_Auth_service";
 
 const ProfileSection = () => {
   // Initial profile data
@@ -613,4 +614,4 @@ const ProfileSection = () => {
   );
 };
 
-export default ProfileSection;
+export default withStudentAuth(ProfileSection);

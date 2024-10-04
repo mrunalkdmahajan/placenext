@@ -5,6 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import withCollegeAuth from "@/config/services/College_Auth_service";
 
 interface StudentData {
   _id: string;
@@ -16,7 +17,7 @@ interface StudentData {
   isCollegeVerified: boolean;
 }
 
-export default function StudentList() {
+function StudentList() {
   const router = useRouter();
   const [students, setStudents] = useState<StudentData[]>([]);
   const [placementStatus, setPlacementStatus] = useState<string[]>([]);
@@ -151,3 +152,4 @@ export default function StudentList() {
     </div>
   );
 }
+export default withCollegeAuth(StudentList);

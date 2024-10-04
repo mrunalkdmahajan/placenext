@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
+import withCollegeAuth from "@/config/services/College_Auth_service";
+
 
 // Updated Student interface
 interface Student {
@@ -42,7 +44,7 @@ interface Student {
   };
 }
 
-export default function StudentById() {
+function StudentById() {
   const router = useRouter();
   const { student_Id } = useParams();
   const [student, setStudent] = useState<Student | null>(null);
@@ -251,3 +253,4 @@ export default function StudentById() {
     </div>
   );
 }
+export default withCollegeAuth(StudentById);

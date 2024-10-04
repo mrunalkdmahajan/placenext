@@ -1,8 +1,10 @@
 "use client";
 
 import JobCreationForm from "@/components/own/Form/JobCreationForm";
+import withCollegeAuth from "@/config/services/College_Auth_service";
 
-export default function JobCreate() {
+
+function JobCreate() {
   return (
     <div>
       <h1>Create a Job</h1>
@@ -10,3 +12,4 @@ export default function JobCreate() {
     </div>
   );
 }
+export default withCollegeAuth(JobCreate);

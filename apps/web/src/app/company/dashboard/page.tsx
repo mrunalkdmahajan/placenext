@@ -9,11 +9,14 @@ import { toast } from "react-toastify";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
 import StudentStatisticsChart from "@/components/own/Dashboard/StudentStatisticsChart";
 import JobCreationForm from "@/components/own/Form/JobCreationForm";
+import withCompanyAuth from "@/config/services/Company_Auth_service";
 
-export default function CompanyDashboard() {
+
+function CompanyDashboard() {
   return;
   <div>
     <h1>Company Dashboard</h1>
     <JobCreationForm />
   </div>;
 }
+export default withCompanyAuth(CompanyDashboard);

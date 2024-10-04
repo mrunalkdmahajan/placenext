@@ -1,8 +1,10 @@
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
+import withCollegeAuth from "@/config/services/College_Auth_service";
 
-export default function JobById() {
+
+function JobById() {
   const { job_id } = useParams();
   useEffect(() => {
     console.log(job_id);
@@ -24,3 +26,4 @@ export default function JobById() {
   }, [job_id]);
   return <div>JobById</div>;
 }
+export default withCollegeAuth(JobById);

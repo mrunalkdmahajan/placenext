@@ -1,7 +1,7 @@
 "use client";
 
 import ApplicationCards from "@/components/own/Dashboard/ApplicationCards";
-import withAuth from "@/config/services/Student_Auth_service";
+import withStudentAuth from "@/config/services/Student_Auth_service";
 import { BackendUrl } from "@/utils/constants";
 import axios from "axios";
 import { useEffect } from "react";
@@ -25,4 +25,4 @@ function MainDashboard() {
   );
 }
 
-export default withAuth(MainDashboard);
+export default withStudentAuth(MainDashboard);

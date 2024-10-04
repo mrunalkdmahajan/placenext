@@ -5,19 +5,19 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-const withStudentAuth = (WrappedComponent: any) => {
+const withCollegeAuth = (WrappedComponent: any) => {
   return (props: any) => {
     const router = useRouter();
 
     useEffect(() => {
       const authenticateUser = async () => {
-        const res = await axios.get(`${BackendUrl}/api/student/auth`, {
+        const res = await axios.get(`${BackendUrl}/api/college/auth`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
         if (!res.data.success) {
-          router.push("/authentication/studentLogin");
+          router.push("/authentication/facultyLogin");
         }
       };
     }, []);
@@ -26,4 +26,4 @@ const withStudentAuth = (WrappedComponent: any) => {
   };
 };
 
-export default withStudentAuth;
+export default withCollegeAuth;

@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { BackendUrl } from "@/utils/constants";
+import withStudentAuth from "@/config/services/Student_Auth_service";
 
-export default function VerifyEmail() {
+function VerifyEmail() {
   const [attempts, setAttempts] = useState(0);
   const maxAttempts = 6;
   const router = useRouter();
@@ -106,3 +107,4 @@ export default function VerifyEmail() {
     </div>
   );
 }
+export default withStudentAuth(VerifyEmail);

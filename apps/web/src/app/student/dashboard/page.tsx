@@ -1,7 +1,8 @@
 import MainDashboard from "@/components/own/Dashboard/MainDashboard";
 import JobCreationForm from "@/components/own/Form/JobCreationForm";
+import withStudentAuth from "@/config/services/Student_Auth_service";
 
-export default function Dashboard() {
+function Dashboard() {
   return (
     <div>
       <MainDashboard />
@@ -9,3 +10,4 @@ export default function Dashboard() {
     </div>
   );
 }
+export default withStudentAuth(Dashboard);
