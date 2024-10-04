@@ -2,7 +2,7 @@
 
 import { BackendUrl } from "@/utils/constants";
 import axios from "axios";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const withAuth = (WrappedComponent: any) => {
@@ -17,7 +17,7 @@ const withAuth = (WrappedComponent: any) => {
           },
         });
         if (!res.data.success) {
-          router.push("/login");
+          router.push("/authentication/studentLogin");
         }
       };
     }, []);

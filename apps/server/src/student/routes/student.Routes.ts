@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authenticateToken } from "../../middlewares/verifyGoogleToken";
 import {
   applicationFrom,
+  applyToJob,
   authStudent,
   getAllCollegeList,
   getJobForCollege,
@@ -58,4 +59,12 @@ studentRoutes.get("/statistics", authenticateToken, getStudentStatistics);
 
 // student access to company
 studentRoutes.get("/companies", authenticateToken, getJobForCollege);
+
+// student applying to job
+studentRoutes.post(
+  "/apply_job",
+  authenticateToken,
+  upload.single("app_cover_letter"),
+  applyToJob
+);
 export default studentRoutes;

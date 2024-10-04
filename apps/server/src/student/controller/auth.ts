@@ -7,6 +7,7 @@ import College from "../../college/models/college";
 import axios from "axios";
 import { Document_server_url } from "../../app";
 import Job from "../../company/models/job";
+import Application from "../models/application";
 const requiredFields = [
   "firstName",
   "middleName",
@@ -497,6 +498,66 @@ export const authStudent = async (req: Request, res: Response) => {
     return res.status(200).json({ success: true, student });
   } catch (error: any) {
     console.log("Error in authStudent", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+export const applyToJob = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user as any; // Explicitly type 'req.user'
+    const student = await Student.findOne({ googleId: user.uid });
+
+    // Destructure job details from the request body
+    const { app_job_id, app_status } = req.body;
+
+    // Validate required fields
+    if (!app_job_id) {
+      return res.status(400).json({ msg: "All fields are required" });
+    }
+
+    // Ensure that the student exists
+    if (!student) {
+      return res.status(404).json({ success: false, msg: "Student not found" });
+    }
+
+    // Ensure that the job exists
+    const job = await Job.findOne({ _id: app_job_id });
+    if (!job) {
+      return res.status(404).json({ success: false, msg: "Job not found" });
+    }
+
+    // Handle file upload (check if the file exists and isn't empty)
+    let uploadedCoverLetter;
+    if (req.file) {
+      // Upload cover letter to Google Drive
+      uploadedCoverLetter = await uploadToGoogleDrive(req.file.path);
+    }
+
+    // Create and save a new job application
+    const newApplication = new Application({
+      app_cover_letter: uploadedCoverLetter || "", // Use empty string if no file uploaded
+      app_job_id,
+      student: student._id,
+      app_status,
+    });
+
+    const savedApplication = await newApplication.save();
+    console.log(
+      "Application Submitted Successfully for job applicationId:",
+      savedApplication.id + " by studentId:",
+      student.id + " for jobId:",
+      job.id
+    );
+
+    // Return success response
+    return res.status(200).json({
+      success: true,
+      application: savedApplication,
+      message: "Application Submitted Successfully",
+    });
+  } catch (error: any) {
+    console.error("Error in applyToJob", error.message);
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 };
