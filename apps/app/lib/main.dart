@@ -20,12 +20,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(bottomNavigationBarTheme: NavigationThemeData.theme),
       debugShowCheckedModeBanner: false,
-      initialRoute: "/student_application_form",
+      initialRoute: "/student_dashboard",
       routes: {
         "/": (context) => const OnBoardingScreen(),
         // student routes
         "/student_login": (context) => const LoginScreen(),
-        "/student_register": (context) => const OnBoardingScreen(),
         "/student_dashboard": (context) => const StudentDashboardScreen(),
         "/student_profile": (context) => const OnBoardingScreen(),
         "/student_application_form": (context) => const ApplicationForm(),
