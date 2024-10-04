@@ -2,6 +2,7 @@ import Router from "express";
 import {
   acceptStudent,
   applicationFrom,
+  collegeAuth,
   createJobByCollege,
   getAllStudentList,
   getCollegeJobs,
@@ -16,6 +17,8 @@ import { authenticateToken } from "../../middlewares/verifyGoogleToken";
 const collegeRoutes = Router();
 
 collegeRoutes.get("/is_first_signin", authenticateToken, isFirstSignIn);
+
+collegeRoutes.get("/auth", authenticateToken, collegeAuth);
 
 collegeRoutes.post("/google_login", authenticateToken, signup);
 

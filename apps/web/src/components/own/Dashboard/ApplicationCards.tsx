@@ -21,26 +21,8 @@ export interface JobPosting {
   basicRequirements: string[];
 }
 
-export const sampleJob: JobPosting = {
-  id: "1",
-  title: "Software Engineer",
-  company: "TechCorp Inc.",
-  description:
-    "Join our dynamic team to develop innovative software solutions for global clients. Knowledge of React and Node.js required.",
-  location: "San Francisco, CA",
-  postedDate: "2024-09-05",
-  deadline: "2024-09-30",
-  salary: "$100,000 - $120,000 per year",
-  workingHours: "9 AM - 5 PM, Monday to Friday",
-  basicRequirements: [
-    "Bachelor's degree in Computer Science or related field",
-    "3+ years of experience in software development",
-    "Proficiency in React, Node.js, and RESTful APIs",
-  ],
-};
-
 const ApplicationCards = () => {
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState<JobPosting[]>([]);
 
   const pathname = usePathname();
   const currentPath = pathname;
@@ -58,7 +40,18 @@ const ApplicationCards = () => {
         );
         console.log(response.data);
         if (response.data.success) {
-          setJobs(response.data.jobs);
+          const jobsData = response.data.jobs.map((job: any) => ({
+            id: job._id,
+            title: job.job_title,
+            company: job.company_name,
+            location: job.job_location,
+            postedDate: new Date(job.job_posted_date).toLocaleDateString(),
+            deadline: job.job_deadline || "Not Specified",
+            salary: `$${job.job_salary}`,
+            workingHours: job.job_timing,
+            basicRequirements: job.job_requirements,
+          }));
+          setJobs(jobsData);
         }
       } catch (error) {
         console.error(error);
@@ -81,14 +74,9 @@ const ApplicationCards = () => {
       )}
 
       <div className="flex flex-row overflow-auto gap-2">
-        <ApplicationCard job={sampleJob} />
-        <ApplicationCard job={sampleJob} />
-        <ApplicationCard job={sampleJob} />
-      </div>
-      <div className="flex flex-row overflow-auto gap-2">
-        <ApplicationCard job={sampleJob} />
-        <ApplicationCard job={sampleJob} />
-        <ApplicationCard job={sampleJob} />
+        {jobs.map((job) => (
+          <ApplicationCard key={job.id} job={job} />
+        ))}
       </div>
       <p className="mt-4">
         Looking for more jobs?

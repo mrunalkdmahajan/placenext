@@ -426,3 +426,20 @@ export const getCollegeJobById = async (req: Request, res: Response) => {
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 };
+
+export const collegeAuth = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+    const student = await College.findOne({ googleId: user.uid });
+
+    if (!student) {
+      return res.status(404).json({ success: false, msg: "Student not found" });
+    }
+
+    return res.status(200).json({ success: true, student });
+  } catch (error: any) {
+    console.log("Error in authStudent", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
