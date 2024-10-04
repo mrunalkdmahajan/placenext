@@ -2,7 +2,10 @@ import { Router } from "express";
 import { authenticateToken } from "../../middlewares/verifyGoogleToken";
 import {
   applicationFrom,
+  authStudent,
   getAllCollegeList,
+  getJobForCollege,
+  getStudentStatistics,
   getUserDetails,
   isFirstSignIn,
   signup,
@@ -10,6 +13,9 @@ import {
 import { upload } from "../../middlewares/multer";
 
 const studentRoutes = Router();
+
+// auth routes
+studentRoutes.get("/auth", authenticateToken, authStudent);
 
 studentRoutes.post("/google_login", authenticateToken, signup);
 
@@ -42,8 +48,14 @@ studentRoutes.post(
 
 studentRoutes.get("/is_first_signin", authenticateToken, isFirstSignIn);
 studentRoutes.get("/get_user_details", authenticateToken, getUserDetails);
+studentRoutes.put("/update_user_details", authenticateToken, getUserDetails);
 
 // student access to college
 studentRoutes.get("/colleges", authenticateToken, getAllCollegeList);
 
+// student student statistics
+studentRoutes.get("/statistics", authenticateToken, getStudentStatistics);
+
+// student access to company
+studentRoutes.get("/companies", authenticateToken, getJobForCollege);
 export default studentRoutes;

@@ -1,6 +1,8 @@
 import company from "../models/company";
 import { Request, Response } from "express";
 import Job from "../models/job";
+import { google } from "googleapis";
+import College from "../../college/models/college";
 
 export const isFirstSignIn = async (req: Request, res: Response) => {
   try {
@@ -224,19 +226,8 @@ export const deleteCompany = async (req: Request, res: Response) => {
 
 export const createJobByCompany = async (req: Request, res: Response) => {
   try {
-    //    _id?: string;
-    // job_title: string;
-    // job_type: string;
-    // job_location: string;
-    // job_salary: number;
-    // job_description: string;
-    // job_requirements: string[];
-    // job_posted_date: Date;
-    // yr_of_exp_req: number;
-    // job_timing: string;
-    // status: string;
     // @ts-ignore
-    const company = req.user;
+    const LogincollegeUser = req.user;
     const {
       job_title,
       job_type,
@@ -248,9 +239,12 @@ export const createJobByCompany = async (req: Request, res: Response) => {
       yr_of_exp_req,
       job_timing,
       status,
-      college,
+      company_name,
     } = req.body;
 
+    console.log(req.body); // Debugging output
+
+    // Check for required fields, including company_name
     if (
       [
         job_title,
@@ -263,20 +257,34 @@ export const createJobByCompany = async (req: Request, res: Response) => {
         yr_of_exp_req,
         job_timing,
         status,
-      ].some((field) => field === "")
+        company_name, // Ensure company_name is checked
+      ].some((field) => field === "" || field === undefined) // Check for empty or undefined fields
     ) {
       return res.status(400).json({ msg: "All fields are required" });
     }
-    const exsistingJob = await Job.findOne({ job_title, job_location });
 
-    if (exsistingJob) {
+    // Check for existing job
+    const existingJob = await Job.findOne({ job_title, job_location });
+
+    if (existingJob) {
       return res.status(400).json({ msg: "Job already exists" });
     }
 
+    // Find the college based on the logged-in user
+    const foundCollege = await College.findOne({
+      googleId: LogincollegeUser.uid,
+    });
+
+    if (!foundCollege) {
+      return res.status(400).json({ msg: "College not found" });
+    }
+
+    // Create new job
     const newJob = new Job({
       job_title,
       job_type,
       job_location,
+      company_name,
       job_salary,
       job_description,
       job_requirements,
@@ -284,7 +292,9 @@ export const createJobByCompany = async (req: Request, res: Response) => {
       yr_of_exp_req,
       job_timing,
       status,
+      college: foundCollege._id, // Link to college
     });
+
     await newJob.save();
     return res.status(200).json({ success: true, msg: "Job created" });
   } catch (error: any) {

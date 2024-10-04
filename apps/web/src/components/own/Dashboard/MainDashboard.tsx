@@ -1,24 +1,28 @@
+"use client";
+
+import { useEffect } from "react";
 import Sidebar from "../StudentSidebar";
 import JobList from "./ApplicationCard";
 import ApplicationCards from "./ApplicationCards";
-
-const StudentInfo = [
-  {
-    name: "Mrunal",
-    description: "A student of vesit",
-  },
-  {
-    name: "Verma",
-    description: "A student of vesit",
-  },
-];
+import axios from "axios";
+import { BackendUrl } from "@/utils/constants";
 
 export default function MainDashboard() {
+  useEffect(() => {
+    const getStudentStatistics = async () => {
+      const res = await axios.get(`${BackendUrl}/api/student/statistics`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      console.log(res.data);
+    };
+    getStudentStatistics();
+  }, []);
+
   return (
     <div className="bg-primary_background h-full">
-     <h1>Student Statistics</h1>
-     {/* <ApplicationCards />
-      <ApplicationCards /> */}
+      <h1>Student Statistics</h1>
     </div>
   );
 }

@@ -1,9 +1,12 @@
 import { Schema, model } from "mongoose";
 import mongoose from "mongoose";
+import { IStudent } from "../../student/models/student";
+import { ICollege } from "../../college/models/college";
 
 export interface IJob extends Document {
   _id?: string;
   job_title: string;
+  company_name: string;
   job_type: string;
   job_location: string;
   job_salary: number;
@@ -13,7 +16,12 @@ export interface IJob extends Document {
   yr_of_exp_req: number;
   job_timing: string;
   status: string;
-  college: Object;
+  max_no_live_kt: number; //
+  max_no_dead_kt: number; //
+  min_CGPI: number;
+  branch_allowed: string[];
+  passing_year: number[];
+  college: ICollege["_id"];
 }
 
 const JobSchema = new Schema<IJob>({
@@ -22,6 +30,10 @@ const JobSchema = new Schema<IJob>({
     required: true,
   },
   job_type: {
+    type: String,
+    required: true,
+  },
+  company_name: {
     type: String,
     required: true,
   },
@@ -37,6 +49,28 @@ const JobSchema = new Schema<IJob>({
     type: String,
     required: true,
   },
+  max_no_dead_kt: {
+    type: Number,
+    required: true,
+  },
+  max_no_live_kt: {
+    type: Number,
+    required: true,
+  },
+  min_CGPI: {
+    type: Number,
+    required: true,
+  },
+  branch_allowed: {
+    type: [String],
+    required: true,
+  },
+  passing_year: [
+    {
+      type: Number,
+      required: true,
+    },
+  ],
   job_requirements: {
     type: [String],
     required: true,
@@ -58,7 +92,7 @@ const JobSchema = new Schema<IJob>({
     required: true,
   },
   college: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "College",
   },
 });

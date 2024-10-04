@@ -48,11 +48,15 @@ const ApplicationCards = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get(`${BackendUrl}/api/college/get_jobs`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await axios.get(
+          `${BackendUrl}/api/student/companies`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        console.log(response.data);
         if (response.data.success) {
           setJobs(response.data.jobs);
         }

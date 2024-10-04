@@ -6,6 +6,7 @@ import { uploadToGoogleDrive } from "../../config/Google";
 import College from "../../college/models/college";
 import axios from "axios";
 import { Document_server_url } from "../../app";
+import Job from "../../company/models/job";
 const requiredFields = [
   "firstName",
   "middleName",
@@ -250,5 +251,252 @@ export const getUserDetails = async (req: Request, res: Response) => {
     return res.status(200).json({ success: true, student });
   } catch (error: any) {
     console.log("Error in getUserDetails", error.message);
+  }
+};
+
+export const updateUserDetails = async (req: Request, res: Response) => {
+  //@ts-ignore
+  const { userId } = req.user; // Assuming userId is extracted from token in authenticateToken middleware
+
+  // Extract new data from the request body
+  const {
+    firstName,
+    middleName,
+    lastName,
+    gender,
+    fatherName,
+    motherName,
+    rollNumber,
+    division,
+    dateOfBirth,
+    email,
+    alternateEmail,
+    aadharNumber,
+    phoneNumber,
+    alternatePhoneNo,
+    panNumber,
+    address,
+    state,
+    country,
+    pincode,
+    courseType,
+    admissionYear,
+    departmentName,
+    tenthPercentage,
+    hscBoard,
+    twelfthPercentage,
+    sscBoard,
+    cet,
+    sem1CGPI,
+    sem2CGPI,
+    sem3CGPI,
+    sem4CGPI,
+    sem5CGPI,
+    sem6CGPI,
+    sem7CGPI,
+    sem8CGPI,
+    college,
+  } = req.body;
+
+  try {
+    // Find the student by userId
+    let student = await Student.findOne({ _id: userId });
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
+    }
+
+    // Update the student's profile information
+    student.stud_name = firstName || student.stud_name;
+    // student.middleName = middleName || student.middleName;
+    // student.lastName = lastName || student.lastName;
+    // student.gender = gender || student.gender;
+    // student.fatherName = fatherName || student.fatherName;
+    // student.motherName = motherName || student.motherName;
+    // student.rollNumber = rollNumber || student.rollNumber;
+    // student.division = division || student.division;
+    // student.dateOfBirth = dateOfBirth || student.dateOfBirth;
+    // student.email = email || student.email;
+    // student.alternateEmail = alternateEmail || student.alternateEmail;
+    // student.aadharNumber = aadharNumber || student.aadharNumber;
+    // student.phoneNumber = phoneNumber || student.phoneNumber;
+    // student.alternatePhoneNo = alternatePhoneNo || student.alternatePhoneNo;
+    // student.panNumber = panNumber || student.panNumber;
+    // student.address = address || student.address;
+    // student.state = state || student.state;
+    // student.country = country || student.country;
+    // student.pincode = pincode || student.pincode;
+    // student.courseType = courseType || student.courseType;
+    // student.admissionYear = admissionYear || student.admissionYear;
+    // student.departmentName = departmentName || student.departmentName;
+    // student.tenthPercentage = tenthPercentage || student.tenthPercentage;
+    // student.hscBoard = hscBoard || student.hscBoard;
+    // student.twelfthPercentage = twelfthPercentage || student.twelfthPercentage;
+    // student.sscBoard = sscBoard || student.sscBoard;
+    // student.cet = cet || student.cet;
+    // student.sem1CGPI = sem1CGPI || student.sem1CGPI;
+    // student.sem2CGPI = sem2CGPI || student.sem2CGPI;
+    // student.sem3CGPI = sem3CGPI || student.sem3CGPI;
+    // student.sem4CGPI = sem4CGPI || student.sem4CGPI;
+    // student.sem5CGPI = sem5CGPI || student.sem5CGPI;
+    // student.sem6CGPI = sem6CGPI || student.sem6CGPI;
+    // student.sem7CGPI = sem7CGPI || student.sem7CGPI;
+    // student.sem8CGPI = sem8CGPI || student.sem8CGPI;
+    // student.college = college || student.college;
+
+    student.stud_phone = phoneNumber || student.stud_phone;
+    student.stud_email = email || student.stud_email;
+    student.stud_address = address || student.stud_address;
+    student.stud_dob = dateOfBirth || student.stud_dob;
+    student.stud_course = courseType || student.stud_course;
+    student.stud_department = departmentName || student.stud_department;
+    // student.stud_college_id = college || student.stud_college_id;
+    student.stud_year = admissionYear || student.stud_year;
+    // Save the updated profile to the database
+    await student.save();
+
+    res.json({
+      success: true,
+      message: "Profile updated successfully",
+      student,
+    });
+  } catch (error) {
+    console.error("Error updating profile: ", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while updating profile",
+    });
+  }
+};
+
+export const getStudentStatistics = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+    const student = await Student.findOne({ googleId: user.uid }).populate(
+      "stud_info_id"
+    );
+    console.log(student?._id);
+    console.log(student);
+
+    //@ts-ignore
+    const appliedJobs = await Job.find({ student: student._id });
+    console.log(await Job.find());
+
+    console.log(appliedJobs);
+
+    if (!student) {
+      return res.status(404).json({ success: false, msg: "Student not found" });
+    }
+    if (appliedJobs.length === 0) {
+      return res.status(200).json({ success: true, student, appliedJobs: [] });
+    }
+
+    const companiesCameToCollege = await Job.find({
+      college: student.stud_college_id,
+    }).distinct("company");
+    console.log(companiesCameToCollege);
+
+    return res
+      .status(200)
+      .json({ success: true, student, appliedJobs, companiesCameToCollege });
+  } catch (error: any) {
+    console.log("Error in getStudentStatistics", error.message);
+  }
+};
+
+export const getJobForCollege = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+    const student = await Student.findOne({ googleId: user.uid });
+
+    if (!student) {
+      return res.status(404).json({ success: false, msg: "Student not found" });
+    }
+
+    const studentInfo = await StudentInfo.findOne({
+      _id: student.stud_info_id,
+    });
+
+    if (!studentInfo) {
+      return res
+        .status(404)
+        .json({ success: false, msg: "Student info not found" });
+    }
+
+    // Calculate the average CGPI
+    const grades = [
+      studentInfo.stud_sem1_grade,
+      studentInfo.stud_sem2_grade,
+      studentInfo.stud_sem3_grade,
+      studentInfo.stud_sem4_grade,
+      studentInfo.stud_sem5_grade,
+      studentInfo.stud_sem6_grade,
+      studentInfo.stud_sem7_grade,
+      studentInfo.stud_sem8_grade,
+    ];
+
+    const totalGrades = grades.reduce((sum: any, grade: any) => {
+      return grade !== null ? sum + grade : sum; // Add only non-null grades
+    }, 0);
+
+    const validSemesters = grades.filter((grade) => grade !== null).length;
+    const averageCGPI = validSemesters > 0 ? totalGrades / validSemesters : 0; // Avoid division by zero
+
+    // Fetch all jobs posted at the student's college
+    const jobs = await Job.find({
+      college: student.stud_college_id,
+    });
+
+    if (!jobs.length) {
+      return res
+        .status(400)
+        .json({ success: false, student, message: "No Jobs Found" });
+    }
+
+    // Determine eligibility for each job
+    const jobsWithEligibility = jobs.map((job) => {
+      const isEligible =
+        studentInfo.no_of_dead_backlogs <= job.max_no_dead_kt &&
+        studentInfo.no_of_live_backlogs <= job.max_no_live_kt &&
+        averageCGPI >= job.min_CGPI && // Use average CGPI
+        job.branch_allowed.includes(student.stud_department);
+      // job.passing_year.includes(student.stud_year);
+
+      return {
+        ...job.toObject(), // Convert the job document to a plain object
+        isEligible, // Add eligibility status
+      };
+    });
+
+    return res
+      .status(200)
+      .json({ success: true, student, jobs: jobsWithEligibility });
+  } catch (error: any) {
+    console.error("Error in getJobForCollege", error.message);
+    return res
+      .status(500)
+      .json({ success: false, msg: "Internal Server Error" });
+  }
+};
+
+export const authStudent = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+    const student = await Student.findOne({ googleId: user.uid });
+
+    if (!student) {
+      return res.status(404).json({ success: false, msg: "Student not found" });
+    }
+
+    return res.status(200).json({ success: true, student });
+  } catch (error: any) {
+    console.log("Error in authStudent", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
   }
 };

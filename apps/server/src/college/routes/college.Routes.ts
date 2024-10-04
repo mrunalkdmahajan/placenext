@@ -2,6 +2,7 @@ import Router from "express";
 import {
   acceptStudent,
   applicationFrom,
+  createJobByCollege,
   getAllStudentList,
   getCollegeJobs,
   getStudentById,
@@ -37,5 +38,7 @@ collegeRoutes.get(
 
 collegeRoutes.get("/get_jobs", authenticateToken, getCollegeJobs);
 collegeRoutes.get("/get_job/:id", authenticateToken);
+
+collegeRoutes.post("/create_job", authenticateToken, createJobByCollege);
 
 export default collegeRoutes;

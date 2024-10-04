@@ -56,7 +56,7 @@ const ProfileSection = () => {
           `${BackendUrl}/api/student/get_user_details`,
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming you're using token-based auth
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }
         );
@@ -74,6 +74,7 @@ const ProfileSection = () => {
             stud_department,
             googleId,
           } = student;
+          localStorage.setItem("name", stud_name);
 
           // Split the full name
           const nameParts = stud_name.split(" ");
@@ -143,7 +144,7 @@ const ProfileSection = () => {
     e.preventDefault();
     try {
       const res = await axios.put(
-        `${BackendUrl}/api/student/get_user_details_update `,
+        `${BackendUrl}/api/student/update_user_details `,
         profile,
         {
           headers: {

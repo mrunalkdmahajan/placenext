@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 import { ICollege } from "../../college/models/college";
 import { IStudentInfo } from "./info_student";
 
-interface IStudent extends Document {
+export interface IStudent extends Document {
+  // _id: string;
   stud_name: string;
   stud_phone: string;
   stud_email: string;
@@ -11,6 +12,7 @@ interface IStudent extends Document {
   stud_dob: Date;
   stud_course: string;
   stud_year: number;
+  current_year: number;
   stud_department: string;
   stud_college_id: mongoose.Types.ObjectId;
   googleId: string;
