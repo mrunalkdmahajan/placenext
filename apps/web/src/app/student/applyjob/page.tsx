@@ -18,10 +18,9 @@ function MainDashboard() {
     };
   }, []);
   return (
-    <div className="bg-primary_background h-full">
-      <ApplicationCards />
-      <ApplicationCards />
-    </div>
+    <div>
+    <ApplicationCards />
+  </div>
   );
 }
 

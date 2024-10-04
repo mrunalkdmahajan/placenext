@@ -1,14 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 import { BackendUrl } from "@/utils/constants";
-import Link from "next/link";
 import { JobPosting } from "./ApplicationCards";
 
 const ApplicationCard = ({ job }: { job: JobPosting }) => {
-  const router = useRouter();
   const [isApplied, setIsApplied] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isNotInterested, setIsNotInterested] = useState(false);
@@ -54,9 +51,7 @@ const ApplicationCard = ({ job }: { job: JobPosting }) => {
       <p className="text-sm text-gray-400 mt-2">Posted on: {job.postedDate}</p>
       <p className="text-sm text-red-500 mt-2">Deadline: {job.deadline}</p>
       <p className="text-sm text-green-600 mt-2">Salary: {job.salary}</p>
-      <p className="text-sm text-blue-600 mt-2">
-        Working Hours: {job.workingHours}
-      </p>
+      <p className="text-sm text-blue-600 mt-2">Working Hours: {job.workingHours}</p>
 
       <div className="mt-4 flex gap-4">
         {isApplied ? (

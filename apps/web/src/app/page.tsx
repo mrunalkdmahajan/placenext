@@ -1,5 +1,6 @@
 "use client";
 import LandingNav from "@/components/own/Nav/LandingNav";
+import React from "react";
 import { useEffect, useState } from "react";
 import { ToastContainer, Bounce } from "react-toastify";
 

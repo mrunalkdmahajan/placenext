@@ -10,4 +10,5 @@ function Dashboard() {
     </div>
   );
 }
+
 export default withStudentAuth(Dashboard);
