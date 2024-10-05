@@ -3,6 +3,7 @@ import College from "../models/college";
 import Student from "../../student/models/student";
 import StudentInfo from "../../student/models/info_student";
 import Job from "../../company/models/job";
+import Application from "../../student/models/application";
 
 export const isFirstSignIn = async (req: Request, res: Response) => {
   try {
@@ -413,19 +414,19 @@ export const createJobByCollege = async (req: Request, res: Response) => {
   }
 };
 
-export const getCollegeJobById = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const job = await Job.findById(id);
-    if (!job) {
-      return res.status(404).json({ success: false, msg: "Job not found" });
-    }
-    return res.status(200).json({ success: true, job });
-  } catch (error: any) {
-    console.log("Error in getCollegeJobById", error.message);
-    return res.status(500).json({ msg: "Internal Server Error" });
-  }
-};
+// export const getCollegeJobById = async (req: Request, res: Response) => {
+//   try {
+//     const { id } = req.params;
+//     const job = await Job.findById(id);
+//     if (!job) {
+//       return res.status(404).json({ success: false, msg: "Job not found" });
+//     }
+//     return res.status(200).json({ success: true, job });
+//   } catch (error: any) {
+//     console.log("Error in getCollegeJobById", error.message);
+//     return res.status(500).json({ msg: "Internal Server Error" });
+//   }
+// };
 
 export const collegeAuth = async (req: Request, res: Response) => {
   try {
@@ -440,6 +441,45 @@ export const collegeAuth = async (req: Request, res: Response) => {
     return res.status(200).json({ success: true, student });
   } catch (error: any) {
     console.log("Error in authStudent", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+export const getCollegeJob = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+    const college = await College.findOne({ googleId: user.uid });
+    if (!college) {
+      return res.status(404).json({ success: false, msg: "College not found" });
+    }
+
+    const jobs = await Job.find({ college: college._id });
+    return res.status(200).json({ success: true, jobs });
+  } catch (error: any) {
+    console.log("Error in getCollegeJob", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+export const getJobDetailsById = async (req: Request, res: Response) => {
+  try {
+    // here we have to return two things one is job details and other is student details who applied for that job
+    const { id } = req.params;
+    console.log("Job ID:", id);
+
+    const job = await Job.findById(id);
+    if (!job) {
+      return res.status(404).json({ success: false, msg: "Job not found" });
+    }
+
+    const jobApplicants = await Application.find({ app_job_id: id }).populate(
+      "student"
+    );
+
+    return res.status(200).json({ success: true, job, jobApplicants });
+  } catch (error: any) {
+    console.log("Error in getJobDetailsById", error.message);
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 };

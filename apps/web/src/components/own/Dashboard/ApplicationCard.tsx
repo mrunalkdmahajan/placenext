@@ -46,14 +46,13 @@ const ApplicationCard = ({ job }: { job: JobPosting }) => {
   return (
     <div className="max-w-sm mx-auto p-4 bg-white border border-primary shadow-md rounded-lg mb-4">
       <h3 className="text-lg font-bold">{job.title}</h3>
+
       <p className="text-gray-700">{job.company}</p>
       <p className="text-gray-500">{job.location}</p>
       <p className="text-sm text-gray-400 mt-2">Posted on: {job.postedDate}</p>
-      <p className="text-sm text-red-500 mt-2">Deadline: {job.deadline}</p>
-      <p className="text-sm text-green-600 mt-2">Salary: {job.salary}</p>
-      <p className="text-sm text-blue-600 mt-2">Working Hours: {job.workingHours}</p>
+      <p className="text-gray-700 text-xs">{job.description}</p>
 
-      <div className="mt-4 flex gap-4">
+      {/* <div className="mt-4 flex gap-4">
         {isApplied ? (
           <button
             className="w-1/3 bg-primary text-white p-2 rounded cursor-not-allowed"
@@ -83,7 +82,7 @@ const ApplicationCard = ({ job }: { job: JobPosting }) => {
         >
           Not Interested
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

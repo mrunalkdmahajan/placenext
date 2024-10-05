@@ -1,11 +1,13 @@
 "use client";
 
+import AppliedJobs from "@/components/own/Dashboard/AppliedJobs";
 import CompanyStatsChart from "@/components/own/Dashboard/CompanyStatsChart";
 import JobEligibilityPieChart from "@/components/own/Dashboard/JobEligibilityPieChart";
 import MainDashboard from "@/components/own/Dashboard/MainDashboard";
 import JobCreationForm from "@/components/own/Form/JobCreationForm";
 import { BackendUrl } from "@/utils/constants";
 import axios from "axios";
+import { get } from "http";
 import { useEffect, useState } from "react";
 
 export default function Dashboard() {
@@ -42,6 +44,15 @@ export default function Dashboard() {
         setIneligibleCount(res.data.notEligibleCount);
       }
     };
+    const getStudentAppliedJobs = async () => {
+      const res = await axios.get(`${BackendUrl}/api/student/applied_jobs`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      console.log(res.data);
+    };
+    getStudentAppliedJobs();
     getStudentStatistics();
     getStudentJobStatistics();
   }, []);
@@ -58,6 +69,7 @@ export default function Dashboard() {
         eligibleCount={eligibleCount}
         notEligibleCount={ineligibleCount}
       />
+      <AppliedJobs />
     </div>
   );
 }

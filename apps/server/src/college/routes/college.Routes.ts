@@ -5,7 +5,9 @@ import {
   collegeAuth,
   createJobByCollege,
   getAllStudentList,
+  getCollegeJob,
   getCollegeJobs,
+  getJobDetailsById,
   getStudentById,
   getStudentStatistics,
   isFirstSignIn,
@@ -43,5 +45,8 @@ collegeRoutes.get("/get_jobs", authenticateToken, getCollegeJobs);
 collegeRoutes.get("/get_job/:id", authenticateToken);
 
 collegeRoutes.post("/create_job", authenticateToken, createJobByCollege);
+
+collegeRoutes.get("/companies", authenticateToken, getCollegeJob);
+collegeRoutes.get("/company/:id", authenticateToken, getJobDetailsById);
 
 export default collegeRoutes;

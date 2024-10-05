@@ -14,12 +14,11 @@ function MainDashboard() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      console.log(res.data);
     };
+    getAllJobs();
   }, []);
   return (
     <div className="bg-primary_background h-full">
-      <ApplicationCards />
       <ApplicationCards />
     </div>
   );

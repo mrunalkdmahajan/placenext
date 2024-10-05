@@ -38,7 +38,7 @@ const FinalApplication = () => {
     const fetchJobDetails = async () => {
       try {
         const response = await axios.get(
-          `${BackendUrl}/api/student/company/${job}`,
+          `${BackendUrl}/api/student/company/${job_id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -46,7 +46,7 @@ const FinalApplication = () => {
           }
         );
         console.log(response.data);
-        // setJob(response.data);
+        setJob(response.data.job);
       } catch (error) {
         console.error("Error fetching job details:", error);
       }
@@ -81,17 +81,19 @@ const FinalApplication = () => {
 
     try {
       const formData = new FormData();
-      formData.append("cv", cvFile);
-      formData.append("jobId", job_id as string); // Converting _id to string
-      formData.append("applicantName", "John Doe"); // Replace with dynamic user data
-      formData.append("applicantEmail", "john.doe@example.com"); // Replace with dynamic user data
+      formData.append("app_cover_letter", cvFile);
+      formData.append("app_job_id", job_id as string);
 
-      const response = await axios.post("/api/student/apply_job", formData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        `${BackendUrl}/api/student/apply_job`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       if (response.data.success) {
         alert("Application submitted successfully!");
       } else {

@@ -22,7 +22,7 @@ export interface JobPosting {
   basicRequirements: string[];
 }
 
-const ApplicationCards = () => {
+const CollegeApplicationCards = () => {
   const router = useRouter();
   const [jobs, setJobs] = useState<JobPosting[]>([]);
 
@@ -33,7 +33,7 @@ const ApplicationCards = () => {
     const fetchJobs = async () => {
       try {
         const response = await axios.get(
-          `${BackendUrl}/api/student/companies`,
+          `${BackendUrl}/api/college/companies`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -78,7 +78,7 @@ const ApplicationCards = () => {
 
       <div className="flex flex-row overflow-auto gap-2">
         {jobs.map((job) => (
-          <Button onClick={() => router.push(`/student/applyjob/${job.id}`)}>
+          <Button onClick={() => router.push(`/college/jobs/${job.id}`)}>
             <ApplicationCard key={job.id} job={job} />
           </Button>
         ))}
@@ -93,4 +93,4 @@ const ApplicationCards = () => {
   );
 };
 
-export default ApplicationCards;
+export default CollegeApplicationCards;

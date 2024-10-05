@@ -69,7 +69,14 @@ export const isFirstSignIn = async (req: Request, res: Response) => {
     const user = req.user;
     const student = await Student.findOne({ googleId: user.uid });
 
-    return res.status(200).json({ success: true, isFirstSignIn: !student });
+    if (!student) {
+      return res.status(404).json({ success: false, msg: "Student not found" });
+    }
+
+    if (!student.stud_info_id) {
+      return res.status(200).json({ success: true, isFirstSignIn: true });
+    }
+    return res.status(200).json({ success: true, isFirstSignIn: false });
   } catch (error: any) {
     console.log("Error in isFirstSignIn", error.message);
     return res.status(500).json({ msg: "Internal Server Error" });
@@ -626,5 +633,47 @@ export const getStudentsJobStatistics = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.log("Error in getStudentsJobStatistics", error.message);
     return res.status(500).json({ success: false, msg: "Server Error" });
+  }
+};
+
+export const getJobAppliedByStudent = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+    const student = await Student.findOne({ googleId: user.uid });
+
+    if (!student) {
+      return res.status(404).json({ success: false, msg: "Student not found" });
+    }
+
+    const appliedJobs = await Application.find({
+      student: student._id,
+    }).populate("app_job_id");
+
+    if (appliedJobs.length === 0) {
+      return res.status(200).json({ success: true, appliedJobs: [] });
+    }
+
+    return res.status(200).json({ success: true, appliedJobs });
+  } catch (error: any) {
+    console.log("Error in getJobAppliedByStudent", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+export const getJobAppliedDetailsById = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+    const { id } = req.params;
+    const job = await Job.findById(id);
+
+    if (!job) {
+      return res.status(404).json({ success: false, msg: "Job not found" });
+    }
+    return res.status(200).json({ success: true, job });
+  } catch (error: any) {
+    console.log("Error in getJobDetailsById", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
   }
 };

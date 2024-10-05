@@ -41,7 +41,7 @@ const options: Option[] = [
   { name: "Apply for Jobs", path: "/student/applyjob" },
   { name: "Messages", path: "/messages/inbox" },
   { name: "Profile", path: "/student/profile" },
-  { name: "Settings", path: "/settings" },
+  { name: "Settings", path: "/student/settings" },
 ];
 
 const OptionsIcon = [

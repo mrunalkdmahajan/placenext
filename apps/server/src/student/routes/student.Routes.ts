@@ -5,6 +5,8 @@ import {
   applyToJob,
   authStudent,
   getAllCollegeList,
+  getJobAppliedByStudent,
+  getJobAppliedDetailsById,
   getJobDetailsById,
   getJobForCollege,
   getStudentsJobStatistics,
@@ -67,6 +69,12 @@ studentRoutes.get(
 // student access to company
 studentRoutes.get("/companies", authenticateToken, getJobForCollege);
 studentRoutes.get("/company/:id", authenticateToken, getJobDetailsById);
+studentRoutes.get("/applied_jobs", authenticateToken, getJobAppliedByStudent);
+studentRoutes.get(
+  "/applied_jobs/:id",
+  authenticateToken,
+  getJobAppliedDetailsById
+);
 
 // student applying to job
 studentRoutes.post(
