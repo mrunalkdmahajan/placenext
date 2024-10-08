@@ -1,12 +1,11 @@
 "use client";
-
-import { BackendUrl } from "@/utils/constants"; // Ensure this constant is defined in your utils
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { BackendUrl } from "@/utils/constants";
 
-const ProfileSection = () => {
-  // Initial profile data
+const Profile = () => {
+  const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
     firstName: "",
     middleName: "",
@@ -44,13 +43,30 @@ const ProfileSection = () => {
     sem7CGPI: "",
     sem8CGPI: "",
     college: "",
+    sem1Marksheet: "",
+    sem2Marksheet: "",
+    sem3Marksheet: "",
+    sem4Marksheet: "",
+    sem5Marksheet: "",
+    sem6Marksheet: "",
+    sem7Marksheet: "",
+    sem8Marksheet: "",
   });
 
-  const [isEditing, setIsEditing] = useState(false); // State to toggle edit mode
+  const [marksheets, setMarksheets] = useState({
+    sem1: null,
+    sem2: null,
+    sem3: null,
+    sem4: null,
+    sem5: null,
+    sem6: null,
+    sem7: null,
+    sem8: null,
+  });
 
+  // Fetch user profile data on component mount
   useEffect(() => {
-    // Fetch profile data
-    const fetchProfileData = async () => {
+    const fetchProfile = async () => {
       try {
         const res = await axios.get(
           `${BackendUrl}/api/student/get_user_details`,
@@ -73,6 +89,7 @@ const ProfileSection = () => {
             stud_course,
             stud_department,
             googleId,
+            stud_college_id,
           } = student;
           localStorage.setItem("name", stud_name);
 
@@ -119,7 +136,16 @@ const ProfileSection = () => {
             sem6CGPI: stud_info_id.stud_sem6_grade || "",
             sem7CGPI: stud_info_id.stud_sem7_grade || "",
             sem8CGPI: stud_info_id.stud_sem8_grade || "",
-            college: "", // Add field if available
+            //@ts-ignore
+            college: stud_college_id.coll_name, // Add field if available
+            sem1Marksheet: stud_info_id.stud_sem1_marksheet,
+            sem2Marksheet: stud_info_id.stud_sem2_marksheet,
+            sem3Marksheet: stud_info_id.stud_sem3_marksheet,
+            sem4Marksheet: stud_info_id.stud_sem4_marksheet,
+            sem5Marksheet: stud_info_id.stud_sem5_marksheet || "",
+            sem6Marksheet: stud_info_id.stud_sem6_marksheet || "",
+            sem7Marksheet: stud_info_id.stud_sem7_marksheet || "",
+            sem8Marksheet: stud_info_id.stud_sem8_marksheet || "",
           });
           console.log("Profile data set correctly");
         } else {
@@ -127,28 +153,52 @@ const ProfileSection = () => {
         }
       } catch (error) {
         console.error(error);
-        toast.error("Failed to fetch profile data.");
+        toast.error("Failed to fetch profile.");
       }
     };
-    fetchProfileData();
+
+    fetchProfile();
   }, []);
 
-  // Update profile state
-  const handleChange = (e: any) => {
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
-    setProfile((prevState) => ({ ...prevState, [name]: value }));
+    setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle form submission
+  const handleFileChange = (e: any, semester: any) => {
+    const file = e.target.files[0];
+    if (file) {
+      setMarksheets((prev) => ({ ...prev, [semester]: file }));
+    }
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
+    const formData = new FormData();
+    // Append profile data
+    Object.keys(profile).forEach((key) => {
+      //@ts-ignore
+      formData.append(key, profile[key]);
+    });
+
+    // Append marksheets
+    Object.keys(marksheets).forEach((semester) => {
+      //@ts-ignore
+      if (marksheets[semester]) {
+        //@ts-ignore
+        formData.append(`${semester}Marksheet`, marksheets[semester]);
+      }
+    });
+
     try {
       const res = await axios.put(
-        `${BackendUrl}/api/student/update_user_details `,
-        profile,
+        `${BackendUrl}/api/student/update_user_details`,
+        formData,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming you're using token-based auth
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
@@ -166,446 +216,638 @@ const ProfileSection = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-center">Profile Section</h2>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Profile</h1>
       {isEditing ? (
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Editable Profile Fields */}
-            <input
-              type="text"
-              name="firstName"
-              value={profile.firstName}
-              onChange={handleChange}
-              placeholder="First Name"
-              className="border border-gray-300 rounded p-2"
-              required
-            />
-            <input
-              type="text"
-              name="middleName"
-              value={profile.middleName}
-              onChange={handleChange}
-              placeholder="Middle Name"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="lastName"
-              value={profile.lastName}
-              onChange={handleChange}
-              placeholder="Last Name"
-              className="border border-gray-300 rounded p-2"
-              required
-            />
-            <select
-              name="gender"
-              value={profile.gender}
-              onChange={handleChange}
-              className="border border-gray-300 rounded p-2"
-              required
-            >
-              <option value="">Select Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-            <input
-              type="text"
-              name="fatherName"
-              value={profile.fatherName}
-              onChange={handleChange}
-              placeholder="Father's Name"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="motherName"
-              value={profile.motherName}
-              onChange={handleChange}
-              placeholder="Mother's Name"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="rollNumber"
-              value={profile.rollNumber}
-              onChange={handleChange}
-              placeholder="Roll Number"
-              className="border border-gray-300 rounded p-2"
-              required
-            />
-            <input
-              type="text"
-              name="division"
-              value={profile.division}
-              onChange={handleChange}
-              placeholder="Division"
-              className="border border-gray-300 rounded p-2"
-              required
-            />
-            <input
-              type="date"
-              name="dateOfBirth"
-              value={profile.dateOfBirth}
-              onChange={handleChange}
-              className="border border-gray-300 rounded p-2"
-              required
-            />
-            <input
-              type="email"
-              name="email"
-              value={profile.email}
-              onChange={handleChange}
-              placeholder="Email"
-              className="border border-gray-300 rounded p-2"
-              required
-            />
-            <input
-              type="email"
-              name="alternateEmail"
-              value={profile.alternateEmail}
-              onChange={handleChange}
-              placeholder="Alternate Email"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="aadharNumber"
-              value={profile.aadharNumber}
-              onChange={handleChange}
-              placeholder="Aadhar Number"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="phoneNumber"
-              value={profile.phoneNumber}
-              onChange={handleChange}
-              placeholder="Phone Number"
-              className="border border-gray-300 rounded p-2"
-              required
-            />
-            <input
-              type="text"
-              name="alternatePhoneNo"
-              value={profile.alternatePhoneNo}
-              onChange={handleChange}
-              placeholder="Alternate Phone Number"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="panNumber"
-              value={profile.panNumber}
-              onChange={handleChange}
-              placeholder="PAN Number"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="address"
-              value={profile.address}
-              onChange={handleChange}
-              placeholder="Address"
-              className="border border-gray-300 rounded p-2"
-              required
-            />
-            <input
-              type="text"
-              name="state"
-              value={profile.state}
-              onChange={handleChange}
-              placeholder="State"
-              className="border border-gray-300 rounded p-2"
-              required
-            />
-            <input
-              type="text"
-              name="country"
-              value={profile.country}
-              onChange={handleChange}
-              placeholder="Country"
-              className="border border-gray-300 rounded p-2"
-              required
-            />
-            <input
-              type="text"
-              name="pincode"
-              value={profile.pincode}
-              onChange={handleChange}
-              placeholder="Pincode"
-              className="border border-gray-300 rounded p-2"
-              required
-            />
-            <select
-              name="courseType"
-              value={profile.courseType}
-              onChange={handleChange}
-              className="border border-gray-300 rounded p-2"
-              required
-            >
-              <option value="">Select Course Type</option>
-              <option value="Undergraduate">Undergraduate</option>
-              <option value="Postgraduate">Postgraduate</option>
-            </select>
-            <input
-              type="text"
-              name="admissionYear"
-              value={profile.admissionYear}
-              onChange={handleChange}
-              placeholder="Admission Year"
-              className="border border-gray-300 rounded p-2"
-              required
-            />
-            <input
-              type="text"
-              name="departmentName"
-              value={profile.departmentName}
-              onChange={handleChange}
-              placeholder="Department Name"
-              className="border border-gray-300 rounded p-2"
-              required
-            />
-            <input
-              type="text"
-              name="tenthPercentage"
-              value={profile.tenthPercentage}
-              onChange={handleChange}
-              placeholder="10th Percentage"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="hscBoard"
-              value={profile.hscBoard}
-              onChange={handleChange}
-              placeholder="HSC Board"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="twelfthPercentage"
-              value={profile.twelfthPercentage}
-              onChange={handleChange}
-              placeholder="12th Percentage"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="sscBoard"
-              value={profile.sscBoard}
-              onChange={handleChange}
-              placeholder="SSC Board"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="cet"
-              value={profile.cet}
-              onChange={handleChange}
-              placeholder="CET"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="sem1CGPI"
-              value={profile.sem1CGPI}
-              onChange={handleChange}
-              placeholder="Sem 1 CGPI"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="sem2CGPI"
-              value={profile.sem2CGPI}
-              onChange={handleChange}
-              placeholder="Sem 2 CGPI"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="sem3CGPI"
-              value={profile.sem3CGPI}
-              onChange={handleChange}
-              placeholder="Sem 3 CGPI"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="sem4CGPI"
-              value={profile.sem4CGPI}
-              onChange={handleChange}
-              placeholder="Sem 4 CGPI"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="sem5CGPI"
-              value={profile.sem5CGPI}
-              onChange={handleChange}
-              placeholder="Sem 5 CGPI"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="sem6CGPI"
-              value={profile.sem6CGPI}
-              onChange={handleChange}
-              placeholder="Sem 6 CGPI"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="sem7CGPI"
-              value={profile.sem7CGPI}
-              onChange={handleChange}
-              placeholder="Sem 7 CGPI"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="sem8CGPI"
-              value={profile.sem8CGPI}
-              onChange={handleChange}
-              placeholder="Sem 8 CGPI"
-              className="border border-gray-300 rounded p-2"
-            />
-            <input
-              type="text"
-              name="college"
-              value={profile.college}
-              onChange={handleChange}
-              placeholder="College"
-              className="border border-gray-300 rounded p-2"
-            />
+            <div>
+              <label>
+                First Name:
+                <input
+                  type="text"
+                  name="firstName"
+                  value={profile.firstName}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Middle Name:
+                <input
+                  type="text"
+                  name="middleName"
+                  value={profile.middleName}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Last Name:
+                <input
+                  type="text"
+                  name="lastName"
+                  value={profile.lastName}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Gender:
+                <input
+                  type="text"
+                  name="gender"
+                  value={profile.gender}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Father's Name:
+                <input
+                  type="text"
+                  name="fatherName"
+                  value={profile.fatherName}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Mother's Name:
+                <input
+                  type="text"
+                  name="motherName"
+                  value={profile.motherName}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Roll Number:
+                <input
+                  type="text"
+                  name="rollNumber"
+                  value={profile.rollNumber}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Division:
+                <input
+                  type="text"
+                  name="division"
+                  value={profile.division}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Date of Birth:
+                <input
+                  type="date"
+                  name="dateOfBirth"
+                  value={profile.dateOfBirth}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Email:
+                <input
+                  type="email"
+                  name="email"
+                  value={profile.email}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Alternate Email:
+                <input
+                  type="email"
+                  name="alternateEmail"
+                  value={profile.alternateEmail}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Aadhar Number:
+                <input
+                  type="text"
+                  name="aadharNumber"
+                  value={profile.aadharNumber}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Phone Number:
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  value={profile.phoneNumber}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Alternate Phone Number:
+                <input
+                  type="text"
+                  name="alternatePhoneNo"
+                  value={profile.alternatePhoneNo}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                PAN Number:
+                <input
+                  type="text"
+                  name="panNumber"
+                  value={profile.panNumber}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Address:
+                <input
+                  type="text"
+                  name="address"
+                  value={profile.address}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                State:
+                <input
+                  type="text"
+                  name="state"
+                  value={profile.state}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Country:
+                <input
+                  type="text"
+                  name="country"
+                  value={profile.country}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Pincode:
+                <input
+                  type="text"
+                  name="pincode"
+                  value={profile.pincode}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Course Type:
+                <input
+                  type="text"
+                  name="courseType"
+                  value={profile.courseType}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Admission Year:
+                <input
+                  type="text"
+                  name="admissionYear"
+                  value={profile.admissionYear}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Department Name:
+                <input
+                  type="text"
+                  name="departmentName"
+                  value={profile.departmentName}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Tenth Percentage:
+                <input
+                  type="text"
+                  name="tenthPercentage"
+                  value={profile.tenthPercentage}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                HSC Board:
+                <input
+                  type="text"
+                  name="hscBoard"
+                  value={profile.hscBoard}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Twelfth Percentage:
+                <input
+                  type="text"
+                  name="twelfthPercentage"
+                  value={profile.twelfthPercentage}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                SSC Board:
+                <input
+                  type="text"
+                  name="sscBoard"
+                  value={profile.sscBoard}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                CET:
+                <input
+                  type="text"
+                  name="cet"
+                  value={profile.cet}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Semester 1 CGPI:
+                <input
+                  type="text"
+                  name="sem1CGPI"
+                  value={profile.sem1CGPI}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Semester 2 CGPI:
+                <input
+                  type="text"
+                  name="sem2CGPI"
+                  value={profile.sem2CGPI}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Semester 3 CGPI:
+                <input
+                  type="text"
+                  name="sem3CGPI"
+                  value={profile.sem3CGPI}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Semester 4 CGPI:
+                <input
+                  type="text"
+                  name="sem4CGPI"
+                  value={profile.sem4CGPI}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Semester 5 CGPI:
+                <input
+                  type="text"
+                  name="sem5CGPI"
+                  value={profile.sem5CGPI}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Semester 6 CGPI:
+                <input
+                  type="text"
+                  name="sem6CGPI"
+                  value={profile.sem6CGPI}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Semester 7 CGPI:
+                <input
+                  type="text"
+                  name="sem7CGPI"
+                  value={profile.sem7CGPI}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Semester 8 CGPI:
+                <input
+                  type="text"
+                  name="sem8CGPI"
+                  value={profile.sem8CGPI}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                College:
+                <input
+                  type="text"
+                  name="college"
+                  value={profile.college}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            {/* Marksheets */}
+            <div>
+              <label>
+                Semester 1 Marksheet:
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => handleFileChange(e, "sem1")}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Semester 2 Marksheet:
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => handleFileChange(e, "sem2")}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Semester 3 Marksheet:
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => handleFileChange(e, "sem3")}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Semester 4 Marksheet:
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => handleFileChange(e, "sem4")}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Semester 5 Marksheet:
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => handleFileChange(e, "sem5")}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Semester 6 Marksheet:
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => handleFileChange(e, "sem6")}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Semester 7 Marksheet:
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => handleFileChange(e, "sem7")}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Semester 8 Marksheet:
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => handleFileChange(e, "sem8")}
+                  className="border border-gray-300 rounded p-2"
+                />
+              </label>
+            </div>
           </div>
-          <button
-            type="submit"
-            className="mt-6 w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Save Changes
-          </button>
+          <div className="mt-4">
+            <button
+              type="submit"
+              className="bg-blue-500 text-white rounded px-4 py-2"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsEditing(false)}
+              className="ml-2 bg-gray-300 text-black rounded px-4 py-2"
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       ) : (
         <div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Display Profile Information */}
-            <div>
-              <strong>First Name:</strong> {profile.firstName}
-            </div>
-            <div>
-              <strong>Middle Name:</strong> {profile.middleName}
-            </div>
-            <div>
-              <strong>Last Name:</strong> {profile.lastName}
-            </div>
-            <div>
-              <strong>Gender:</strong> {profile.gender}
-            </div>
-            <div>
-              <strong>Father's Name:</strong> {profile.fatherName}
-            </div>
-            <div>
-              <strong>Mother's Name:</strong> {profile.motherName}
-            </div>
-            <div>
-              <strong>Roll Number:</strong> {profile.rollNumber}
-            </div>
-            <div>
-              <strong>Division:</strong> {profile.division}
-            </div>
-            <div>
-              <strong>Date of Birth:</strong> {profile.dateOfBirth}
-            </div>
-            <div>
-              <strong>Email:</strong> {profile.email}
-            </div>
-            <div>
-              <strong>Alternate Email:</strong> {profile.alternateEmail}
-            </div>
-            <div>
-              <strong>Aadhar Number:</strong> {profile.aadharNumber}
-            </div>
-            <div>
-              <strong>Phone Number:</strong> {profile.phoneNumber}
-            </div>
-            <div>
-              <strong>Alternate Phone Number:</strong>{" "}
-              {profile.alternatePhoneNo}
-            </div>
-            <div>
-              <strong>PAN Number:</strong> {profile.panNumber}
-            </div>
-            <div>
-              <strong>Address:</strong> {profile.address}
-            </div>
-            <div>
-              <strong>State:</strong> {profile.state}
-            </div>
-            <div>
-              <strong>Country:</strong> {profile.country}
-            </div>
-            <div>
-              <strong>Pincode:</strong> {profile.pincode}
-            </div>
-            <div>
-              <strong>Course Type:</strong> {profile.courseType}
-            </div>
-            <div>
-              <strong>Admission Year:</strong> {profile.admissionYear}
-            </div>
-            <div>
-              <strong>Department Name:</strong> {profile.departmentName}
-            </div>
-            <div>
-              <strong>10th Percentage:</strong> {profile.tenthPercentage}
-            </div>
-            <div>
-              <strong>HSC Board:</strong> {profile.hscBoard}
-            </div>
-            <div>
-              <strong>12th Percentage:</strong> {profile.twelfthPercentage}
-            </div>
-            <div>
-              <strong>SSC Board:</strong> {profile.sscBoard}
-            </div>
-            <div>
-              <strong>CET:</strong> {profile.cet}
-            </div>
-            <div>
-              <strong>Sem 1 CGPI:</strong> {profile.sem1CGPI}
-            </div>
-            <div>
-              <strong>Sem 2 CGPI:</strong> {profile.sem2CGPI}
-            </div>
-            <div>
-              <strong>Sem 3 CGPI:</strong> {profile.sem3CGPI}
-            </div>
-            <div>
-              <strong>Sem 4 CGPI:</strong> {profile.sem4CGPI}
-            </div>
-            <div>
-              <strong>Sem 5 CGPI:</strong> {profile.sem5CGPI}
-            </div>
-            <div>
-              <strong>Sem 6 CGPI:</strong> {profile.sem6CGPI}
-            </div>
-            <div>
-              <strong>Sem 7 CGPI:</strong> {profile.sem7CGPI}
-            </div>
-            <div>
-              <strong>Sem 8 CGPI:</strong> {profile.sem8CGPI}
-            </div>
-            <div>
-              <strong>College:</strong> {profile.college}
-            </div>
-          </div>
+          <h2 className="text-xl font-bold mb-4">User Details</h2>
+          <p>
+            <strong>Name:</strong> {profile.firstName}
+          </p>
+          <p>
+            <strong>Middle Name:</strong> {profile.middleName}
+          </p>
+          <p>
+            <strong>Last Name:</strong> {profile.lastName}
+          </p>
+          <p>
+            <strong>Email:</strong> {profile.email}
+          </p>
+          <p>
+            <strong>Mobile Number:</strong> {profile.phoneNumber}
+          </p>
+          <p>
+            <strong>Address:</strong> {profile.address}
+          </p>
+          <p>
+            <strong>City:</strong> {profile.city}
+          </p>
+          <p>
+            <strong>State:</strong> {profile.state}
+          </p>
+          <p>
+            <strong>Country:</strong> {profile.country}
+          </p>
+          <p>
+            <strong>Pincode:</strong> {profile.pincode}
+          </p>
+          <p>
+            <strong>Course Type:</strong> {profile.courseType}
+          </p>
+          <p>
+            <strong>Admission Year:</strong> {profile.admissionYear}
+          </p>
+          <p>
+            <strong>Department Name:</strong> {profile.departmentName}
+          </p>
+          <p>
+            <strong>Tenth Percentage:</strong> {profile.tenthPercentage}
+          </p>
+          <p>
+            <strong>HSC Board:</strong> {profile.hscBoard}
+          </p>
+          <p>
+            <strong>Twelfth Percentage:</strong> {profile.twelfthPercentage}
+          </p>
+          <p>
+            <strong>SSC Board:</strong> {profile.sscBoard}
+          </p>
+          <p>
+            <strong>CET:</strong> {profile.cet}
+          </p>
+          <p>
+            <strong>Semester 1 CGPI:</strong> {profile.sem1CGPI}
+          </p>
+          <p>
+            <strong>Semester 2 CGPI:</strong> {profile.sem2CGPI}
+          </p>
+          <p>
+            <strong>Semester 3 CGPI:</strong> {profile.sem3CGPI}
+          </p>
+          <p>
+            <strong>Semester 4 CGPI:</strong> {profile.sem4CGPI}
+          </p>
+          <p>
+            <strong>Semester 5 CGPI:</strong> {profile.sem5CGPI}
+          </p>
+          <p>
+            <strong>Semester 6 CGPI:</strong> {profile.sem6CGPI}
+          </p>
+          <p>
+            <strong>Semester 7 CGPI:</strong> {profile.sem7CGPI}
+          </p>
+          <p>
+            <strong>Semester 8 CGPI:</strong> {profile.sem8CGPI}
+          </p>
+          <p>
+            <strong>College:</strong> {profile.college}
+          </p>
           <button
-            className="mt-6 w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             onClick={() => setIsEditing(true)}
+            className="mt-4 bg-blue-500 text-white rounded px-4 py-2"
           >
-            Edit Profile
+            Edit
           </button>
         </div>
       )}
@@ -613,4 +855,4 @@ const ProfileSection = () => {
   );
 };
 
-export default ProfileSection;
+export default Profile;

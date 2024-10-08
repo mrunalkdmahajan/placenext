@@ -105,14 +105,14 @@ const SignUpFormCollege = () => {
 
   return (
     <div className="max-w-md mx-auto mt-12 p-2 rounded-lg bg-transparent md:p-5 flex flex-col gap-4">
-      <h2 className="text-2xl font-bold mb-6">Faculty Signup</h2>
+      <h2 className="text-2xl font-bold mb-6 text-primary">Faculty Login</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4 min-w-40 md:min-w-60 lg:min-w-80">
           <input
             {...register("email")}
             placeholder="Email"
             type="text"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-700"
           />
           {errors.email && (
             <p className="text-red-500 text-sm mt-1">
@@ -125,7 +125,7 @@ const SignUpFormCollege = () => {
             type="password"
             {...register("password")}
             placeholder="Password"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-700"
           />
           {errors.password && (
             <p className="text-red-500 text-sm mt-1">
@@ -135,7 +135,7 @@ const SignUpFormCollege = () => {
         </div>
         <button
           type="submit"
-          className="w-full bg-[#56B280] text-white p-2 rounded hover:bg-green-700"
+          className="w-full bg-primary text-white p-2 rounded hover:bg-blue-700"
         >
           Submit
         </button>
@@ -152,7 +152,7 @@ const SignUpFormCollege = () => {
 
       <p>
         Don&apos;t have an Account?
-        <Link className="text-[#56B280] px-2" href="/signup">
+        <Link className="text-primary px-2" href="/signup">
           Sign Up
         </Link>
       </p>

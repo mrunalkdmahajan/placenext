@@ -60,6 +60,7 @@ studentRoutes.get("/colleges", authenticateToken, getAllCollegeList);
 
 // student student statistics
 studentRoutes.get("/statistics", authenticateToken, getStudentStatistics);
+
 studentRoutes.get(
   "/job_statistics",
   authenticateToken,

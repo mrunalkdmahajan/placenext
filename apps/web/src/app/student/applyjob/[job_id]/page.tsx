@@ -5,6 +5,9 @@ import axios from "axios";
 import { BackendUrl } from "@/utils/constants";
 import { headers } from "next/headers";
 import { useParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Job {
   _id: string; // MongoDB IDs are typically strings
@@ -32,7 +35,6 @@ const FinalApplication = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [cvFile, setCvFile] = useState<File | null>(null);
   const { job_id } = useParams();
-  console.log(job_id);
   // Fetch job details from the backend
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -45,7 +47,6 @@ const FinalApplication = () => {
             },
           }
         );
-        console.log(response.data);
         setJob(response.data.job);
       } catch (error) {
         console.error("Error fetching job details:", error);
@@ -54,7 +55,6 @@ const FinalApplication = () => {
 
     fetchJobDetails();
   }, []);
-
   // Handle checkbox change
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
@@ -70,7 +70,17 @@ const FinalApplication = () => {
   // Handle the Apply button click
   const handleApplyClick = async () => {
     if (!isChecked) {
-      alert("Please check the disclaimer before applying.");
+      toast.error("Please review your resume before applying", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+    if (!job?.isEligible) {
+      toast.error("You are not eligible for this job", {
+        position: "top-right",
+        autoClose: 3000,
+      });
       return;
     }
 
@@ -114,6 +124,9 @@ const FinalApplication = () => {
       <h2 className="text-xl font-bold mb-4">
         {job.job_title} - {job.job_type}
       </h2>
+      <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+        {job.isEligible === true ? "Yes" : "No"}
+      </button>
       <h3 className="text-lg font-semibold mb-2">{job.company_name}</h3>
       <p className="text-gray-700 mb-2">{job.job_description}</p>
       <p className="text-gray-600">Location: {job.job_location}</p>

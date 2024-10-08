@@ -112,7 +112,7 @@ const SignUpFormCompany = () => {
             {...register("email")}
             placeholder="Email"
             type="text"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-700"
           />
           {errors.email && (
             <p className="text-red-500 text-sm mt-1">
@@ -125,7 +125,7 @@ const SignUpFormCompany = () => {
             type="password"
             {...register("password")}
             placeholder="Password"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#56B280]"
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-700"
           />
           {errors.password && (
             <p className="text-red-500 text-sm mt-1">
@@ -135,7 +135,7 @@ const SignUpFormCompany = () => {
         </div>
         <button
           type="submit"
-          className="w-full bg-[#56B280] text-white p-2 rounded hover:bg-green-700"
+          className="w-full bg-primary text-white p-2 rounded hover:bg-blue-700"
         >
           Submit
         </button>
@@ -152,7 +152,7 @@ const SignUpFormCompany = () => {
 
       <p>
         Don&apos;t have an Account?
-        <Link className="text-[#56B280] px-2" href="/signup">
+        <Link className="text-primary px-2" href="/signup">
           Sign Up
         </Link>
       </p>

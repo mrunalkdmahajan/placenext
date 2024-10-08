@@ -41,6 +41,7 @@ const ApplicationCards = () => {
           }
         );
         console.log(response.data);
+        console.log(response.data.jobs.map((job: any) => job.isEligible));
         if (response.data.success) {
           const jobsData = response.data.jobs.map((job: any) => ({
             id: job._id,
