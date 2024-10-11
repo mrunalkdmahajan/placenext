@@ -24,7 +24,7 @@ class AuthFirebaseServiceImpl implements AuthFirebaseService {
       //   "password": user.password,
       // });
 
-      return Right("hello");
+      return Right(returedData);
     } catch (e) {
       return Left(e);
     }

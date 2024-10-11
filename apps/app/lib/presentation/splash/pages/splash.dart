@@ -1,7 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:app/common/helper/navigator/app_navigator.dart';
 import 'package:app/presentation/auth/pages/student_login.dart';
-import 'package:app/presentation/dashboard/pages/home.dart';
+
 import 'package:flutter/material.dart';
 
 class SplashPage extends StatelessWidget {

@@ -58,7 +58,10 @@ class StudentLogin extends StatelessWidget {
               const SizedBox(height: 16),
               // Google Login Button
               ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  // Call the google login method
+                  // context.read<AuthFirebaseService>().googleLogin();
+                },
                 icon: const Icon(Icons.login),
                 label: const Text("Login with Google"),
                 style: ElevatedButton.styleFrom(
