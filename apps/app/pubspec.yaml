@@ -23,6 +23,8 @@ dependencies:
   get_it:
   firebase_auth:
   firebase_core:
+  dartz: ^0.10.1
+  google_sign_in: ^6.2.1
 
 dev_dependencies:
   flutter_test:

@@ -21,4 +21,8 @@ class AppNavigator {
         MaterialPageRoute(builder: (context) => widget),
         (Route<dynamic> route) => false);
   }
+
+  static void pop(BuildContext context) {
+    Navigator.pop(context);
+  }
 }

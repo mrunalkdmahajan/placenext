@@ -1,3 +1,4 @@
+import 'package:app/common/helper/navigator/app_navigator.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -9,7 +10,12 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text("Student Dashboard"),
         // actions: [Icon(Icons.circle)],
-        leading: Icon(Icons.arrow_back),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            AppNavigator.pop(context);
+          },
+        ),
       ),
       // bottomNavigationBar: BottomNavigationBar(),
 
