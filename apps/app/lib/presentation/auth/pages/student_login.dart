@@ -1,8 +1,9 @@
+import 'package:app/domain/auth/usecases/google_signin.dart';
 import 'package:flutter/material.dart';
 
 class StudentLogin extends StatelessWidget {
-  const StudentLogin({super.key});
-
+  StudentLogin({super.key});
+  final GoogleSignInUseCase googleSignInUseCase = GoogleSignInUseCase();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,9 +59,22 @@ class StudentLogin extends StatelessWidget {
               const SizedBox(height: 16),
               // Google Login Button
               ElevatedButton.icon(
-                onPressed: () {
+                onPressed: () async {
                   // Call the google login method
                   // context.read<AuthFirebaseService>().googleLogin();
+                  final result = await googleSignInUseCase.call();
+                  result.fold(
+                    (error) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(error.toString())),
+                      );
+                    },
+                    (user) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Welcome, ${user.displayName}")),
+                      );
+                    },
+                  );
                 },
                 icon: const Icon(Icons.login),
                 label: const Text("Login with Google"),
