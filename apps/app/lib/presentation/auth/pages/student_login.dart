@@ -60,19 +60,27 @@ class StudentLogin extends StatelessWidget {
               // Google Login Button
               ElevatedButton.icon(
                 onPressed: () async {
-                  // Call the google login method
-                  // context.read<AuthFirebaseService>().googleLogin();
+                  final googleSignInUseCase = GoogleSignInUseCase();
                   final result = await googleSignInUseCase.call();
+
                   result.fold(
-                    (error) {
+                    (exception) {
+                      print("Google Sign-In Error: ${exception.toString()}");
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(error.toString())),
+                        SnackBar(
+                            content: Text(
+                                "Google Sign-In Failed: ${exception.toString()}")),
                       );
                     },
                     (user) {
+                      // Handle successful login
+                      print(
+                          "Google Sign-In Success: ${user.displayName} (${user.email})");
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Welcome, ${user.displayName}")),
+                        SnackBar(
+                            content: Text("Welcome, ${user.displayName}!")),
                       );
+                      // Optionally, navigate to a new screen or update state
                     },
                   );
                 },
