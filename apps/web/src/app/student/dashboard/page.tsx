@@ -24,7 +24,7 @@ export default function Dashboard() {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-
+        console.log(res.data);
         setCompaniesCameToCollege(res.data.companiesCameToCollege.length || 0);
         setCompaniesAppliedTo(res.data.appliedJobs.length || 0);
       } catch (error) {

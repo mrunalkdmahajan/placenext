@@ -1,4 +1,6 @@
+import 'package:app/common/helper/navigator/app_navigator.dart';
 import 'package:app/domain/auth/usecases/google_signin.dart';
+import 'package:app/presentation/dashboard/pages/home.dart';
 import 'package:flutter/material.dart';
 
 class StudentLogin extends StatelessWidget {
@@ -81,6 +83,7 @@ class StudentLogin extends StatelessWidget {
                             content: Text("Welcome, ${user.displayName}!")),
                       );
                       // Optionally, navigate to a new screen or update state
+                      AppNavigator.push(context, HomePage());
                     },
                   );
                 },
@@ -169,7 +172,7 @@ class _LoginWithEmailAndPasswordState extends State<LoginWithEmailAndPassword> {
           ElevatedButton(
             onPressed: () {},
             style: ElevatedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 50), // Full-width button
+              minimumSize: const Size(double.infinity, 50),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
