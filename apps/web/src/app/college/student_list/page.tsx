@@ -11,7 +11,7 @@ interface StudentData {
   stud_name: string;
   stud_department: string;
   stud_year: string;
-  aggregateCGPI: number; // Renamed to match API response
+  aggregateCGPI: number;
   stud_placement_status: string; // Adjusting based on your API response
   isSystemVerified: boolean;
   isCollegeVerified: boolean;
