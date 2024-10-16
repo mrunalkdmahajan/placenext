@@ -4,6 +4,7 @@ import Student from "../../student/models/student";
 import StudentInfo from "../../student/models/info_student";
 import Job from "../../company/models/job";
 import Application from "../../student/models/application";
+import * as XLSX from "xlsx";
 
 export const isFirstSignIn = async (req: Request, res: Response) => {
   try {
@@ -103,18 +104,51 @@ export const getAllStudentList = async (req: Request, res: Response) => {
       return res.status(404).json({ success: false, msg: "No students found" });
     }
 
-    const placementStatus = await Promise.all(
+    const placementStatusAndCGPI = await Promise.all(
       students.map(async (student) => {
         const studentInfo = await StudentInfo.findById(student.stud_info_id);
-        console.log("Student Info:", studentInfo);
 
-        return studentInfo ? studentInfo.stud_placement_status : null;
+        // Extract grades and filter out null or undefined values
+        const grades = [
+          studentInfo?.stud_sem1_grade,
+          studentInfo?.stud_sem2_grade,
+          studentInfo?.stud_sem3_grade,
+          studentInfo?.stud_sem4_grade,
+          studentInfo?.stud_sem5_grade,
+          studentInfo?.stud_sem6_grade,
+          studentInfo?.stud_sem7_grade,
+          studentInfo?.stud_sem8_grade,
+        ].filter((grade) => grade !== null && grade !== undefined); // Keep only valid grades
+
+        // Calculate the aggregate CGPI
+        const totalPoints = grades.reduce(
+          (acc, grade) => acc + Number(grade),
+          0
+        );
+        const aggregateCGPI =
+          grades.length > 0 ? totalPoints / grades.length : 0;
+
+        return {
+          placementStatus: studentInfo
+            ? studentInfo.stud_placement_status
+            : null,
+          aggregateCGPI: aggregateCGPI.toFixed(2),
+          stud_year: studentInfo?.stud_addmission_year,
+        };
       })
     );
 
-    console.log("Students:", students);
+    // console.log("Students:", students);
 
-    return res.status(200).json({ success: true, students, placementStatus });
+    // Merge the student data with their placement status and aggregate CGPI
+    const responseData = students.map((student, index) => ({
+      student,
+      placementStatus: placementStatusAndCGPI[index].placementStatus,
+      aggregateCGPI: placementStatusAndCGPI[index].aggregateCGPI,
+      stud_year: placementStatusAndCGPI[index].stud_year,
+    }));
+
+    return res.status(200).json({ success: true, students: responseData });
   } catch (error: any) {
     console.error("Error in getAllStudentList:", error);
     return res.status(500).json({ msg: "Internal Server Error" });
@@ -480,6 +514,158 @@ export const getJobDetailsById = async (req: Request, res: Response) => {
     return res.status(200).json({ success: true, job, jobApplicants });
   } catch (error: any) {
     console.log("Error in getJobDetailsById", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+export const getStudentDetailsInExcel = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+    const college = await College.findOne({ googleId: user.uid });
+    if (!college) {
+      return res.status(404).json({ success: false, msg: "College not found" });
+    }
+
+    // Fetch student data with the necessary fields
+    const studentData = await Student.find({
+      stud_college_id: college._id.toString(),
+    })
+      .populate({
+        path: "stud_info_id",
+        select: `
+          stud_resume 
+          stud_addmission_year 
+          stud_sem1_grade 
+          stud_sem2_grade 
+          stud_sem3_grade 
+          stud_sem4_grade 
+          stud_sem5_grade 
+          stud_sem6_grade 
+          stud_sem7_grade 
+          stud_sem8_grade 
+          stud_sem1_marksheet 
+          stud_sem2_marksheet 
+          stud_sem3_marksheet 
+          stud_sem4_marksheet 
+          stud_sem5_marksheet 
+          stud_sem6_marksheet 
+          stud_sem7_marksheet 
+          stud_sem8_marksheet 
+          stud_cet 
+          stud_jee 
+          stud_hsc 
+          stud_hsc_board 
+          stud_ssc 
+          stud_ssc_board 
+          stud_diploma 
+          stud_diploma_board 
+          stud_diploma_stream 
+          stud_alternate_email 
+          stud_alternate_phone 
+          stud_capAllotment 
+          stud_photoWithSignature 
+          stud_gapCertificate 
+          stud_aadhar 
+          stud_pan 
+          handicap_cert 
+          no_of_live_backlogs 
+          no_of_dead_backlogs 
+          stud_placement_status 
+          stud_placement_package 
+          stud_placement_company 
+          stud_placement_date 
+          student_skills 
+          stud_linkedIn 
+          stud_github
+        `,
+      })
+      .lean();
+
+    // Prepare and format the data
+    const formattedData = studentData.map((student: any) => ({
+      Name: student.stud_name,
+      Email: student.stud_email,
+      Address: student.stud_address,
+      Phone: student.stud_phone,
+      DOB: student.stud_dob.toISOString().split("T")[0],
+      Course: student.stud_course,
+      Year: student.stud_year,
+      Department: student.stud_department,
+
+      Resume: student.stud_info_id?.stud_resume,
+      Admission_Year: student.stud_info_id?.stud_addmission_year,
+      Sem1_Grade: student.stud_info_id?.stud_sem1_grade,
+      Sem2_Grade: student.stud_info_id?.stud_sem2_grade,
+      Sem3_Grade: student.stud_info_id?.stud_sem3_grade,
+      Sem4_Grade: student.stud_info_id?.stud_sem4_grade,
+      Sem5_Grade: student.stud_info_id?.stud_sem5_grade || "N/A",
+      Sem6_Grade: student.stud_info_id?.stud_sem6_grade || "N/A",
+      Sem7_Grade: student.stud_info_id?.stud_sem7_grade || "N/A",
+      Sem8_Grade: student.stud_info_id?.stud_sem8_grade || "N/A",
+      Sem1_Marksheet: student.stud_info_id?.stud_sem1_marksheet,
+      Sem2_Marksheet: student.stud_info_id?.stud_sem2_marksheet,
+      Sem3_Marksheet: student.stud_info_id?.stud_sem3_marksheet,
+      Sem4_Marksheet: student.stud_info_id?.stud_sem4_marksheet,
+      Sem5_Marksheet: student.stud_info_id?.stud_sem5_marksheet || "N/A",
+      Sem6_Marksheet: student.stud_info_id?.stud_sem6_marksheet || "N/A",
+      Sem7_Marksheet: student.stud_info_id?.stud_sem7_marksheet || "N/A",
+      Sem8_Marksheet: student.stud_info_id?.stud_sem8_marksheet || "N/A",
+      CET: student.stud_info_id?.stud_cet,
+      JEE: student.stud_info_id?.stud_jee || "N/A",
+      HSC: student.stud_info_id?.stud_hsc || "N/A",
+      HSC_Board: student.stud_info_id?.stud_hsc_board || "N/A",
+      SSC: student.stud_info_id?.stud_ssc || "N/A",
+      SSC_Board: student.stud_info_id?.stud_ssc_board || "N/A",
+      Diploma: student.stud_info_id?.stud_diploma || "N/A",
+      Diploma_Board: student.stud_info_id?.stud_diploma_board || "N/A",
+      Diploma_Stream: student.stud_info_id?.stud_diploma_stream || "N/A",
+      Alternate_Email: student.stud_info_id?.stud_alternate_email,
+      Alternate_Phone: student.stud_info_id?.stud_alternate_phone,
+      CAP_Allotment: student.stud_info_id?.stud_capAllotment || "N/A",
+      Photo_With_Signature:
+        student.stud_info_id?.stud_photoWithSignature || "N/A",
+      Gap_Certificate: student.stud_info_id?.stud_gapCertificate || "N/A",
+      Aadhar: student.stud_info_id?.stud_aadhar,
+      PAN: student.stud_info_id?.stud_pan,
+      Handicap_Certificate: student.stud_info_id?.handicap_cert || "N/A",
+      Live_Backlogs: student.stud_info_id?.no_of_live_backlogs || 0,
+      Dead_Backlogs: student.stud_info_id?.no_of_dead_backlogs || 0,
+      Placement_Status: student.stud_info_id?.stud_placement_status
+        ? "Yes"
+        : "No",
+      Placement_Package: student.stud_info_id?.stud_placement_package || "N/A",
+      Placement_Company: student.stud_info_id?.stud_placement_company || "N/A",
+      Placement_Date: student.stud_info_id?.stud_placement_date
+        ? student.stud_info_id.stud_placement_date.toISOString().split("T")[0]
+        : "N/A", // Format date
+      Skills: student.stud_info_id?.student_skills.join(", ") || "N/A",
+      LinkedIn: student.stud_info_id?.stud_linkedIn || "N/A",
+      GitHub: student.stud_info_id?.stud_github || "N/A",
+    }));
+
+    // Prepare workbook and worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(formattedData);
+    XLSX.utils.book_append_sheet(wb, ws, "Students");
+
+    // Generate Excel file buffer
+    const buffer = XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
+
+    // Set headers to indicate file download
+    res.setHeader(
+      "Content-Disposition",
+      'attachment; filename="student_data.xlsx"'
+    );
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+
+    // Send the file
+    return res.send(buffer);
+  } catch (error: any) {
+    console.log("Error in getStudentDetailsInExcel", error.message);
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 };

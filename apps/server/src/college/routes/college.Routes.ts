@@ -9,12 +9,14 @@ import {
   getCollegeJobs,
   getJobDetailsById,
   getStudentById,
+  getStudentDetailsInExcel,
   getStudentStatistics,
   isFirstSignIn,
   rejectStudent,
   signup,
 } from "../controller/college.controller";
 import { authenticateToken } from "../../middlewares/verifyGoogleToken";
+import { create_faculty } from "../controller/faculty.controller";
 
 const collegeRoutes = Router();
 
@@ -48,5 +50,15 @@ collegeRoutes.post("/create_job", authenticateToken, createJobByCollege);
 
 collegeRoutes.get("/companies", authenticateToken, getCollegeJob);
 collegeRoutes.get("/company/:id", authenticateToken, getJobDetailsById);
+
+// role base access routes
+collegeRoutes.post("/create_faculty", authenticateToken, create_faculty);
+
+// getting student data
+collegeRoutes.get(
+  "/get_student_data_excel",
+  authenticateToken,
+  getStudentDetailsInExcel
+);
 
 export default collegeRoutes;

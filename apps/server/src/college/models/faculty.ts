@@ -1,7 +1,8 @@
 import { Schema, model } from "mongoose";
-
+import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import { IDepartment } from "./department";
+import jwt from "jsonwebtoken";
 
 export interface IFaculty extends Document {
   _id?: string;
@@ -16,12 +17,18 @@ export interface IFaculty extends Document {
   faculty_experience: number;
   faculty_salary: number;
   faculty_joining_date: Date;
+  role: string;
+  faculty_password: string;
+  refreshToken: string;
+  accessToken: string;
+  comparePassword: (candidatePassword: string) => Promise<boolean>;
+  generateRefreshToken: () => string;
+  generateAccessToken: () => string;
 }
 
 const FacultySchema = new Schema<IFaculty>({
   faculty_name: {
     type: String,
-    required: true,
   },
   faculty_email: {
     type: String,
@@ -30,43 +37,84 @@ const FacultySchema = new Schema<IFaculty>({
   },
   faculty_contact_no: {
     type: String,
-    required: true,
+
     unique: true,
   },
   faculty_address: {
     type: String,
-    required: true,
   },
   faculty_designation: {
     type: String,
-    required: true,
   },
-  faculty_department_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Department",
-    required: true,
-  },
+  // faculty_department_id: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "Department",
+  //   required: true,
+  // },
   faculty_yr_of_exp: {
     type: Number,
-    required: true,
+    // required: true,
   },
   faculty_qualification: {
     type: String,
-    required: true,
+    // required: true,
   },
   faculty_experience: {
     type: Number,
-    required: true,
+    // required: true,
   },
   faculty_salary: {
     type: Number,
-    required: true,
+    // required: true,
   },
   faculty_joining_date: {
     type: Date,
+    // required: true,
+  },
+  role: {
+    type: String,
+    default: "faculty",
+  },
+  faculty_password: {
+    type: String,
     required: true,
   },
+  refreshToken: {
+    type: String,
+  },
+  accessToken: {
+    type: String,
+  },
 });
+
+FacultySchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  this.faculty_password = await bcrypt.hash(this.faculty_password, 10);
+  next();
+});
+
+FacultySchema.methods.comparePassword = async function (
+  candidatePassword: string
+) {
+  return await bcrypt.compare(candidatePassword, this.faculty_password);
+};
+
+FacultySchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
+    { _id: this._id, email: this.faculty_email },
+    process.env.JWT_REFRESH_TOKEN!,
+    {
+      expiresIn: process.env.JWT_REFRESH_EXPIRE!,
+    }
+  );
+};
+
+FacultySchema.methods.generateAccessToken = function () {
+  return jwt.sign({ _id: this._id }, process.env.JWT_ACCESS_TOKEN!, {
+    expiresIn: process.env.JWT_ACCESS_EXPIRE!,
+  });
+};
 
 const Faculty = model<IFaculty>("Faculty", FacultySchema);
 export default Faculty;
