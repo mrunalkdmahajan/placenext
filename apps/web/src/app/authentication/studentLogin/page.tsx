@@ -1,5 +1,6 @@
 import LoginForm from "@/components/own/Form/LoginFrom";
-// import Vector from "../assets/Authentication.svg";
+import Vector from "/assets/Fingerprint-amico.svg";
+import Image from "next/image";
 
 export default function Login() {
   return (
@@ -8,7 +9,12 @@ export default function Login() {
         <LoginForm />
       </div>
       <div className="hidden md:w-1/2 bg-[#F2F2F2] md:h-auto lg:h-screen md:flex md:items-center md:justify-center">
-        {/* <img src={Vector} alt="" /> */}
+        <Image
+          src="/assets/Fingerprint-amico.svg"
+          width={400}
+          height={400}
+          alt="Mobile Login"
+        />
       </div>
     </div>
   );

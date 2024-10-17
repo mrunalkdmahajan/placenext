@@ -12,7 +12,7 @@ interface StudentData {
   stud_department: string;
   stud_year: string;
   aggregateCGPI: number;
-  stud_placement_status: string; // Adjusting based on your API response
+  stud_placement_status: string;
   isSystemVerified: boolean;
   isCollegeVerified: boolean;
   student: {};
@@ -24,6 +24,12 @@ export default function StudentList() {
   const [aggregateCGPI, setAggregateCGPI] = useState<number[]>([]);
   const [placementStatus, setPlacementStatus] = useState<string[]>([]);
   const [stud_year, setStudYear] = useState<string[]>([]);
+  const [filter, setFilter] = useState({
+    placementStatus: "",
+    verifiedStatus: "",
+    branch: "",
+  });
+
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -53,7 +59,7 @@ export default function StudentList() {
             res.data.students.map((student: StudentData) => student.stud_year)
           );
         } else {
-          toast.error(res.data.msg); // Changed to msg for consistency
+          toast.error(res.data.msg);
         }
       } catch (error) {
         console.error(error);
@@ -63,6 +69,38 @@ export default function StudentList() {
 
     fetchStudents();
   }, []);
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const updatedFilter = {
+      ...filter,
+      [e.target.id]: e.target.value,
+    };
+    setFilter(updatedFilter);
+    applyFilter(updatedFilter); // Pass the updated filter directly
+  };
+
+  const applyFilter = async (filterParams = filter) => {
+    try {
+      const res = await axios.get(`${BackendUrl}/api/college/filter_students`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        params: filterParams,
+      });
+      console.log(res.data); // Check if data is returned
+      if (res.data.success) {
+        // Update students with the filtered data
+        setStudents(
+          res.data.students.map((student: StudentData) => student.student)
+        );
+      } else {
+        toast.error(res.data.msg);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to fetch filtered student data.");
+    }
+  };
 
   const getStudentDataInExcel = async () => {
     try {
@@ -102,36 +140,57 @@ export default function StudentList() {
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div className="flex flex-col md:flex-row space-x-0 md:space-x-4 w-full">
           <div className="w-full md:w-auto">
-            <label htmlFor="filterDate" className="block font-medium mb-1">
-              Date
+            <label htmlFor="placementStatus" className="block font-medium mb-1">
+              Placement Status
             </label>
             <select
-              id="filterDate"
+              id="placementStatus"
               className="w-full border border-gray-300 rounded-md p-2 focus:ring focus:border-blue-500"
-            >
-              <option value="">Select Date</option>
-            </select>
-          </div>
-          <div className="w-full md:w-auto">
-            <label htmlFor="orderType" className="block font-medium mb-1">
-              Order Type
-            </label>
-            <select
-              id="orderType"
-              className="w-full border border-gray-300 rounded-md p-2 focus:ring focus:border-blue-500"
+              onChange={handleFilterChange}
             >
               <option value="">Select Type</option>
+              <option value="true">Placed</option>
+              <option value="false">Not Placed</option>
             </select>
           </div>
           <div className="w-full md:w-auto">
-            <label htmlFor="orderStatus" className="block font-medium mb-1">
-              Order Status
+            <label htmlFor="verifiedStatus" className="block font-medium mb-1">
+              Verified Status
             </label>
             <select
-              id="orderStatus"
+              id="verifiedStatus"
               className="w-full border border-gray-300 rounded-md p-2 focus:ring focus:border-blue-500"
+              onChange={handleFilterChange}
             >
-              <option value="">Select Status</option>
+              <option value="">Select Type</option>
+              <option value="1">Verified</option>
+              <option value="2">System Verified</option>
+              <option value="3">Not Verified</option>
+            </select>
+          </div>
+          <div className="w-full md:w-auto">
+            <label htmlFor="branch" className="block font-medium mb-1">
+              Branch
+            </label>
+            <select
+              id="branch"
+              className="w-full border border-gray-300 rounded-md p-2 focus:ring focus:border-blue-500"
+              onChange={handleFilterChange}
+            >
+              <option value="">Select Branch</option>
+              <option value="Computer Engineering">Computer Engineering</option>
+              <option value="Information Technology">
+                Information Technology
+              </option>
+              <option value="Artificial Intelligence and Data Science">
+                Artificial Intelligence and Data Science
+              </option>
+              <option value="Automation and Robotics">
+                Automation and Robotics
+              </option>
+              <option value="Electronic and Telecommunication">
+                Electronic and Telecommunication
+              </option>
             </select>
           </div>
         </div>

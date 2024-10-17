@@ -7,6 +7,7 @@ import {
   getAllStudentList,
   getCollegeJob,
   getCollegeJobs,
+  getFilteredStudentList,
   getJobDetailsById,
   getStudentById,
   getStudentDetailsInExcel,
@@ -53,6 +54,12 @@ collegeRoutes.get("/company/:id", authenticateToken, getJobDetailsById);
 
 // role base access routes
 collegeRoutes.post("/create_faculty", authenticateToken, create_faculty);
+
+collegeRoutes.get(
+  "/filter_students",
+  authenticateToken,
+  getFilteredStudentList
+);
 
 // getting student data
 collegeRoutes.get(

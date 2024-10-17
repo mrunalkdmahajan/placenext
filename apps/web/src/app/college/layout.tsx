@@ -25,7 +25,7 @@ export default function RootLayout({
           <FacultySidebar />
           <MainNav />
         </div>
-        <div className="mt-20 mx-4">{children}</div>
+        <div className="mt-20 mx-4 lg:ml-[200px]">{children}</div>
       </div>
     </div>
   );

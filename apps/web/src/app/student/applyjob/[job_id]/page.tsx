@@ -8,6 +8,7 @@ import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/navigation";
 
 interface Job {
   _id: string; // MongoDB IDs are typically strings
@@ -31,6 +32,7 @@ interface Job {
 }
 
 const FinalApplication = () => {
+  const router = useRouter();
   const [job, setJob] = useState<Job | null>(null);
   const [isChecked, setIsChecked] = useState(false);
   const [cvFile, setCvFile] = useState<File | null>(null);
@@ -105,7 +107,11 @@ const FinalApplication = () => {
         }
       );
       if (response.data.success) {
-        alert("Application submitted successfully!");
+        toast.success("Application submitted successfully", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        router.push("/student/dashboard");
       } else {
         alert("There was an error submitting your application.");
       }

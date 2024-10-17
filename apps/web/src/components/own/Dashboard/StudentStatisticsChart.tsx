@@ -109,6 +109,7 @@ const StudentStatisticsChart: React.FC = () => {
           },
         },
       },
+
       legend: {
         display: true,
       },
@@ -149,17 +150,25 @@ const StudentStatisticsChart: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-2 md:px-20 lg:px-10">
       <h1 className="text-lg font-bold mb-6">Student Placement Statistics</h1>
 
-      <div className="flex flex-col">
-        <div className="mb-8">
+      <div className="flex flex-col lg:flex-row items-center justify-between">
+        <div className="mb-8 lg:w-400">
           <h2 className="text-lg font-semibold mb-4">Overall Statistics</h2>
-          <Bar data={data.barData} options={barOptions} />
+          <Bar
+            style={{ width: 600 }}
+            data={data.barData}
+            options={barOptions}
+          />
         </div>
-        <div>
+        <div className=" lg:w-400">
           <h2 className="text-lg font-semibold mb-4">Students by Department</h2>
-          <Pie data={data.pieData} options={pieOptions} />
+          <Pie
+            style={{ width: 350 }}
+            data={data.pieData}
+            options={pieOptions}
+          />
         </div>
       </div>
     </div>

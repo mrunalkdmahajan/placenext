@@ -52,3 +52,41 @@ export const uploadToGoogleDrive = async (file: any) => {
     throw error;
   }
 };
+
+// in this if we are update a document then need to delte the previous file from the google drive
+
+export const updateToGoogleDrive = async (file: any, fileId: string) => {
+  try {
+    const drive = google.drive({ version: "v3", auth });
+
+    const fileMetadata = {
+      name: file.split("/")[2],
+    };
+    const media = {
+      mimeType: file.mimetype,
+      body: fs.createReadStream(file),
+    };
+
+    const response = await drive.files.update({
+      // @ts-ignore
+      fileId: fileId,
+      media: media,
+      fields: "id, webViewLink, webContentLink",
+    });
+
+    await drive.permissions.create({
+      // @ts-ignore
+      fileId: fileId,
+      requestBody: {
+        role: "reader",
+        type: "anyone",
+      },
+    });
+    fs.unlinkSync(file);
+    //@ts-ignore
+    return response.data.webViewLink;
+  } catch (error) {
+    console.error("Error uploading to Google Drive:", error);
+    throw error;
+  }
+};

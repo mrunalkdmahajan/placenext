@@ -150,22 +150,24 @@ def perform_verification(user_id):
             print(f"Verification successful for user: {user_id}")
             student_collection.update_one({'_id': user_id}, {'$set': {'isSystemVerified': True}})
             response_message = 'Verification successful'
+            send_notification(user_data['stud_email'],user_id, response_message)
         else:
             print(f"Verification failed for user: {user_id}, failed semesters: {failed_semesters}")
             response_message = f'Verification failed for semesters: {failed_semesters}'
             
-            send_notification(user_data['stud_email'], response_message)  
+            send_notification(user_data['stud_email'],user_id, response_message)  
 
         return Response({'message': response_message})
     finally:
         with lock:
             processing_users.remove(user_id)
 
-def send_notification(user_email, message):
+def send_notification(user_email,user_id, message):
     notification_url = f"{os.getenv('NOTIFICATION_SERVICE_URL')}/notifications/send_notification"
     payload = {
-        "userId": user_email,
-        "message": message
+        "userId": user_id,
+        "message": message,
+        "email": user_email
     }
     try:
         response = requests.post(notification_url, json=payload)

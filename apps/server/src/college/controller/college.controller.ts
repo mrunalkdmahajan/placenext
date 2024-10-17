@@ -155,6 +155,137 @@ export const getAllStudentList = async (req: Request, res: Response) => {
   }
 };
 
+interface FilteredStudentList {
+  PlacementStatus: string;
+  AggregateCGPI: string;
+  StudYear: number;
+}
+
+export const getFilteredStudentList = async (req: Request, res: Response) => {
+  try {
+    // Extract user from request
+    // @ts-ignore
+    const user = req.user as { uid: string };
+    console.log("User UID:", user.uid);
+
+    // Extract filter from request parameters
+    const filter = req.params.filter ? JSON.parse(req.params.filter) : {};
+    const { placementStatus, verifiedStatus, branch } = req.query;
+
+    console.log("Placement Status:", placementStatus);
+    console.log("Verified Status:", verifiedStatus);
+    console.log("Order Status:", branch);
+
+    // Find college by Google ID
+    const college = await College.findOne({ googleId: user.uid });
+    if (!college) {
+      return res.status(404).json({ success: false, msg: "College not found" });
+    }
+
+    // Define the query conditions
+    const queryConditions: any = {
+      stud_college_id: college._id.toString(),
+    };
+
+    // Apply other filters
+    if (verifiedStatus === "1") {
+      queryConditions.isCollegeVerified = true;
+      queryConditions.isSystemVerified = true;
+    } else if (verifiedStatus === "2") {
+      queryConditions.isCollegeVerified = false;
+      queryConditions.isSystemVerified = true;
+    } else if (verifiedStatus === "3") {
+      queryConditions.isCollegeVerified = false;
+      queryConditions.isSystemVerified = false;
+    }
+
+    if (branch) {
+      queryConditions.stud_department = branch;
+    }
+
+    // Fetch students based on the constructed conditions
+    let students = await Student.find(queryConditions).populate("stud_info_id");
+    console.log("Students:", students);
+
+    // If no students are found, return a 404 response
+    if (!students.length) {
+      return res.status(404).json({ success: false, msg: "No students found" });
+    }
+
+    // If placementStatus filter is provided, filter the students based on the populated stud_info_id field
+    if (placementStatus === "true") {
+      students = students.filter(
+        // @ts-ignore
+        (student) =>
+          student.stud_info_id &&
+          // @ts-ignore
+          student.stud_info_id.stud_placement_status === true
+      );
+    } else if (placementStatus === "false") {
+      students = students.filter(
+        // @ts-ignore
+        (student) =>
+          student.stud_info_id &&
+          // @ts-ignore
+          student.stud_info_id.stud_placement_status === false
+      );
+    }
+
+    // Calculate CGPI and gather placement status
+    const placementStatusAndCGPI = await Promise.all(
+      students.map(async (student) => {
+        const studentInfo = await StudentInfo.findById(
+          student.stud_info_id
+        ).lean();
+        if (!studentInfo) {
+          return {
+            placementStatus: null,
+            aggregateCGPI: "0.00",
+            stud_year: null,
+          };
+        }
+
+        const grades = [
+          studentInfo.stud_sem1_grade,
+          studentInfo.stud_sem2_grade,
+          studentInfo.stud_sem3_grade,
+          studentInfo.stud_sem4_grade,
+          studentInfo.stud_sem5_grade,
+          studentInfo.stud_sem6_grade,
+          studentInfo.stud_sem7_grade,
+          studentInfo.stud_sem8_grade,
+        ].filter((grade) => grade != null); // Keep only valid grades
+
+        const totalPoints = grades.reduce(
+          (acc, grade) => acc + Number(grade),
+          0
+        );
+        const aggregateCGPI =
+          grades.length > 0 ? totalPoints / grades.length : 0;
+
+        return {
+          placementStatus: studentInfo.stud_placement_status,
+          aggregateCGPI: aggregateCGPI.toFixed(2),
+          stud_year: studentInfo.stud_addmission_year,
+        };
+      })
+    );
+
+    // Merge the student data with their placement status and aggregate CGPI
+    const responseData = students.map((student, index) => ({
+      student,
+      placementStatus: placementStatusAndCGPI[index].placementStatus,
+      aggregateCGPI: placementStatusAndCGPI[index].aggregateCGPI,
+      stud_year: placementStatusAndCGPI[index].stud_year,
+    }));
+
+    return res.status(200).json({ success: true, students: responseData });
+  } catch (error: any) {
+    console.error("Error in getFilteredStudentList:", error);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
 export const getStudentById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

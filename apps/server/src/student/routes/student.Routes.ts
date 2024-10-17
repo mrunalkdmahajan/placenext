@@ -27,7 +27,7 @@ studentRoutes.post("/google_login", authenticateToken, signup);
 studentRoutes.post(
   "/register/applicationform",
   upload.fields([
-    // { name: "resume", maxCount: 1 },
+    { name: "resume", maxCount: 1 },
     { name: "sem1Marksheet", maxCount: 1 },
     { name: "sem2Marksheet", maxCount: 1 },
     { name: "sem3Marksheet", maxCount: 1 },

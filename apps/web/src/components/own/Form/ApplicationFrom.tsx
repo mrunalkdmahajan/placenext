@@ -7,9 +7,10 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 const ApplicationForm = () => {
-  const [colleges, setColleges] = useState([]);
-  const router = useRouter();
+  const [colleges, setColleges] = useState([]); // Array to store college data from API
+  const router = useRouter(); // Use Next.js router for navigation
 
+  // Fetch the token from localStorage and if not present, redirect user to login
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -19,12 +20,12 @@ const ApplicationForm = () => {
       try {
         const response = await axios.get(`${BackendUrl}/api/student/colleges`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, // Pass token in headers
           },
         });
         console.log(response.data);
         if (response.data.success) {
-          setColleges(response.data.colleges);
+          setColleges(response.data.colleges); // Set the fetched college data
         }
       } catch (error: any) {
         console.error("Error fetching colleges", error.message);
@@ -33,6 +34,7 @@ const ApplicationForm = () => {
     fetchColleges();
   }, []);
 
+  // State to store form data
   const [formData, setFormData] = useState({
     firstName: "",
     middleName: "",
@@ -70,8 +72,12 @@ const ApplicationForm = () => {
     sem7CGPI: "",
     sem8CGPI: "",
     college: "",
+    githubLink: "",
+    linkedInLink: "",
+    locationPreference: "",
   });
 
+  // State to store document files
   const [documents, setDocuments] = useState({
     sem1Marksheet: null,
     sem2Marksheet: null,
@@ -81,16 +87,20 @@ const ApplicationForm = () => {
     sem6Marksheet: null,
     sem7Marksheet: null,
     sem8Marksheet: null,
+    resume: null, // Added field for resume in PDF format
   });
 
-  const [step, setStep] = useState(0);
-  const [errors, setErrors] = useState({});
+  // Steps for the multi-step form
+  const [step, setStep] = useState(0); // Track the form step
+  const [errors, setErrors] = useState({}); // Error handling state
 
+  // Handle form input changes
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handle file input changes
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     key: string
@@ -101,20 +111,24 @@ const ApplicationForm = () => {
     }
   };
 
+  // Validate the form (for now it returns true)
   const validateForm = () => {
     const newErrors = {};
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  // Submit form data
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     const data = new FormData();
+    // Append formData to FormData object
     Object.entries(formData).forEach(([key, value]) => {
       data.append(key, value);
     });
+    // Append documents to FormData object
     Object.entries(documents).forEach(([key, file]) => {
       if (file) data.append(key, file);
     });
@@ -133,15 +147,15 @@ const ApplicationForm = () => {
           data,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
-              "x-refresh-token": refreshToken,
-              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`, // Token in headers
+              "x-refresh-token": refreshToken, // Refresh token for session
+              "Content-Type": "multipart/form-data", // Handle file upload
             },
           }
         );
         if (response.data.success) {
           toast.success(response.data.message);
-          router.push("/student/dashboard");
+          router.push("/student/dashboard"); // Redirect on success
         }
       }
     } catch (error: any) {
@@ -149,7 +163,9 @@ const ApplicationForm = () => {
     }
   };
 
-  const nextStep = () => setStep((prev) => Math.min(prev + 1, 3));
+  // Proceed to next step in the form
+  const nextStep = () => setStep((prev) => Math.min(prev + 1, 4));
+  // Go back to previous step
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
   return (
@@ -189,11 +205,6 @@ const ApplicationForm = () => {
                       placeholder={`Enter ${field.replace(/([A-Z])/g, " $1")}`}
                       className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                     />
-                    {/* {errors[field] && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors[field]}
-                      </p>
-                    )} */}
                   </div>
                 ))}
               </div>
@@ -231,11 +242,6 @@ const ApplicationForm = () => {
                       placeholder={`Enter ${field.replace(/([A-Z])/g, " $1")}`}
                       className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                     />
-                    {/* {errors[field] && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors[field]}
-                      </p>
-                    )} */}
                   </div>
                 ))}
               </div>
@@ -254,15 +260,17 @@ const ApplicationForm = () => {
                     value={formData.college}
                     className="w-72 lg:w-72 xl:w-96 p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                   >
-                    <option value="">Select College</option>
+                    <option value="" disabled>
+                      Select College
+                    </option>
                     {colleges.map((college: any) => (
-                      <option key={college._id} value={college._id}>
+                      <option key={college._id} value={college.id}>
                         {college.name}
                       </option>
                     ))}
-                    <option>66edbf3b7298265cb469ca2d</option>
                   </select>
                 </div>
+
                 {[
                   "courseType",
                   "admissionYear",
@@ -271,6 +279,15 @@ const ApplicationForm = () => {
                   "hscBoard",
                   "twelfthPercentage",
                   "sscBoard",
+                  "cet",
+                  "sem1CGPI",
+                  "sem2CGPI",
+                  "sem3CGPI",
+                  "sem4CGPI",
+                  "sem5CGPI",
+                  "sem6CGPI",
+                  "sem7CGPI",
+                  "sem8CGPI",
                 ].map((field) => (
                   <div key={field} className="mb-4 w-68 lg:w-72 xl:w-96">
                     <label className="block mb-1">
@@ -287,11 +304,6 @@ const ApplicationForm = () => {
                       placeholder={`Enter ${field.replace(/([A-Z])/g, " $1")}`}
                       className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                     />
-                    {/* {errors[field] && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors[field]}
-                      </p>
-                    )} */}
                   </div>
                 ))}
               </div>
@@ -300,39 +312,7 @@ const ApplicationForm = () => {
 
           {step === 3 && (
             <div>
-              <h1>Fill your CGPI</h1>
-              <div className="flex flex-wrap gap-4 justify-between">
-                {[
-                  "sem1CGPI",
-                  "sem2CGPI",
-                  "sem3CGPI",
-                  "sem4CGPI",
-                  "sem5CGPI",
-                  "sem6CGPI",
-                  "sem7CGPI",
-                  "sem8CGPI",
-                ].map((key) => (
-                  <div key={key} className="mb-4 w-72 lg:w-72 xl:w-96">
-                    <label className="block mb-1">
-                      {key
-                        .replace(/([A-Z])/g, " $1")
-                        .replace(/^./, (str) => str.toUpperCase())}
-                    </label>
-                    <input
-                      type="text"
-                      name={key}
-                      //@ts-ignore
-                      value={formData[key]}
-                      onChange={handleChange}
-                      placeholder={`Enter ${key.replace(/([A-Z])/g, " $1")}`}
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-                ))}
-              </div>
-              <h1 className="text-2xl font-bold mb-6">
-                Upload Semester Marksheet
-              </h1>
+              <h1 className="text-2xl font-bold mb-6">Documents Upload</h1>
               <div className="flex flex-wrap gap-4 justify-between">
                 {[
                   "sem1Marksheet",
@@ -343,64 +323,86 @@ const ApplicationForm = () => {
                   "sem6Marksheet",
                   "sem7Marksheet",
                   "sem8Marksheet",
-                ].map((key) => (
-                  <div key={key} className="mb-4 w-72 lg:w-72 xl:w-96">
+                ].map((field) => (
+                  <div key={field} className="mb-4 w-68 lg:w-72 xl:w-96">
                     <label className="block mb-1">
-                      {key
-                        .replace(/([A-Z])/g, " $1")
-                        .replace(/^./, (str) => str.toUpperCase())}
+                      Upload {field.replace(/([A-Z])/g, " $1")}
                     </label>
                     <input
                       type="file"
-                      accept=".pdf"
-                      onChange={(e) => handleFileChange(e, key)}
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                      name={field}
+                      onChange={(e) => handleFileChange(e, field)}
+                      className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                     />
                   </div>
                 ))}
               </div>
-              <div className="mb-4 w-72 lg:w-72 xl:w-96">
-                <label className="block mb-1">CET Score</label>
-                <input
-                  type="text"
-                  name="cet"
-                  value={formData.cet}
-                  onChange={handleChange}
-                  placeholder="Enter CET Score"
-                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
-                />
+            </div>
+          )}
 
-                {/* {
-                //@ts-ignore
-                errors.cet && (
-                  <p className="text-red-500 text-sm mt-1">{errors.cet}</p>
-                )} */}
+          {/* New Step for GitHub, LinkedIn, Resume, and Location Preference */}
+          {step === 4 && (
+            <div>
+              <h1 className="text-2xl font-bold mb-6">
+                Additional Professional Details
+              </h1>
+              <div className="flex flex-wrap gap-4 justify-between">
+                <div className="mb-4 w-68 lg:w-72 xl:w-96">
+                  <label className="block mb-1">Upload Resume</label>
+                  <input
+                    type="file"
+                    name="document"
+                    onChange={(e) => handleFileChange(e, "resume")}
+                    className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  />
+                </div>
+                {["githubLink", "linkedInLink", "locationPreference"].map(
+                  (field) => (
+                    <div key={field} className="mb-4 w-68 lg:w-72 xl:w-96">
+                      <label className="block mb-1">
+                        {field
+                          .replace(/([A-Z])/g, " $1")
+                          .replace(/^./, (str) => str.toUpperCase())}
+                      </label>
+                      <input
+                        type="text"
+                        name={field}
+                        //@ts-ignore
+                        value={formData[field]}
+                        onChange={handleChange}
+                        placeholder={`Enter ${field.replace(/([A-Z])/g, " $1")}`}
+                        className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      />
+                    </div>
+                  )
+                )}
               </div>
             </div>
           )}
 
-          <div className="flex justify-between mt-4">
+          {/* Navigation buttons */}
+          <div className="flex justify-between mt-8">
             {step > 0 && (
               <button
                 type="button"
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
                 onClick={prevStep}
-                className="bg-gray-300 text-black p-2 rounded hover:bg-gray-400"
               >
                 Previous
               </button>
             )}
-            {step < 3 ? (
+            {step < 4 ? (
               <button
                 type="button"
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
                 onClick={nextStep}
-                className="bg-primary text-white p-2 rounded hover:bg-green-700"
               >
                 Next
               </button>
             ) : (
               <button
                 type="submit"
-                className="bg-primary text-white p-2 rounded hover:bg-green-700"
+                className="px-4 py-2 bg-green-500 text-white rounded-lg"
               >
                 Submit
               </button>
