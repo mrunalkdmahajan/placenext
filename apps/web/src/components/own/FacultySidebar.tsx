@@ -10,6 +10,7 @@ import {
   ListItemText,
   IconButton,
   useMediaQuery,
+  Button,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import ImportContactsTwoToneIcon from "@mui/icons-material/ImportContactsTwoTone";
@@ -24,6 +25,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/navigation";
 import HelpCard from "./HelpCard";
 import LogoText from "./LogoText";
+import { getAuth } from "firebase/auth";
+import { logout } from "@/config/firebase-config";
 
 interface Option {
   name: string;
@@ -69,6 +72,17 @@ export default function FacultySidebar({ isIcon }: any) {
     setOpen(newOpen);
   };
 
+  const handleLogout = async () => {
+    const auth = getAuth();
+    try {
+      logout();
+      console.log("User signed out");
+      router.push("/authentication/studentLogin");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+
   const DrawerList = (
     <Box
       sx={{ width: isLargeScreen ? 210 : 240 }}
@@ -92,9 +106,10 @@ export default function FacultySidebar({ isIcon }: any) {
             ))}
           </List>
         </div>
-        <div className="p-2 h-full flex items-center justify-center">
+        {/* <div className="p-2 h-full flex items-center justify-center">
           <HelpCard />
-        </div>
+        </div> */}
+        <Button onClick={handleLogout}>Logout</Button>
       </div>
     </Box>
   );
