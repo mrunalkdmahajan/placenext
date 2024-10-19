@@ -4,8 +4,13 @@ import { useEffect, useState } from "react";
 import { IoIosNotifications } from "react-icons/io";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { usePathname } from "next/navigation";
+import { getAuth } from "firebase/auth";
+import { logout } from "@/config/firebase-config";
+import { useRouter } from "next/navigation";
+import { Button } from "@mui/material";
 
 export default function MainNav() {
+  const router = useRouter();
   const [userName, setUserName] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -38,6 +43,17 @@ export default function MainNav() {
     };
   }, [dropdownOpen]);
 
+  const handleLogout = async () => {
+    const auth = getAuth();
+    try {
+      logout();
+      console.log("User signed out");
+      router.push("/authentication/studentLogin");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+
   const pathname = usePathname();
   const path = pathname.split("/")[1];
 
@@ -68,14 +84,31 @@ export default function MainNav() {
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-50">
               <ul className="py-1">
-                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                  Profile
+                <li>
+                  <Button
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => router.push("/student/profile")}
+                    variant="text"
+                  >
+                    Profile
+                  </Button>
                 </li>
-                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                  Settings
+                <li>
+                  <Button
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => router.push("/student/settings")}
+                    variant="text"
+                  >
+                    Settings
+                  </Button>
                 </li>
-                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-500">
-                  Logout
+                <li>
+                  <Button
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-500"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </Button>
                 </li>
               </ul>
             </div>
