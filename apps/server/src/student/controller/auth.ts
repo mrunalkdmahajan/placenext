@@ -679,7 +679,7 @@ export const getStudentsJobStatistics = async (req: Request, res: Response) => {
       "stud_info_id"
     );
 
-    console.log("Student", student);
+    // console.log("Student", student);
 
     if (!student) {
       return res.status(404).json({ success: false, msg: "Student not found" });
