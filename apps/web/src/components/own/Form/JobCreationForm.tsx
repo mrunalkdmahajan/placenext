@@ -180,6 +180,7 @@ const JobCreationForm: React.FC = () => {
                 <input
                   type="text"
                   name={field}
+                  // @ts-ignore
                   value={formData[field as keyof typeof formData]}
                   onChange={handleChange}
                   placeholder={`Enter ${field.replace(/([A-Z])/g, " $1")}`}

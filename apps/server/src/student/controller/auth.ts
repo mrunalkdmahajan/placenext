@@ -452,23 +452,24 @@ export const getJobForCollege = async (req: Request, res: Response) => {
     ];
 
     // Print grades for debugging
-    console.log("Grades:", grades);
+    // console.log("Grades:", grades);
 
     // Ensure grades are numbers and ignore empty strings
+    let validSemesters = 0;
     const totalGrades = grades.reduce((sum: any, grade: any) => {
       // Check if the grade is a valid number or a non-empty string that can be converted to a number
       return grade !== "" && !isNaN(Number(grade)) ? sum + Number(grade) : sum;
     }, 0);
 
     // Count valid semesters (where the grade is not an empty string and can be converted to a number)
-    const validSemesters = grades.filter(
-      (grade) => grade !== "" && !isNaN(Number(grade))
+    validSemesters = grades.filter(
+      (grade) => grade !== "" && grade !== null && !isNaN(Number(grade))
     ).length;
 
     // Calculate the average CGPI, avoiding division by zero
     const averageCGPI = validSemesters > 0 ? totalGrades / validSemesters : 0;
 
-    console.log("averageCGPI", averageCGPI);
+    // console.log("averageCGPI", averageCGPI);
 
     // Fetch all jobs posted at the student's college
     const jobs = await Job.find({
@@ -490,7 +491,7 @@ export const getJobForCollege = async (req: Request, res: Response) => {
         averageCGPI >= job.min_CGPI && // Use average CGPI
         job.branch_allowed.includes(student.stud_department);
       // job.passing_year.includes(student.stud_year);
-      console.log("isEligible", isEligible);
+      // console.log("isEligible", isEligible);
 
       return {
         ...job.toObject(), // Convert the job document to a plain object

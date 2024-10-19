@@ -4,6 +4,7 @@ import {
   applicationFrom,
   collegeAuth,
   createJobByCollege,
+  facultyProfile,
   getAllStudentList,
   getCollegeJob,
   getCollegeJobs,
@@ -67,5 +68,7 @@ collegeRoutes.get(
   authenticateToken,
   getStudentDetailsInExcel
 );
+
+collegeRoutes.get("/facultyProfile", authenticateToken, facultyProfile);
 
 export default collegeRoutes;

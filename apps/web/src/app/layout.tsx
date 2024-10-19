@@ -18,6 +18,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="icon"
+          href="/assets/PlaceNext_logo.png"
+          type="image/x-icon"
+        />
+      </head>
+
       <body className={inter.className}>
         {children}
         <ToastContainer

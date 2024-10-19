@@ -800,3 +800,20 @@ export const getStudentDetailsInExcel = async (req: Request, res: Response) => {
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 };
+
+export const facultyProfile = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+    const faculty = await College.findOne({ googleId: user.uid }).select(
+      "-googleId"
+    );
+    if (!faculty) {
+      return res.status(404).json({ success: false, msg: "Faculty not found" });
+    }
+    return res.status(200).json({ success: true, faculty });
+  } catch (error: any) {
+    console.log("Error in facultyProfile", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};

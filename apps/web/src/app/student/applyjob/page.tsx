@@ -18,7 +18,7 @@ function MainDashboard() {
     getAllJobs();
   }, []);
   return (
-    <div className="bg-primary_background h-full">
+    <div className="bg-primary_background overflow-scroll w-full h-full">
       <ApplicationCards />
     </div>
   );

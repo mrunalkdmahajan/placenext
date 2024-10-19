@@ -51,6 +51,8 @@ const Profile = () => {
     sem6Marksheet: "",
     sem7Marksheet: "",
     sem8Marksheet: "",
+    // live_kt: "",
+    // dead_kt: "",
   });
 
   const [marksheets, setMarksheets] = useState({
@@ -132,20 +134,20 @@ const Profile = () => {
             sem2CGPI: stud_info_id.stud_sem2_grade,
             sem3CGPI: stud_info_id.stud_sem3_grade,
             sem4CGPI: stud_info_id.stud_sem4_grade,
-            sem5CGPI: stud_info_id.stud_sem5_grade || "",
-            sem6CGPI: stud_info_id.stud_sem6_grade || "",
-            sem7CGPI: stud_info_id.stud_sem7_grade || "",
-            sem8CGPI: stud_info_id.stud_sem8_grade || "",
+            sem5CGPI: stud_info_id.stud_sem5_grade || "not entered",
+            sem6CGPI: stud_info_id.stud_sem6_grade || "not entered",
+            sem7CGPI: stud_info_id.stud_sem7_grade || "not entered",
+            sem8CGPI: stud_info_id.stud_sem8_grade || "not entered",
             //@ts-ignore
             college: stud_college_id.coll_name, // Add field if available
             sem1Marksheet: stud_info_id.stud_sem1_marksheet,
             sem2Marksheet: stud_info_id.stud_sem2_marksheet,
             sem3Marksheet: stud_info_id.stud_sem3_marksheet,
             sem4Marksheet: stud_info_id.stud_sem4_marksheet,
-            sem5Marksheet: stud_info_id.stud_sem5_marksheet || "",
-            sem6Marksheet: stud_info_id.stud_sem6_marksheet || "",
-            sem7Marksheet: stud_info_id.stud_sem7_marksheet || "",
-            sem8Marksheet: stud_info_id.stud_sem8_marksheet || "",
+            sem5Marksheet: stud_info_id.stud_sem5_marksheet || "not entered",
+            sem6Marksheet: stud_info_id.stud_sem6_marksheet || "not entered",
+            sem7Marksheet: stud_info_id.stud_sem7_marksheet || "not entered",
+            sem8Marksheet: stud_info_id.stud_sem8_marksheet || "not entered",
           });
           console.log("Profile data set correctly");
         } else {
@@ -780,9 +782,9 @@ const Profile = () => {
           <p>
             <strong>Address:</strong> {profile.address}
           </p>
-          <p>
+          {/* <p>
             <strong>City:</strong> {profile.city}
-          </p>
+          </p> */}
           <p>
             <strong>State:</strong> {profile.state}
           </p>
