@@ -103,9 +103,9 @@ export default function StudentSidebar({ isIcon }: any) {
             ))}
           </List>
         </div>
-        <div className="p-2 h-full flex items-center justify-center">
+        {/* <div className="p-2 h-full flex items-center justify-center">
           <HelpCard />
-        </div>
+        </div> */}
         <Button onClick={handleLogout}>Logout</Button>
       </div>
     </Box>
