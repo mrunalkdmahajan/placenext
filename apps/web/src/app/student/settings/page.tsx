@@ -30,7 +30,7 @@ const settingsOptions = [
   },
 ];
 
-const SettingsDetail = ({ setting, setSelectedSetting }) => {
+const SettingsDetail = ({ setting, setSelectedSetting }: any) => {
   const handleBack = () => {
     setSelectedSetting(null);
   };
@@ -56,7 +56,7 @@ const SettingsDetail = ({ setting, setSelectedSetting }) => {
 
       {setting.type === "dropdown" && (
         <select className="form-select mt-4 p-2 border rounded">
-          {setting.options.map((option) => (
+          {setting.options.map((option: any) => (
             <option key={option} value={option}>
               {option}
             </option>
@@ -76,7 +76,7 @@ const SettingsDetail = ({ setting, setSelectedSetting }) => {
 const Settings = () => {
   const [selectedSetting, setSelectedSetting] = useState(null);
 
-  const handleClick = (setting) => {
+  const handleClick = (setting: any) => {
     setSelectedSetting(setting);
   };
 
