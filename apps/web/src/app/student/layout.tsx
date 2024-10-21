@@ -22,9 +22,12 @@ export default function RootLayout({
         {/* this will contain sidebar */}
         <StudentSidebar />
       </div>
+      <div className="fixed top-0 w-full z-20">
+        <MainNav />
+      </div>
       <div className="w-full h-full flex flex-col bg-primary_background overflow-auto">
         {/* this will contain navbar and main content */}
-        <MainNav />
+
         <div className="mt-20 max-h-screen max-w-screen">{children}</div>
       </div>
     </div>

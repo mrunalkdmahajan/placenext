@@ -510,7 +510,7 @@ export const createJobByCollege = async (req: Request, res: Response) => {
 
     console.log(req.body); // Debugging output
 
-    // Check for required fields, including company_name
+    // Check for required fields
     if (
       [
         job_title,
@@ -521,14 +521,14 @@ export const createJobByCollege = async (req: Request, res: Response) => {
         job_requirements,
         job_posted_date,
         yr_of_exp_req,
+        job_timing,
+        status,
+        company_name,
         min_CGPI,
         max_no_dead_kt,
         max_no_live_kt,
         branch_allowed,
         passing_year,
-        job_timing,
-        status,
-        company_name, // Ensure company_name is checked
       ].some((field) => field === "" || field === undefined) // Check for empty or undefined fields
     ) {
       return res.status(400).json({ msg: "All fields are required" });
@@ -574,7 +574,7 @@ export const createJobByCollege = async (req: Request, res: Response) => {
     await newJob.save();
     return res.status(200).json({ success: true, msg: "Job created" });
   } catch (error: any) {
-    console.log("Error in createJobByCompany", error.message);
+    console.log("Error in createJobByCollege", error.message);
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 };

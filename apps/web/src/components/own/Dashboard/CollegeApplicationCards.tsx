@@ -50,7 +50,7 @@ const CollegeApplicationCards = () => {
             postedDate: new Date(job.job_posted_date).toLocaleDateString(),
             deadline: job.job_deadline || "Not Specified",
             description: job.job_description,
-            salary: `$${job.job_salary}`,
+            salary: `₹${job.job_salary}`,
             workingHours: job.job_timing,
             basicRequirements: job.job_requirements,
           }));

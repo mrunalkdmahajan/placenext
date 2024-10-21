@@ -22,10 +22,13 @@ export default function RootLayout({
       <div className="fixed top-0 left-0 z-50 lg:relative lg:block">
         <FacultySidebar />
       </div>
+
+      <div className="fixed top-0 z-30 w-full  ">
+        <MainNav />
+      </div>
       <div className="w-full h-full flex flex-col bg-primary_background">
         {/* this will contain navbar and main content */}
 
-        <MainNav />
         <div className="pt-20 max-h-screen">{children}</div>
       </div>
     </div>

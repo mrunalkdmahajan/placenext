@@ -126,74 +126,80 @@ const FinalApplication = () => {
   }
 
   return (
-    <div className="max-w-lg mx-auto p-5 bg-white rounded shadow-md">
-      <h2 className="text-xl font-bold mb-4">
-        {job.job_title} - {job.job_type}
-      </h2>
-      <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-        {job.isEligible === true ? "Yes" : "No"}
-      </button>
-      <h3 className="text-lg font-semibold mb-2">{job.company_name}</h3>
-      <p className="text-gray-700 mb-2">{job.job_description}</p>
-      <p className="text-gray-600">Location: {job.job_location}</p>
-      <p className="text-gray-600">
-        Salary: ${job.job_salary.toLocaleString()}
-      </p>
-      <p className="text-gray-600">
-        Posted on: {new Date(job.job_posted_date).toLocaleDateString()}
-      </p>
-      <p className="text-gray-600">Deadline: 2024-09-30</p>{" "}
-      {/* You can add deadline if available */}
-      <p className="text-gray-600">Working Hours: {job.job_timing}</p>
-      {/* Eligibility Criteria */}
-      <h4 className="font-semibold mt-4">Eligibility Criteria:</h4>
-      <p className="text-gray-600">Max Dead KTs: {job.max_no_dead_kt}</p>
-      <p className="text-gray-600">Max Live KTs: {job.max_no_live_kt}</p>
-      <p className="text-gray-600">Minimum CGPI: {job.min_CGPI}</p>
-      <p className="text-gray-600">
-        Passing Year: {job.passing_year.join(", ")}
-      </p>
-      <p className="text-gray-600">
-        Branches Allowed: {job.branch_allowed.join(", ")}
-      </p>
-      <h4 className="font-semibold mt-4">Job Requirements:</h4>
-      <ul className="list-disc list-inside mb-4">
-        {job.job_requirements.map((req, index) => (
-          <li key={index} className="text-gray-600">
-            {req}
-          </li>
-        ))}
-      </ul>
-      {/* CV Upload Section */}
-      <div className="mt-4">
-        <label className="block mb-2 font-semibold text-gray-700">
-          Upload your CV:
-        </label>
-        <input
-          type="file"
-          accept=".pdf,.doc,.docx"
-          onChange={handleFileChange}
-          className="block w-full text-gray-700 border border-gray-300 rounded-md shadow-sm"
-        />
+    <div>
+      <Button onClick={() => router.back()} className="text-white">
+        {" "}
+        Back
+      </Button>
+      <div className="max-w-lg mx-auto p-5 bg-white rounded shadow-md">
+        <h2 className="text-xl font-bold mb-4">
+          {job.job_title} - {job.job_type}
+        </h2>
+        <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          {job.isEligible === true ? "Yes" : "No"}
+        </button>
+        <h3 className="text-lg font-semibold mb-2">{job.company_name}</h3>
+        <p className="text-gray-700 mb-2">{job.job_description}</p>
+        <p className="text-gray-600">Location: {job.job_location}</p>
+        <p className="text-gray-600">
+          Salary: ${job.job_salary.toLocaleString()}
+        </p>
+        <p className="text-gray-600">
+          Posted on: {new Date(job.job_posted_date).toLocaleDateString()}
+        </p>
+        <p className="text-gray-600">Deadline: 2024-09-30</p>{" "}
+        {/* You can add deadline if available */}
+        <p className="text-gray-600">Working Hours: {job.job_timing}</p>
+        {/* Eligibility Criteria */}
+        <h4 className="font-semibold mt-4">Eligibility Criteria:</h4>
+        <p className="text-gray-600">Max Dead KTs: {job.max_no_dead_kt}</p>
+        <p className="text-gray-600">Max Live KTs: {job.max_no_live_kt}</p>
+        <p className="text-gray-600">Minimum CGPI: {job.min_CGPI}</p>
+        <p className="text-gray-600">
+          Passing Year: {job.passing_year.join(", ")}
+        </p>
+        <p className="text-gray-600">
+          Branches Allowed: {job.branch_allowed.join(", ")}
+        </p>
+        <h4 className="font-semibold mt-4">Job Requirements:</h4>
+        <ul className="list-disc list-inside mb-4">
+          {job.job_requirements.map((req, index) => (
+            <li key={index} className="text-gray-600">
+              {req}
+            </li>
+          ))}
+        </ul>
+        {/* CV Upload Section */}
+        <div className="mt-4">
+          <label className="block mb-2 font-semibold text-gray-700">
+            Upload your CV:
+          </label>
+          <input
+            type="file"
+            accept=".pdf,.doc,.docx"
+            onChange={handleFileChange}
+            className="block w-full text-gray-700 border border-gray-300 rounded-md shadow-sm"
+          />
+        </div>
+        <div className="flex items-center mt-4">
+          <input
+            type="checkbox"
+            id="disclaimer"
+            checked={isChecked}
+            onChange={handleCheckboxChange}
+            className="mr-2 leading-tight"
+          />
+          <label htmlFor="disclaimer" className="text-gray-700">
+            I have reviewed my resume before applying.
+          </label>
+        </div>
+        <button
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          onClick={handleApplyClick}
+        >
+          Apply
+        </button>
       </div>
-      <div className="flex items-center mt-4">
-        <input
-          type="checkbox"
-          id="disclaimer"
-          checked={isChecked}
-          onChange={handleCheckboxChange}
-          className="mr-2 leading-tight"
-        />
-        <label htmlFor="disclaimer" className="text-gray-700">
-          I have reviewed my resume before applying.
-        </label>
-      </div>
-      <button
-        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        onClick={handleApplyClick}
-      >
-        Apply
-      </button>
     </div>
   );
 };

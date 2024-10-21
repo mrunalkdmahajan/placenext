@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { BackendUrl } from "@/utils/constants";
+import { BackendUrl } from "@/utils/constants"; // Adjust the import path according to your project structure
 import { useRouter } from "next/navigation";
 import { Button } from "@mui/material";
+
 interface College {
   id: string;
   name: string;
@@ -28,8 +29,14 @@ const JobCreationForm: React.FC = () => {
     job_posted_date: "",
     yr_of_exp_req: "",
     job_timing: "",
-    status: "",
+    status: "", // Add status
     college: "",
+    min_CGPI: "", // Add min_CGPI
+    max_no_dead_kt: "", // Add max_no_dead_kt
+    max_no_live_kt: "", // Add max_no_live_kt
+    branch_allowed: "", // Add branch_allowed
+    passing_year: "", // Add passing_year
+    company_name: "", // Add company_name
     eligibility_criteria: [] as EligibilityCriteria[], // Field for eligibility criteria
   });
 
@@ -126,6 +133,7 @@ const JobCreationForm: React.FC = () => {
         }
       );
       setSuccess("Job created successfully!");
+      // Reset formData
       setFormData({
         job_title: "",
         job_type: "",
@@ -138,6 +146,12 @@ const JobCreationForm: React.FC = () => {
         job_timing: "",
         status: "",
         college: "",
+        min_CGPI: "",
+        max_no_dead_kt: "",
+        max_no_live_kt: "",
+        branch_allowed: "",
+        passing_year: "",
+        company_name: "",
         eligibility_criteria: [],
       });
     } catch (error) {
@@ -170,6 +184,13 @@ const JobCreationForm: React.FC = () => {
               "job_posted_date",
               "yr_of_exp_req",
               "job_timing",
+              "status",
+              "company_name", // Include company_name
+              "min_CGPI", // Add min_CGPI
+              "max_no_dead_kt", // Add max_no_dead_kt
+              "max_no_live_kt", // Add max_no_live_kt
+              "branch_allowed", // Add branch_allowed
+              "passing_year", // Add passing_year
             ].map((field) => (
               <div key={field} className="mb-4 w-68 lg:w-72 xl:w-96">
                 <label className="block mb-1">
@@ -180,97 +201,44 @@ const JobCreationForm: React.FC = () => {
                 <input
                   type="text"
                   name={field}
-                  // @ts-ignore
+                  //@ts-ignore
                   value={formData[field as keyof typeof formData]}
                   onChange={handleChange}
-                  placeholder={`Enter ${field.replace(/([A-Z])/g, " $1")}`}
+                  placeholder={`Enter ${field
+                    .replace(/([A-Z])/g, " $1")
+                    .replace(/^./, (str) => str.toUpperCase())}`}
                   className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                 />
               </div>
             ))}
           </div>
 
-          {/* Job Requirements */}
-          <div className="mb-4 w-full lg:w-72 xl:w-96">
-            <label className="block mb-1">Job Requirements</label>
-            {formData.job_requirements.map((requirement, index) => (
-              <div key={index} className="flex mb-2">
-                <input
-                  type="text"
-                  value={requirement}
-                  onChange={(e) => handleChange(e, index, "job_requirements")}
-                  placeholder="Enter job requirement"
-                  className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                  required
-                />
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={() => addField("job_requirements")}
-              className="text-blue-500 hover:underline"
-            >
-              Add Requirement
-            </button>
-          </div>
-
-          {/* Eligibility Criteria Section */}
-          <div className="mb-4 w-full lg:w-72 xl:w-96">
-            <label className="block mb-1">Eligibility Criteria</label>
-            <select
+          {/* Eligibility Criteria Fields */}
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold">Eligibility Criteria</h3>
+            <input
+              type="text"
               name="criteria"
               value={eligibility.criteria}
               onChange={handleEligibilityChange}
-              className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-              required
-            >
-              <option value="">Select Criteria</option>
-              <option value="Department">Department</option>
-              <option value="CET Score">CET Score</option>
-              <option value="JEE Score">JEE Score</option>
-              <option value="10th Marks">10th Marks</option>
-              <option value="12th/Diploma Marks">12th/Diploma Marks</option>
-              <option value="Aggregate CGPI">Aggregate CGPI</option>
-            </select>
-          </div>
-
-          <div className="mb-4 w-full lg:w-72 xl:w-96">
-            <label className="block mb-1">Value</label>
+              placeholder="Criteria"
+              className="w-full mb-2 p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
             <input
               type="text"
               name="value"
               value={eligibility.value}
               onChange={handleEligibilityChange}
-              placeholder="Enter value"
-              className="w-full p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-              required
+              placeholder="Value"
+              className="w-full mb-2 p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
-          </div>
-
-          <button
-            type="button"
-            onClick={addEligibilityCriteria}
-            className="p-2 bg-blue-500 text-white rounded shadow-lg hover:bg-blue-700"
-          >
-            Add Criteria
-          </button>
-
-          {/* Display added eligibility criteria */}
-          <div className="mt-4 w-full">
-            <h3 className="text-lg font-bold mb-2">
-              Added Eligibility Criteria
-            </h3>
-            {formData.eligibility_criteria.length > 0 ? (
-              formData.eligibility_criteria.map((criteria, index) => (
-                <div key={index} className="flex justify-between items-center">
-                  <p>
-                    {criteria.criteria}: {criteria.value}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <p>No criteria added yet</p>
-            )}
+            <button
+              type="button"
+              onClick={addEligibilityCriteria}
+              className="p-2 bg-blue-500 text-white rounded shadow-lg hover:bg-blue-700"
+            >
+              Add Criteria
+            </button>
           </div>
 
           <button
