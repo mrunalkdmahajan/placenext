@@ -8,6 +8,7 @@ import {
   getAllStudentList,
   getCollegeJob,
   getCollegeJobs,
+  getFilteredStudentDetailsInExcel,
   getFilteredStudentList,
   getJobDetailsById,
   getStudentById,
@@ -67,6 +68,12 @@ collegeRoutes.get(
   "/get_student_data_excel",
   authenticateToken,
   getStudentDetailsInExcel
+);
+
+collegeRoutes.get(
+  "/get_filtered_student_data_excel",
+  authenticateToken,
+  getFilteredStudentDetailsInExcel
 );
 
 collegeRoutes.get("/facultyProfile", authenticateToken, facultyProfile);

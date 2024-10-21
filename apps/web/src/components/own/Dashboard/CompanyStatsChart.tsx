@@ -64,7 +64,7 @@ const CompanyStatsChart = ({ companiesCame, companiesApplied }: any) => {
   }, [companiesCame, companiesApplied]);
 
   return (
-    <div style={{ position: "relative", height: "40vh", width: "80vw" }}>
+    <div style={{ position: "relative", height: "40vh", width: "45vw" }}>
       <canvas ref={chartRef}></canvas>
     </div>
   );

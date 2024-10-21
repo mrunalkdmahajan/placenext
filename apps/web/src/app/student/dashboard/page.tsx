@@ -61,14 +61,16 @@ export default function Dashboard() {
     <div>
       <MainDashboard />
       {/* <JobCreationForm /> */}
-      <CompanyStatsChart
-        companiesCame={companiesCameToCollege}
-        companiesApplied={companiesAppliedTo}
-      />
-      <JobEligibilityPieChart
-        eligibleCount={eligibleCount}
-        notEligibleCount={ineligibleCount}
-      />
+      <div className="flex flex-row items-center justify-between ">
+        <CompanyStatsChart
+          companiesCame={companiesCameToCollege}
+          companiesApplied={companiesAppliedTo}
+        />
+        <JobEligibilityPieChart
+          eligibleCount={eligibleCount}
+          notEligibleCount={ineligibleCount}
+        />
+      </div>
       <AppliedJobs />
     </div>
   );

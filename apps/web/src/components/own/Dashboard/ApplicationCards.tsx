@@ -52,7 +52,7 @@ const ApplicationCards = () => {
             deadline: job.job_deadline || "Not Specified",
             isEligible: job.isEligible,
             description: job.job_description,
-            salary: `$${job.job_salary}`,
+            salary: `₹${job.job_salary}`,
             workingHours: job.job_timing,
             basicRequirements: job.job_requirements,
           }));
@@ -90,13 +90,6 @@ const ApplicationCards = () => {
           </Button>
         ))}
       </div>
-
-      <p className="mt-6 text-center">
-        Looking for more jobs?
-        <Link className="text-[#56B280] px-2" href="/job-search">
-          Browse all jobs
-        </Link>
-      </p>
     </div>
   );
 };

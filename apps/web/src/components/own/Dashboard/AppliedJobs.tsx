@@ -49,7 +49,9 @@ const AppliedJobs = () => {
   }, []);
 
   return (
-    <div className="w-full mx-auto py-6">
+    <div
+      className={`w-full mx-auto py-6 ${appliedJobs.length === 0 ? "hidden" : ""}`}
+    >
       <h2 className="text-2xl font-bold mb-6">Applied Jobs</h2>
 
       <div className="max-h-[500px] overflow-auto space-y-4">
@@ -67,7 +69,7 @@ const AppliedJobs = () => {
                 {appliedJob.app_job_id.job_description}
               </Typography>
               <Typography variant="body2">
-                <strong>Salary: </strong> ${appliedJob.app_job_id.job_salary}
+                <strong>Salary: </strong> ₹{appliedJob.app_job_id.job_salary}
               </Typography>
               <Typography variant="body2">
                 <strong>Working Hours: </strong>{" "}

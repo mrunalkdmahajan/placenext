@@ -58,7 +58,7 @@ export default function MainNav() {
   const path = pathname.split("/")[1];
 
   return (
-    <div className="flex flex-row items-center justify-between w-full px-2 pl-10 py-2 relative z-20 bg-white">
+    <div className="flex flex-row items-center justify-between w-full px-2 pl-10 py-2 fixed z-20 bg-white">
       <div className="flex flex-row items-center justify-center gap-2">
         {path === "college" ? (
           <div>

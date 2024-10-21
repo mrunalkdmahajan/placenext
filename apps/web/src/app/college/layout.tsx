@@ -26,7 +26,7 @@ export default function RootLayout({
         {/* this will contain navbar and main content */}
 
         <MainNav />
-        <div className="mt-20">{children}</div>
+        <div className="pt-20 max-h-screen">{children}</div>
       </div>
     </div>
   );
