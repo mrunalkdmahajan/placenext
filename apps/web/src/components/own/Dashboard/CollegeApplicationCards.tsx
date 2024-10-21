@@ -78,7 +78,10 @@ const CollegeApplicationCards = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
         {jobs.map((job) => (
-          <Button onClick={() => router.push(`/college/jobs/${job.id}`)}>
+          <Button
+            key={job.id}
+            onClick={() => router.push(`/college/jobs/${job.id}`)}
+          >
             <ApplicationCard key={job.id} job={job} />
           </Button>
         ))}

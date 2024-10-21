@@ -273,7 +273,7 @@ const Profile = () => {
             </div>
             <div>
               <label>
-                Father's Name:
+                Father&apos; s Name:
                 <input
                   type="text"
                   name="fatherName"
@@ -285,7 +285,7 @@ const Profile = () => {
             </div>
             <div>
               <label>
-                Mother's Name:
+                Mother&apos; s Name:
                 <input
                   type="text"
                   name="motherName"

@@ -1,7 +1,7 @@
 "use client";
 
 import ApplicationCard from "@/components/own/Dashboard/ApplicationCard";
-import { sampleJob } from "@/components/own/Dashboard/ApplicationCards";
+
 import React from "react";
 
 // Dummy profile insights
@@ -138,9 +138,7 @@ const JobDetails = () => {
             </ul>
           </div>
         </div>
-        <div>
-          <ApplicationCard job={sampleJob} />
-        </div>
+        <div>{/* <ApplicationCard job={sampleJob} /> */}</div>
       </div>
       <div className="mb-6">
         <h2 className="text-xl font-semibold">Description</h2>
