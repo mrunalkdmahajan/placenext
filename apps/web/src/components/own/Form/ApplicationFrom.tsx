@@ -75,6 +75,8 @@ const ApplicationForm = () => {
     githubLink: "",
     linkedInLink: "",
     locationPreference: "",
+    deadBacklogs: "",
+    liveBacklogs: "",
   });
 
   // State to store document files
@@ -280,6 +282,8 @@ const ApplicationForm = () => {
                   "twelfthPercentage",
                   "sscBoard",
                   "cet",
+                  "deadBacklogs",
+                  "liveBacklogs",
                   "sem1CGPI",
                   "sem2CGPI",
                   "sem3CGPI",

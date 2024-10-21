@@ -110,6 +110,7 @@ export default function StudentList() {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
+          params: filterParams,
           responseType: "blob",
         }
       );

@@ -182,15 +182,15 @@ export const applicationFrom = async (req: Request, res: Response) => {
       stud_aadhar: fields.aadharNumber,
       stud_pan: fields.panNumber,
       // handicap_cert: fields.handicapCert, // this is remaining
-      // no_of_live_backlogs: fields.liveBacklogs, // this is remaining
-      // no_of_dead_backlogs: fields.deadBacklogs, // this is remaining
+      no_of_live_backlogs: fields.liveBacklogs,
+      no_of_dead_backlogs: fields.deadBacklogs,
       // stud_placement_status: fields.placementStatus, // this is remaining
       // stud_placement_package: fields.placementPackage, // this is remaining
       // stud_placement_company: fields.placementCompany, // this is remaining
       // stud_placement_date: fields.placementDate, // this is remaining
       // student_skills: fields.skills, // this is remaining
-      // stud_linkedIn: fields.linkedIn, // this is remaining
-      // stud_github: fields.github, // this is remaining
+      stud_linkedIn: fields.linkedIn, // this is remaining
+      stud_github: fields.github, // this is remaining
     });
 
     const savedStudentInfo = await studentInfo.save();

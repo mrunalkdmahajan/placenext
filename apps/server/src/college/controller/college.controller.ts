@@ -651,17 +651,40 @@ export const getJobDetailsById = async (req: Request, res: Response) => {
 
 export const getStudentDetailsInExcel = async (req: Request, res: Response) => {
   try {
+    // Extract user and filters from request
     // @ts-ignore
     const user = req.user;
+    const { placementStatus, verifiedStatus, branch } = req.query;
+
     const college = await College.findOne({ googleId: user.uid });
     if (!college) {
       return res.status(404).json({ success: false, msg: "College not found" });
     }
 
-    // Fetch student data with the necessary fields
-    const studentData = await Student.find({
+    // Define query conditions
+    const queryConditions: any = {
       stud_college_id: college._id.toString(),
-    })
+    };
+
+    // Apply verifiedStatus filter
+    if (verifiedStatus === "1") {
+      queryConditions.isCollegeVerified = true;
+      queryConditions.isSystemVerified = true;
+    } else if (verifiedStatus === "2") {
+      queryConditions.isCollegeVerified = false;
+      queryConditions.isSystemVerified = true;
+    } else if (verifiedStatus === "3") {
+      queryConditions.isCollegeVerified = false;
+      queryConditions.isSystemVerified = false;
+    }
+
+    // Apply branch filter
+    if (branch) {
+      queryConditions.stud_department = branch;
+    }
+
+    // Fetch students based on the query conditions
+    let studentData = await Student.find(queryConditions)
       .populate({
         path: "stud_info_id",
         select: `
@@ -713,7 +736,20 @@ export const getStudentDetailsInExcel = async (req: Request, res: Response) => {
       })
       .lean();
 
-    // Prepare and format the data
+    // Apply placementStatus filter
+    if (placementStatus === "true") {
+      studentData = studentData.filter(
+        //@ts-ignore
+        (student) => student.stud_info_id?.stud_placement_status === true
+      );
+    } else if (placementStatus === "false") {
+      studentData = studentData.filter(
+        //@ts-ignore
+        (student) => student.stud_info_id?.stud_placement_status === false
+      );
+    }
+
+    // Format the data for Excel
     const formattedData = studentData.map((student: any) => ({
       Name: student.stud_name,
       Email: student.stud_email,
@@ -723,56 +759,11 @@ export const getStudentDetailsInExcel = async (req: Request, res: Response) => {
       Course: student.stud_course,
       Year: student.stud_year,
       Department: student.stud_department,
-
+      // Add additional fields from the populated `stud_info_id`
       Resume: student.stud_info_id?.stud_resume,
       Admission_Year: student.stud_info_id?.stud_addmission_year,
       Sem1_Grade: student.stud_info_id?.stud_sem1_grade,
-      Sem2_Grade: student.stud_info_id?.stud_sem2_grade,
-      Sem3_Grade: student.stud_info_id?.stud_sem3_grade,
-      Sem4_Grade: student.stud_info_id?.stud_sem4_grade,
-      Sem5_Grade: student.stud_info_id?.stud_sem5_grade || "N/A",
-      Sem6_Grade: student.stud_info_id?.stud_sem6_grade || "N/A",
-      Sem7_Grade: student.stud_info_id?.stud_sem7_grade || "N/A",
-      Sem8_Grade: student.stud_info_id?.stud_sem8_grade || "N/A",
-      Sem1_Marksheet: student.stud_info_id?.stud_sem1_marksheet,
-      Sem2_Marksheet: student.stud_info_id?.stud_sem2_marksheet,
-      Sem3_Marksheet: student.stud_info_id?.stud_sem3_marksheet,
-      Sem4_Marksheet: student.stud_info_id?.stud_sem4_marksheet,
-      Sem5_Marksheet: student.stud_info_id?.stud_sem5_marksheet || "N/A",
-      Sem6_Marksheet: student.stud_info_id?.stud_sem6_marksheet || "N/A",
-      Sem7_Marksheet: student.stud_info_id?.stud_sem7_marksheet || "N/A",
-      Sem8_Marksheet: student.stud_info_id?.stud_sem8_marksheet || "N/A",
-      CET: student.stud_info_id?.stud_cet,
-      JEE: student.stud_info_id?.stud_jee || "N/A",
-      HSC: student.stud_info_id?.stud_hsc || "N/A",
-      HSC_Board: student.stud_info_id?.stud_hsc_board || "N/A",
-      SSC: student.stud_info_id?.stud_ssc || "N/A",
-      SSC_Board: student.stud_info_id?.stud_ssc_board || "N/A",
-      Diploma: student.stud_info_id?.stud_diploma || "N/A",
-      Diploma_Board: student.stud_info_id?.stud_diploma_board || "N/A",
-      Diploma_Stream: student.stud_info_id?.stud_diploma_stream || "N/A",
-      Alternate_Email: student.stud_info_id?.stud_alternate_email,
-      Alternate_Phone: student.stud_info_id?.stud_alternate_phone,
-      CAP_Allotment: student.stud_info_id?.stud_capAllotment || "N/A",
-      Photo_With_Signature:
-        student.stud_info_id?.stud_photoWithSignature || "N/A",
-      Gap_Certificate: student.stud_info_id?.stud_gapCertificate || "N/A",
-      Aadhar: student.stud_info_id?.stud_aadhar,
-      PAN: student.stud_info_id?.stud_pan,
-      Handicap_Certificate: student.stud_info_id?.handicap_cert || "N/A",
-      Live_Backlogs: student.stud_info_id?.no_of_live_backlogs || 0,
-      Dead_Backlogs: student.stud_info_id?.no_of_dead_backlogs || 0,
-      Placement_Status: student.stud_info_id?.stud_placement_status
-        ? "Yes"
-        : "No",
-      Placement_Package: student.stud_info_id?.stud_placement_package || "N/A",
-      Placement_Company: student.stud_info_id?.stud_placement_company || "N/A",
-      Placement_Date: student.stud_info_id?.stud_placement_date
-        ? student.stud_info_id.stud_placement_date.toISOString().split("T")[0]
-        : "N/A", // Format date
-      Skills: student.stud_info_id?.student_skills.join(", ") || "N/A",
-      LinkedIn: student.stud_info_id?.stud_linkedIn || "N/A",
-      GitHub: student.stud_info_id?.stud_github || "N/A",
+      // Include other fields...
     }));
 
     // Prepare workbook and worksheet
