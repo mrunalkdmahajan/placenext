@@ -6,7 +6,7 @@ import { BackendUrl } from "@/utils/constants";
 import axios from "axios";
 import { useEffect } from "react";
 
-function MainDashboard() {
+export default function MainDashboard() {
   useEffect(() => {
     const getAllJobs = async () => {
       const res = await axios.get(`${BackendUrl}/api/student/companies`, {
@@ -23,5 +23,3 @@ function MainDashboard() {
     </div>
   );
 }
-
-export default withAuth(MainDashboard);
