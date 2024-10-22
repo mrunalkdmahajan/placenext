@@ -15,6 +15,7 @@ import {
   getStudentDetailsInExcel,
   getStudentStatistics,
   isFirstSignIn,
+  placeStudent,
   rejectStudent,
   signup,
 } from "../controller/college.controller";
@@ -77,5 +78,7 @@ collegeRoutes.get(
 );
 
 collegeRoutes.get("/facultyProfile", authenticateToken, facultyProfile);
+
+collegeRoutes.post("/place_student", authenticateToken, placeStudent);
 
 export default collegeRoutes;

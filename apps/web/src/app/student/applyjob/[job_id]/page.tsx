@@ -113,11 +113,17 @@ const FinalApplication = () => {
         });
         router.push("/student/dashboard");
       } else {
-        alert("There was an error submitting your application.");
+        toast.error(response.data.msg, {
+          position: "top-right",
+          autoClose: 3000,
+        });
       }
     } catch (error) {
-      console.error("Error submitting application:", error);
-      alert("There was an error submitting your application.");
+      toast.error("Failed to apply for the job. Please try again.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      console.log("Error applying for job:", error);
     }
   };
 

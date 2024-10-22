@@ -77,6 +77,8 @@ const ApplicationForm = () => {
     locationPreference: "",
     deadBacklogs: "",
     liveBacklogs: "",
+    prn: "",
+    aggregateCGPI: "",
   });
 
   // State to store document files
@@ -282,8 +284,10 @@ const ApplicationForm = () => {
                   "twelfthPercentage",
                   "sscBoard",
                   "cet",
+                  "prn",
                   "deadBacklogs",
                   "liveBacklogs",
+                  "aggregateCGPI",
                   "sem1CGPI",
                   "sem2CGPI",
                   "sem3CGPI",

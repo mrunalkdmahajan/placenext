@@ -4,6 +4,7 @@ import AppliedJobs from "@/components/own/Dashboard/AppliedJobs";
 import CompanyStatsChart from "@/components/own/Dashboard/CompanyStatsChart";
 import JobEligibilityPieChart from "@/components/own/Dashboard/JobEligibilityPieChart";
 import MainDashboard from "@/components/own/Dashboard/MainDashboard";
+import RecommendedJob from "@/components/own/Dashboard/RecommendedJobs";
 import JobCreationForm from "@/components/own/Form/JobCreationForm";
 import { BackendUrl } from "@/utils/constants";
 import axios from "axios";
@@ -72,6 +73,7 @@ export default function Dashboard() {
         />
       </div>
       <AppliedJobs />
+      <RecommendedJob />
     </div>
   );
 }

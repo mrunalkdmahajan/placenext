@@ -9,6 +9,7 @@ import {
   getJobAppliedDetailsById,
   getJobDetailsById,
   getJobForCollege,
+  getRecommededJobs,
   getStudentsJobStatistics,
   getStudentStatistics,
   getUserDetails,
@@ -71,6 +72,7 @@ studentRoutes.get(
 studentRoutes.get("/companies", authenticateToken, getJobForCollege);
 studentRoutes.get("/company/:id", authenticateToken, getJobDetailsById);
 studentRoutes.get("/applied_jobs", authenticateToken, getJobAppliedByStudent);
+studentRoutes.get("/recommended_jobs", authenticateToken, getRecommededJobs);
 studentRoutes.get(
   "/applied_jobs/:id",
   authenticateToken,

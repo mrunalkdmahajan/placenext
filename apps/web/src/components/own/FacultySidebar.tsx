@@ -42,7 +42,7 @@ const options: Option[] = [
   { name: "Dashboard", path: "/college/dashboard" },
   { name: "Manage Students", path: "/college/student_list" },
   { name: "Job Postings", path: "/college/jobs" },
-  { name: "Messages", path: "/college/doctors" },
+  { name: "Messages", path: "/college/messages/inbox" },
   { name: "Profile", path: "/college/profile" },
   { name: "Settings", path: "/college/settings" },
 ];

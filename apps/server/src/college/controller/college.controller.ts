@@ -963,3 +963,28 @@ export const facultyProfile = async (req: Request, res: Response) => {
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 };
+
+export const placeStudent = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+    const college = await College.findOne({ googleId: user.uid });
+    const { student_Id } = req.body;
+    const student = await Student.findById(student_Id);
+    if (!student) {
+      return res.status(404).json({ success: false, msg: "Student not found" });
+    }
+    const studentInfo = await StudentInfo.findById(student.stud_info_id);
+    if (!studentInfo) {
+      return res
+        .status(404)
+        .json({ success: false, msg: "Student info not found" });
+    }
+    studentInfo.stud_placement_status = true;
+    await studentInfo.save();
+    return res.status(200).json({ success: true, studentInfo });
+  } catch (error: any) {
+    console.log("Error in placeStudent", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};

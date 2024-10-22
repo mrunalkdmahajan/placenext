@@ -1,15 +1,10 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Document } from "mongoose";
 import mongoose from "mongoose";
 import { IJob } from "../../company/models/job";
 import { IStudent } from "./student";
 
 export interface IApplication extends Document {
-  _id?: string;
-  // app_name: string;
-  // app_email: string;
-  // app_contact_no: string;
-  // app_address: string;
-  // app_resume: string;
+  _id: string;
   app_cover_letter: string;
   app_job_id: IJob["_id"];
   student: IStudent["_id"];
@@ -17,39 +12,19 @@ export interface IApplication extends Document {
 }
 
 const ApplicationSchema = new Schema<IApplication>({
-  // app_name: {
-  //   type: String,
-  //   required: true,
-  // },
-  // app_email: {
-  //   type: String,
-  //   required: true,
-  // },
-  // app_contact_no: {
-  //   type: String,
-  //   required: true,
-  // },
-  // app_address: {
-  //   type: String,
-  //   required: true,
-  // },
-  // app_resume: {
-  //   type: String,
-  //   required: true,
-  // },
-
   app_cover_letter: {
     type: String,
     required: true,
   },
   student: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Student",
+    ref: "Student", // Reference to the Student model
     required: true,
   },
+  //@ts-ignore
   app_job_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Job",
+    ref: "Job", // Reference to the Job model
     required: true,
   },
   app_status: {

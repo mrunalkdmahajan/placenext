@@ -8,6 +8,7 @@ import axios from "axios";
 import { Document_server_url } from "../../app";
 import Job from "../../company/models/job";
 import Application from "../models/application";
+import { jobs } from "googleapis/build/src/apis/jobs";
 const requiredFields = [
   "firstName",
   "middleName",
@@ -174,6 +175,7 @@ export const applicationFrom = async (req: Request, res: Response) => {
       // stud_diploma: fields.diploma, // this is remaining
       // stud_diploma_board: fields.diplomaBoard, // this is remaining
       // stud_diploma_stream: fields.diplomaStream, // this is remaining
+      stud_prn: fields.prn,
       stud_alternate_email: fields.alternateEmail,
       stud_alternate_phone: fields.alternatePhoneNo,
       // stud_capAllotment: fields.capAllotment, // this is remaining
@@ -620,6 +622,18 @@ export const applyToJob = async (req: Request, res: Response) => {
     // Destructure job details from the request body
     const { app_job_id, app_status } = req.body;
 
+    const application = await Application.findOne({
+      // @ts-ignore
+      student: student._id,
+      app_job_id,
+    });
+
+    if (application) {
+      return res.status(400).json({
+        success: false,
+        msg: "You have already applied to this job",
+      });
+    }
     // Validate required fields
     if (!app_job_id) {
       return res.status(400).json({ msg: "All fields are required" });
@@ -751,6 +765,53 @@ export const getJobAppliedByStudent = async (req: Request, res: Response) => {
     return res.status(200).json({ success: true, appliedJobs });
   } catch (error: any) {
     console.log("Error in getJobAppliedByStudent", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+export const getRecommededJobs = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+
+    // Find the student based on the Google ID from the request
+    const student = await Student.findOne({ googleId: user.uid });
+
+    if (!student) {
+      return res.status(404).json({ success: false, msg: "Student not found" });
+    }
+
+    // Find jobs that are allowed for the student's department
+    const jobs = await Job.find({
+      branch_allowed: { $in: [student.stud_department] }, // Check if student's department is in branch_allowed array
+    });
+
+    // If no jobs are found, return a 404 response
+    if (!jobs.length) {
+      return res
+        .status(404)
+        .json({ success: false, msg: "No recommended jobs found" });
+    }
+
+    // Find applications that match the student ID and job IDs
+    const appliedJobs = await Application.find({
+      student: student._id,
+      app_job_id: { $in: jobs.map((job) => job._id) }, // Check for job IDs in the jobs found
+    });
+
+    // Extract applied job IDs
+    const appliedJobIds = appliedJobs.map((application) =>
+      application.app_job_id.toString()
+    );
+
+    // Filter out jobs that the student has already applied for
+    const recommendedJobs = jobs.filter(
+      (job) => !appliedJobIds.includes(job._id.toString())
+    );
+
+    return res.status(200).json({ success: true, jobs: recommendedJobs });
+  } catch (error: any) {
+    console.log("Error in getRecommededJobs", error.message);
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 };

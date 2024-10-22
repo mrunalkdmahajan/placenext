@@ -4,7 +4,7 @@ import { IStudent } from "../../student/models/student";
 import { ICollege } from "../../college/models/college";
 
 export interface IJob extends Document {
-  _id?: string;
+  _id: string;
   job_title: string;
   company_name: string;
   job_type: string;
