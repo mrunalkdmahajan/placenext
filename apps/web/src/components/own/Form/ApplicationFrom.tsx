@@ -6,8 +6,14 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
+interface College {
+  id: string;
+  name: string;
+}
+
 const ApplicationForm = () => {
-  const [colleges, setColleges] = useState([]); // Array to store college data from API
+  const [colleges, setColleges] = useState<College[]>([]); // Array to store college data from API
+  const [department, setDepartment] = useState([]); // Array to store department data from API
   const router = useRouter(); // Use Next.js router for navigation
 
   // Fetch the token from localStorage and if not present, redirect user to login
@@ -274,11 +280,47 @@ const ApplicationForm = () => {
                     ))}
                   </select>
                 </div>
+                <div>
+                  <label className="block mb-1">Department Name</label>
+                  <select
+                    onClick={async () => {
+                      if (formData.college === "") {
+                        toast.error("Please select a college first");
+                        return;
+                      }
+                      if (department.length !== 0) return;
+                      const res = await axios.post(
+                        `${BackendUrl}/api/student/department`,
+                        {
+                          collegeId: colleges[0].id,
+                        },
+                        {
+                          headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`,
+                          },
+                        }
+                      );
+                      setDepartment(res.data.departments);
+                    }}
+                    name="departmentName"
+                    onChange={handleChange}
+                    value={formData.departmentName}
+                    className="w-72 lg:w-72 xl:w-96 p-2 border border-blue-500 rounded shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  >
+                    <option value="" disabled>
+                      Select Department
+                    </option>
+                    {department.map((department: any, index) => (
+                      <option key={index} value={department}>
+                        {department}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
                 {[
                   "courseType",
                   "admissionYear",
-                  "departmentName",
                   "tenthPercentage",
                   "hscBoard",
                   "twelfthPercentage",

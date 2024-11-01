@@ -17,6 +17,7 @@ import {
   signup,
 } from "../controller/auth";
 import { upload } from "../../middlewares/multer";
+import { getDeparments } from "../controller/studetnt.controller";
 
 const studentRoutes = Router();
 
@@ -78,6 +79,7 @@ studentRoutes.get(
   authenticateToken,
   getJobAppliedDetailsById
 );
+studentRoutes.post("/department", authenticateToken, getDeparments);
 
 // student applying to job
 studentRoutes.post(
