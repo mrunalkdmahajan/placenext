@@ -119,7 +119,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="bg-[#FFF6D7] p-8 rounded-lg">
+    <div className=" p-8 rounded-lg">
       <div className="bg-[#98F5F9] p-8 rounded shadow-md max-w-md mx-auto mt-12 bg-transparent md:p-5 flex flex-col gap-4">
         <h2 className="text-xl md:text-2xl font-bold mb-6 text-primary">
           Student Login
