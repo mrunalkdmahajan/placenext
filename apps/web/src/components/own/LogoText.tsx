@@ -6,7 +6,7 @@ import Link from "next/link";
 const LogoText = () => {
   return (
     <Link href={"/"}>
-      <div className="flex flex-row items-center gap-2  p-4">
+      <div className="flex flex-row items-center gap-2 p-2">
         <div>
           <Image
             src="/assets/PlaceNext_logo.png"
