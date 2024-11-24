@@ -7,10 +7,16 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
 import { motion, AnimatePresence } from "framer-motion";
+import useThemeStore from "@/store/store";
+//light theme
+import { MdDarkMode } from "react-icons/md";
+//dark theme
+import { MdOutlineDarkMode } from "react-icons/md";
 
 export default function LandingNav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { darkMode, toggleDarkMode }: any = useThemeStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,6 +47,10 @@ export default function LandingNav() {
 
         {/* Login/Register Buttons for large screens */}
         <div className="hidden lg:flex items-center space-x-3">
+          <Button onClick={toggleDarkMode}>
+            <MdDarkMode />
+          </Button>
+
           <Link href="/authentication/studentLogin">
             <Button className="bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2">
               <span>Student Login / Register</span>

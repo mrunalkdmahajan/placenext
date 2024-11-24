@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 const NavOption = {
   AboutUs: "/aboutus",
@@ -15,10 +16,15 @@ export default function NavOptions() {
     <div className="hidden md:flex flex-row ">
       <ul className="text-black flex-row flex">
         {Object.entries(NavOption).map(([key, value]) => (
-          <li key={key} className="mr-4 text-white">
-            <Link href={value} className="hover:underline">
-              {key}
-            </Link>
+          <li key={key} className="mr-4 text-gray-700 dark:text-white">
+            <motion.div
+              whileHover={{ scale: 1.2 }}
+              className=" hover:text-primary "
+            >
+              <Link href={value} className="">
+                {key}
+              </Link>
+            </motion.div>
           </li>
         ))}
       </ul>
