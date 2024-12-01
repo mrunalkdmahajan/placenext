@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import LogoSVG from "@/assets/logo.svg";
+
 import Link from "next/link";
 
 const LogoText = () => {
@@ -17,7 +17,7 @@ const LogoText = () => {
           />
         </div>
         <div>
-          <h1 className="text-lg text-blue-500 lg:text-xl xl:text-2xl 2xl:text-3xl font-semibold">
+          <h1 className="text-lg text-justify text-black lg:text-xl xl:text-2xl 2xl:text-3xl font-semibold dark:text-white">
             Place<span className="font-extrabold">Next</span>
           </h1>
         </div>

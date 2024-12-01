@@ -18,10 +18,10 @@ export default function NavOptions() {
         {Object.entries(NavOption).map(([key, value]) => (
           <li key={key} className="mr-4 text-gray-700 dark:text-white">
             <motion.div
-              whileHover={{ scale: 1.2 }}
+              whileHover={{ scale: 1.1 }}
               className=" hover:text-primary "
             >
-              <Link href={value} className="">
+              <Link href={value} className="md:text-md">
                 {key}
               </Link>
             </motion.div>

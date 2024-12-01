@@ -1,3 +1,4 @@
+import { dark, light } from "@mui/material/styles/createPalette";
 import type { Config } from "tailwindcss";
 const flattenColorPalette =
   require("tailwindcss/lib/util/flattenColorPalette").default;
@@ -37,12 +38,13 @@ const config: Config = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        main_background: "#F7FAFD",
-        main_dark_background: "#1B1B1B",
-        primary: "#2568FF",
-        primary_background: "#EDEDFF",
-        secondary_background: "#1B1B1B",
-        secondary_text: "#202224",
+        light_main_background: "#FFFFFF",
+        dark_main_background: "#000000",
+        light_main_text: "#000000",
+        dark_main_text: "#FFFFFF",
+        light_primary_background: "#06AED5",
+        light_secondary_background: "#F3F3F3",
+        dark_secondary_background: "#5E5E5E",
         third_back: "#CCF0EB",
         third_text: "#00B69B",
         four_back: "#FCD7D4",

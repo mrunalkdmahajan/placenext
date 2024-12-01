@@ -28,7 +28,7 @@ export default function LandingNav() {
 
   return (
     <div
-      className={`fixed top-0 left-0 w-full z-50 px-4 lg:px-8 py-3 transition-all duration-300 ease-in-out ${
+      className={`fixed top-0 left-0 w-full z-50 px-4 lg:px-8 py-1 transition-all duration-300 ease-in-out ${
         isScrolled
           ? "bg-white/80 dark:bg-gray-900/80 shadow-lg"
           : "bg-transparent"
@@ -41,37 +41,51 @@ export default function LandingNav() {
         </div>
 
         {/* Navigation options */}
-        <div className="hidden lg:flex items-center space-x-6">
-          <NavOptions />
-        </div>
 
-        {/* Login/Register Buttons for large screens */}
-        <div className="hidden lg:flex items-center space-x-3">
-          <Button onClick={toggleDarkMode}>
+        <div className="flex flex-row gap-8">
+          <div className="hidden lg:flex items-center space-x-6">
+            <NavOptions />
+          </div>
+
+          {/* Login/Register Buttons for large screens */}
+          <div className="hidden lg:flex items-center space-x-3">
+            <Button
+              onClick={toggleDarkMode}
+              className=" border-[1px] border-black dark:border-white
+               hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2"
+            >
+              <MdDarkMode />
+            </Button>
+
+            <Link href="/authentication/studentLogin">
+              <Button className="bg-white dark:bg-gray-800 text-black dark:text-white border-[1px] border-black dark:border-white hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2">
+                <span>Student Login / Register</span>
+              </Button>
+            </Link>
+            <Link href="/authentication/facultyLogin">
+              <Button className="bg-white dark:bg-gray-800 text-black dark:text-white border-[1px] border-black dark:border-white hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2">
+                <span>Faculty Login / Register</span>
+              </Button>
+            </Link>
+          </div>
+        </div>
+        {/* Mobile Menu Icon */}
+        <div className="lg:hidden flex flex-row items-center justify-center gap-2">
+          <Button
+            onClick={toggleDarkMode}
+            className=" border-[1px] border-black dark:border-white
+               hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2"
+          >
             <MdDarkMode />
           </Button>
-
-          <Link href="/authentication/studentLogin">
-            <Button className="bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2">
-              <span>Student Login / Register</span>
-            </Button>
-          </Link>
-          <Link href="/authentication/facultyLogin">
-            <Button className="bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2">
-              <span>Faculty Login / Register</span>
-            </Button>
-          </Link>
-        </div>
-
-        {/* Mobile Menu Icon */}
-        <div className="lg:hidden">
-          <button
+          <Button
+            className=" border-[1px] border-black dark:border-white
+               hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle Menu"
-            className="text-gray-700 dark:text-gray-300 focus:outline-none"
           >
             {menuOpen ? <HiX size={28} /> : <HiMenu size={28} />}
-          </button>
+          </Button>
         </div>
       </div>
 

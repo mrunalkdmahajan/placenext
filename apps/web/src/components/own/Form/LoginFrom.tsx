@@ -74,12 +74,10 @@ const LoginForm = () => {
         );
         console.log("Response:", response.data);
         console.log("Sign Check Response:", signCheckResponse.data);
-        if (signCheckResponse.data.success) {
-          if (signCheckResponse.data.isFirstSignIn) {
-            router.push("/student/applicationform");
-          }
-        }
-        if (response.data.success) {
+
+        if (signCheckResponse.data.isFirstSignIn) {
+          router.push("/student/applicationform");
+        } else if (response.data.success) {
           console.log("User logged in successfully");
           router.push("/student/dashboard");
         }
@@ -120,7 +118,7 @@ const LoginForm = () => {
 
   return (
     <div className=" p-8 rounded-lg ">
-      <div className=" p-8 rounded shadow-md max-w-md mx-auto mt-12 bg-transparent md:p-5 flex flex-col gap-4">
+      <div className=" p-8 rounded shadow-sm max-w-md mx-auto mt-12 bg-transparent md:p-5 flex flex-col gap-4">
         <h2 className="text-xl md:text-2xl font-bold mb-6 text-primary">
           Student Login
         </h2>
