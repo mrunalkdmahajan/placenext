@@ -15,6 +15,7 @@ import Services from "@/components/own/Landing/Services";
 import JoiningCard from "@/components/own/Landing/Card/JoiningCard";
 import { InfiniteMovingCards } from "@/components/own/Landing/Card/InfiniteMovingCards";
 import TeamSection from "@/components/own/Landing/TeamSection";
+import BlueLandingText from "@/components/own/Landing/Text/BlueLandingText";
 
 const inconsolata = Inconsolata({
   subsets: ["latin"],
@@ -54,12 +55,19 @@ export default function Home() {
             <Hero />
             <Services />
             <JoiningCard />
-            <InfiniteMovingCards
-              direction="right"
-              speed="slow"
-              className="w-screen"
-            />
             <TeamSection />
+            <div className="flex flex-col items-center">
+              <div className="w-auto px-4">
+                <BlueLandingText text={"Testimonies"} />
+              </div>
+              <div>
+                <InfiniteMovingCards
+                  direction="right"
+                  speed="slow"
+                  className="w-screen"
+                />
+              </div>
+            </div>
           </div>
           {/* Toast Notifications */}
           <ToastContainer
