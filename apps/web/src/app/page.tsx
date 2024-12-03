@@ -14,6 +14,7 @@ import { Inconsolata } from "next/font/google";
 import Services from "@/components/own/Landing/Services";
 import JoiningCard from "@/components/own/Landing/Card/JoiningCard";
 import { InfiniteMovingCards } from "@/components/own/Landing/Card/InfiniteMovingCards";
+import TeamSection from "@/components/own/Landing/TeamSection";
 
 const inconsolata = Inconsolata({
   subsets: ["latin"],
@@ -58,6 +59,7 @@ export default function Home() {
               speed="slow"
               className="w-screen"
             />
+            <TeamSection />
           </div>
           {/* Toast Notifications */}
           <ToastContainer

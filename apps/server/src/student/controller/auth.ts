@@ -82,7 +82,7 @@ export const isFirstSignIn = async (req: Request, res: Response) => {
     }
 
     // @ts-ignore
-    if (!student.stud_info_id) {
+    if (student.stud_info_id == null) {
       return res.status(200).json({ success: true, isFirstSignIn: true });
     }
     return res.status(200).json({ success: true, isFirstSignIn: false });

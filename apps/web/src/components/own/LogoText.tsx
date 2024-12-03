@@ -9,7 +9,7 @@ const LogoText = () => {
       <div className="flex flex-row items-center gap-2 p-2">
         <div>
           <Image
-            src="/assets/PlaceNext_logo.png"
+            src="/assets/PlaceNext_Logo.png"
             alt="Logo"
             width={34}
             height={34}

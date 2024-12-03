@@ -17,7 +17,7 @@ import {
   signup,
 } from "../controller/auth";
 import { upload } from "../../middlewares/multer";
-import { getDeparments } from "../controller/studetnt.controller";
+import { getDeparments } from "../controller/student.controller";
 
 const studentRoutes = Router();
 
