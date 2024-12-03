@@ -18,7 +18,7 @@ export default function JoiningCard() {
           width={30}
           height={30}
           alt="joining svg"
-          className="h-20 w-20"
+          className="h-40 w-40 "
         />
       </div>
     </div>

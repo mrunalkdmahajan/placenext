@@ -19,7 +19,7 @@ export default function NavOptions() {
           <li key={key} className="mr-4 text-gray-700 dark:text-white">
             <motion.div
               whileHover={{ scale: 1.1 }}
-              className=" hover:text-primary "
+              className=" hover:text-primary lg:text-sm "
             >
               <Link href={value} className="md:text-md">
                 {key}

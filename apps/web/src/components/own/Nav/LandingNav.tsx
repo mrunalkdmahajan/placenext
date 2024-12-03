@@ -59,12 +59,12 @@ export default function LandingNav() {
 
             <Link href="/authentication/studentLogin">
               <Button className="bg-white dark:bg-gray-800 text-black dark:text-white border-[1px] border-black dark:border-white hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2">
-                <span>Student Login / Register</span>
+                <span>Student Login</span>
               </Button>
             </Link>
             <Link href="/authentication/facultyLogin">
               <Button className="bg-white dark:bg-gray-800 text-black dark:text-white border-[1px] border-black dark:border-white hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2">
-                <span>Faculty Login / Register</span>
+                <span>Faculty Login</span>
               </Button>
             </Link>
           </div>

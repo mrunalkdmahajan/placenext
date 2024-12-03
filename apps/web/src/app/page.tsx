@@ -51,7 +51,7 @@ export default function Home() {
           className={`relative min-h-screen ${inconsolata.className} flex-col`}
         >
           <LandingNav />
-          <div className="relative top-20 flex flex-col items-center justify-center px-4 gap-12 w-screen">
+          <div className="relative top-20 flex flex-col items-center justify-center px-10 gap-12 w-screen lg:px-12 xl:px-20">
             <Hero />
             <Services />
             <JoiningCard />
