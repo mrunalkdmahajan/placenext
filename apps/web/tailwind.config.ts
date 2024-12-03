@@ -46,6 +46,7 @@ const config: Config = {
         light_secondary_background: "#F3F3F3",
         dark_secondary_background: "#5E5E5E",
         third_back: "#CCF0EB",
+        dark_bg_card: "#191A23",
         third_text: "#00B69B",
         four_back: "#FCD7D4",
         four_text: "#EF3826",
@@ -82,6 +83,11 @@ const config: Config = {
           from: { backgroundPosition: "50% 50%, 50% 50%" },
           to: { backgroundPosition: "350% 50%, 350% 50%" },
         },
+        scroll: {
+          to: {
+            transform: "translate(calc(-50% - 0.5rem))",
+          },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -92,6 +98,8 @@ const config: Config = {
         },
       },
       animation: {
+        scroll:
+          "scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite",
         aurora: "aurora 60s linear infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",

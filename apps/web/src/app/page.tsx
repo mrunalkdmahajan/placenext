@@ -12,6 +12,8 @@ import "react-toastify/dist/ReactToastify.css";
 import useThemeStore from "../store/store";
 import { Inconsolata } from "next/font/google";
 import Services from "@/components/own/Landing/Services";
+import JoiningCard from "@/components/own/Landing/Card/JoiningCard";
+import { InfiniteMovingCards } from "@/components/own/Landing/Card/InfiniteMovingCards";
 
 const inconsolata = Inconsolata({
   subsets: ["latin"],
@@ -47,9 +49,15 @@ export default function Home() {
           className={`relative min-h-screen ${inconsolata.className} flex-col`}
         >
           <LandingNav />
-          <div className="relative top-20 flex flex-col items-center justify-center px-4 gap-12 ">
+          <div className="relative top-20 flex flex-col items-center justify-center px-4 gap-12 w-screen">
             <Hero />
             <Services />
+            <JoiningCard />
+            <InfiniteMovingCards
+              direction="right"
+              speed="slow"
+              className="w-screen"
+            />
           </div>
           {/* Toast Notifications */}
           <ToastContainer
