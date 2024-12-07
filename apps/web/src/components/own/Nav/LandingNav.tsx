@@ -12,11 +12,11 @@ import useThemeStore from "@/store/store";
 import { MdDarkMode } from "react-icons/md";
 //dark theme
 import { MdOutlineDarkMode } from "react-icons/md";
+import ToggleTheme from "../ThemeToggle";
 
 export default function LandingNav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { darkMode, toggleDarkMode }: any = useThemeStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,13 +49,13 @@ export default function LandingNav() {
 
           {/* Login/Register Buttons for large screens */}
           <div className="hidden lg:flex items-center space-x-3">
-            <Button
-              onClick={toggleDarkMode}
-              className=" border-[1px] border-black dark:border-white
-               hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2"
-            >
-              <MdDarkMode />
-            </Button>
+            <div className=" ">
+              <ToggleTheme
+                style={
+                  "border-[1px] border-black dark:border-white hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2"
+                }
+              />
+            </div>
 
             <Link href="/authentication/studentLogin">
               <Button className="bg-white dark:bg-gray-800 text-black dark:text-white border-[1px] border-black dark:border-white hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2">
@@ -71,13 +71,13 @@ export default function LandingNav() {
         </div>
         {/* Mobile Menu Icon */}
         <div className="lg:hidden flex flex-row items-center justify-center gap-2">
-          <Button
-            onClick={toggleDarkMode}
-            className=" border-[1px] border-black dark:border-white
-               hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2"
-          >
-            <MdDarkMode />
-          </Button>
+          <div className=" ">
+            <ToggleTheme
+              style={
+                "border-[1px] border-black dark:border-white hover:bg-gray-100 dark:hover:bg-gray-700"
+              }
+            />
+          </div>
           <Button
             className=" border-[1px] border-black dark:border-white
                hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2"

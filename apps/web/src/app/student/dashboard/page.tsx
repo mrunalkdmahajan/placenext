@@ -62,7 +62,7 @@ export default function Dashboard() {
     <div>
       <MainDashboard />
       {/* <JobCreationForm /> */}
-      <div className="flex flex-row items-center justify-between ">
+      <div className="flex flex-col md:flex-row items-center justify-between ">
         <CompanyStatsChart
           companiesCame={companiesCameToCollege}
           companiesApplied={companiesAppliedTo}

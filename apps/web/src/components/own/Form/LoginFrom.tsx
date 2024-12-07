@@ -1,5 +1,4 @@
-"use client";
-
+import React, { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginValidation } from "@/utils/validations/LoginValidatons";
 import axios from "axios";
@@ -7,35 +6,16 @@ import { BackendUrl } from "@/utils/constants";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
-import { IoLogoApple } from "react-icons/io5";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-
+import { useRouter } from "next/navigation";
 import firebase, {
   signInWithGoogle,
   signUpAndVerifyEmail,
 } from "@/config/firebase-config";
 
-// Define animation variants for the button
-const buttonVariants = {
-  hover: { scale: 1.05, backgroundColor: "#060270" }, // Slightly larger and change color on hover
-  tap: { scale: 0.95 }, // Slightly smaller on tap
-};
-
 const LoginForm = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
-  // const buttonVariants = {
-  //   hover: { scale: 1.1, boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.3)" },
-  //   tap: { scale: 0.9 }
-  // };
-
-  // // Define animation variants for the icon path
-  // const iconVariants = {
-  //   hover: { pathLength: 1, fill: "#fff" }, // On hover, the path becomes fully visible
-  //   tap: { pathLength: 0.5 } // On tap, the path shrinks
-  // };
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged((currentUser) => {
@@ -116,9 +96,18 @@ const LoginForm = () => {
     return "Invalid value";
   };
 
+  const inputStyle = `
+  w-full p-2 border rounded 
+  focus:outline-none focus:ring-2 
+  text-light_primary_background 
+  bg-transparent border-light_primary_background 
+  placeholder-light_primary_background 
+  focus:ring-light_primary_background
+`;
+
   return (
-    <div className=" p-8 rounded-lg ">
-      <div className=" p-8 rounded shadow-sm max-w-md mx-auto mt-12 bg-transparent md:p-5 flex flex-col gap-4">
+    <div className="p-2 rounded-lg">
+      <div className="p-4 rounded shadow-sm max-w-md mx-auto mt-12 bg-transparent md:p-5 flex flex-col gap-4">
         <h2 className="text-xl md:text-2xl font-bold mb-6 text-primary">
           Student Login
         </h2>
@@ -128,7 +117,7 @@ const LoginForm = () => {
               {...register("email")}
               placeholder="Email"
               type="text"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-700"
+              className={inputStyle}
             />
             {errors.email && (
               <p className="text-red-500 text-sm mt-1">
@@ -141,7 +130,7 @@ const LoginForm = () => {
               type="password"
               {...register("password")}
               placeholder="Password"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-700"
+              className={inputStyle}
             />
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">
@@ -149,13 +138,11 @@ const LoginForm = () => {
               </p>
             )}
           </div>
-          {/* Motion Submit Button */}
           <motion.button
             type="submit"
-            className="w-full bg-primary text-white p-2 rounded"
-            whileHover="hover"
-            whileTap="tap"
-            variants={buttonVariants}
+            className="w-full bg-light_primary_background text-white p-2 rounded"
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 0.8 }}
           >
             Submit
           </motion.button>
@@ -171,7 +158,10 @@ const LoginForm = () => {
         </div>
         <p>
           Don&apos;t have an Account?
-          <Link className="text-primary px-2" href="/signup">
+          <Link
+            className="text-light_primary_background border-none px-2"
+            href="/signup"
+          >
             Sign Up
           </Link>
         </p>

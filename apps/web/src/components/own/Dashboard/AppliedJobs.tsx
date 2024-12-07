@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { BackendUrl } from "@/utils/constants";
 import { Button, Card, CardContent, Typography } from "@mui/material";
+import useThemeStore from "@/store/store";
 
 interface Job {
   _id: string;
@@ -25,7 +26,7 @@ interface AppliedJob {
 
 const AppliedJobs = () => {
   const [appliedJobs, setAppliedJobs] = useState<AppliedJob[]>([]);
-
+  const { darkMode }: any = useThemeStore();
   useEffect(() => {
     const fetchAppliedJobs = async () => {
       try {
@@ -50,13 +51,27 @@ const AppliedJobs = () => {
 
   return (
     <div
-      className={`w-full mx-auto py-6 ${appliedJobs.length === 0 ? "hidden" : ""}`}
+      className={`w-full mx-auto py-6 ${appliedJobs.length === 0 ? "hidden" : ""} my-2`}
     >
       <h2 className="text-2xl font-bold mb-6">Applied Jobs</h2>
-
-      <div className="max-h-[500px] overflow-auto space-y-4">
+      {darkMode}
+      <div className="max-h-[500px] space-y-4">
         {appliedJobs.map((appliedJob) => (
-          <Card key={appliedJob._id} variant="outlined">
+          <Card
+            sx={{
+              backgroundColor: "transparent",
+              color: darkMode ? "white" : "black",
+              border: "1px solid #E5E5E5",
+              ...(darkMode && {
+                border: "1px solid #06AED5",
+              }),
+              ":hover": {
+                border: "1px solid #06AED5",
+              },
+            }}
+            key={appliedJob._id}
+            variant="outlined"
+          >
             <CardContent>
               <Typography variant="h6" component="div">
                 {appliedJob.app_job_id.job_title}

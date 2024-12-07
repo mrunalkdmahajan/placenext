@@ -12,13 +12,14 @@ import {
   useMediaQuery,
   Button,
 } from "@mui/material";
+import useThemeStore from "@/store/store";
 import { useState, useEffect } from "react";
 import ImportContactsTwoToneIcon from "@mui/icons-material/ImportContactsTwoTone";
 import { BiCategoryAlt } from "react-icons/bi";
 import { FaUserDoctor } from "react-icons/fa6";
 import { BiMessageSquareMinus } from "react-icons/bi";
 import { CiSettings } from "react-icons/ci";
-import { motion } from "framer-motion";
+import { color, motion } from "framer-motion";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/navigation";
 import HelpCard from "./HelpCard";
@@ -54,6 +55,7 @@ const OptionsIcon = [
 
 export default function StudentSidebar({ isIcon }: any) {
   const router = useRouter();
+  const { darkMode }: any = useThemeStore();
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
   const [open, setOpen] = useState(isLargeScreen);
 
@@ -84,20 +86,40 @@ export default function StudentSidebar({ isIcon }: any) {
     <Box
       sx={{ width: isLargeScreen ? 210 : 240 }}
       role="presentation"
-      className="h-full flex flex-col"
+      className="h-full flex flex-col bg-white dark:bg-dark_main_background"
     >
       <LogoText />
-      <div className="flex flex-col justify-between items-center h-full">
-        <div className="px-2">
+      <div className="flex flex-col justify-between items-center h-full dark:bg-dark_main_background dark:text-white">
+        <div className="w-full mr-2">
           <List>
             {options.map((option, index) => (
               <ListItem key={option.name} disablePadding>
                 <ListItemButton
-                  className="rounded-xl"
+                  sx={{
+                    borderRadius: "0 10px 10px 0",
+                    margin: "5px 5px 5px 0",
+                    border: "1px solid #E5E5E5",
+                    ...(darkMode && {
+                      border: "1px solid #06AED5",
+                    }),
+                    ":hover": {
+                      color: "#06AED5",
+                      border: "1px solid #06AED5",
+                    },
+                    ":active": {
+                      color: "#06AED5",
+                    },
+                  }}
                   onClick={() => router.push(option.path)}
                 >
-                  <ListItemIcon>{OptionsIcon[index]}</ListItemIcon>
-                  {!isIcon && <ListItemText primary={option.name} />}
+                  <ListItemIcon
+                    sx={{
+                      color: darkMode ? "white" : "black",
+                    }}
+                  >
+                    {OptionsIcon[index]}
+                  </ListItemIcon>
+                  {!isIcon && <ListItemText sx={{}} primary={option.name} />}
                 </ListItemButton>
               </ListItem>
             ))}
@@ -106,7 +128,12 @@ export default function StudentSidebar({ isIcon }: any) {
         {/* <div className="p-2 h-full flex items-center justify-center">
           <HelpCard />
         </div> */}
-        <Button onClick={handleLogout}>Logout</Button>
+        <Button
+          className=" text-light_primary_background border-light_primary_background border-2  dark:hover:text-red-500"
+          onClick={handleLogout}
+        >
+          Logout
+        </Button>
       </div>
     </Box>
   );
