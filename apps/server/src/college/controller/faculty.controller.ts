@@ -88,3 +88,30 @@ export const facultyLogin = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const selectCollege = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const user = req.user;
+    const { collegeId } = req.body;
+    const college = await College.findById(collegeId);
+    if (!college) {
+      return res.status(404).json({ message: "College not found" });
+    }
+
+    const faculty = await Faculty.findOne({ googleId: user.user_id });
+    if (!faculty) {
+      return res.status(404).json({ message: "Faculty not found" });
+    }
+
+    faculty.faculty_college_id = collegeId;
+    await faculty.save();
+    return res.status(200).json({
+      success: true,
+      message: "College selected successfully",
+    });
+  } catch (error: any) {
+    console.log(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

@@ -84,7 +84,9 @@ export default function MainNav() {
           >
             <Avatar>
               <AvatarImage src="" alt="@shadcn" />
-              <AvatarFallback>{userName}</AvatarFallback>
+              <AvatarFallback className="select-none read-only-text">
+                {userName}
+              </AvatarFallback>
             </Avatar>
           </div>
 

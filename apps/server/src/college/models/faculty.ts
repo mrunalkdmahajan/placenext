@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import { IDepartment } from "./department";
 import jwt from "jsonwebtoken";
+import { ICollege } from "./college";
 
 export interface IFaculty extends Document {
   _id?: string;
@@ -11,6 +12,7 @@ export interface IFaculty extends Document {
   faculty_contact_no: string;
   faculty_address: string;
   faculty_designation: string;
+  faculty_college_id: ICollege["_id"];
   faculty_department_id: IDepartment["_id"];
   faculty_yr_of_exp: number;
   faculty_qualification: string;
@@ -21,6 +23,7 @@ export interface IFaculty extends Document {
   faculty_password: string;
   refreshToken: string;
   accessToken: string;
+  googleId: string;
   comparePassword: (candidatePassword: string) => Promise<boolean>;
   generateRefreshToken: () => string;
   generateAccessToken: () => string;
@@ -45,6 +48,10 @@ const FacultySchema = new Schema<IFaculty>({
   },
   faculty_designation: {
     type: String,
+  },
+  faculty_college_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "College",
   },
   // faculty_department_id: {
   //   type: mongoose.Schema.Types.ObjectId,
@@ -73,18 +80,21 @@ const FacultySchema = new Schema<IFaculty>({
   },
   role: {
     type: String,
-    default: "faculty",
+    default: "none", // all roles are like [none, admin, faculty, tpo , student]
   },
-  faculty_password: {
-    type: String,
-    required: true,
-  },
-  refreshToken: {
+  googleId: {
     type: String,
   },
-  accessToken: {
-    type: String,
-  },
+  // faculty_password: {
+  //   type: String,
+  //   required: true,
+  // },
+  // refreshToken: {
+  //   type: String,
+  // },
+  // accessToken: {
+  //   type: String,
+  // },
 });
 
 FacultySchema.pre("save", async function (next) {

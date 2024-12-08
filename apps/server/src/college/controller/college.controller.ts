@@ -5,17 +5,32 @@ import StudentInfo from "../../student/models/info_student";
 import Job from "../../company/models/job";
 import Application from "../../student/models/application";
 import * as XLSX from "xlsx";
+import Faculty from "../models/faculty";
 
 export const isFirstSignIn = async (req: Request, res: Response) => {
   try {
     // @ts-ignore
     const user = req.user;
+    console.log("User:", user);
 
-    const student = await College.findOne({
-      $or: [{ googleId: user.uid }, { email: user.email }],
+    const college = await Faculty.findOne({
+      googleId: user.user_id,
     });
 
-    return res.status(200).json({ success: true, isFirstSignIn: !student });
+    if (college) {
+      return res.status(200).json({ success: true, isFirstSignIn: false });
+    } else {
+      const faculty = new Faculty({
+        faculty_name: user.name,
+        faculty_email: user.email,
+        faculty_photo: user.picture,
+        googleId: user.user_id,
+      });
+      await faculty.save();
+      if (faculty) {
+        return res.status(200).json({ success: true, isFirstSignIn: true });
+      }
+    }
   } catch (error: any) {
     console.log("Error in isFirstSignIn", error.message);
     return res.status(500).json({ msg: "Internal Server Error" });
@@ -26,7 +41,8 @@ export const signup = async (req: Request, res: Response) => {
   try {
     // @ts-ignore
     const user = req.user;
-    res.status(200).json({ success: true, user });
+
+    return res.status(200).json({ success: true, user });
   } catch (error: any) {
     console.log("Error in signup", error.message);
     return res.status(500).json({ msg: "Internal Server Error" });
@@ -985,6 +1001,30 @@ export const placeStudent = async (req: Request, res: Response) => {
     return res.status(200).json({ success: true, studentInfo });
   } catch (error: any) {
     console.log("Error in placeStudent", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+export const getColleges = async (req: Request, res: Response) => {
+  try {
+    const { query } = req.query; // Extract query from request
+
+    if (!query) {
+      return res.status(400).json({ success: false, msg: "Query is required" });
+    }
+
+    // Use MongoDB regex for case-insensitive partial match
+    const colleges = await College.find({
+      coll_name: { $regex: query, $options: "i" },
+    });
+
+    if (!colleges.length) {
+      return res.status(404).json({ success: false, msg: "No colleges found" });
+    }
+
+    return res.status(200).json({ success: true, colleges });
+  } catch (error: any) {
+    console.error("Error in getColleges:", error);
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 };

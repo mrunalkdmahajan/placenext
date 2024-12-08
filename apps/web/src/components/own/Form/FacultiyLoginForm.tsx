@@ -45,6 +45,12 @@ const SignUpFormCollege = () => {
           },
         }
       );
+      console.log(
+        "Sign check response:",
+        signCheckResponse.data,
+        signCheckResponse.data.success,
+        signCheckResponse.data.isFirstSignIn
+      );
 
       if (token) {
         console.log("ID Token:", token);
@@ -58,13 +64,11 @@ const SignUpFormCollege = () => {
           }
         );
 
-        if (signCheckResponse.data.success === true) {
+        if (signCheckResponse.data.success == true) {
           if (signCheckResponse.data.isFirstSignIn) {
-            router.push("/college/applicationForm");
+            router.push("/forms/selectCollege");
           }
-        }
-
-        if (response.data.success === true) {
+        } else if (response.data.success === true) {
           console.log("User logged in successfully");
           router.push("/college/dashboard");
         }
