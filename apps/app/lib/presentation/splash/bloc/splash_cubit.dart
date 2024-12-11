@@ -2,7 +2,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:app/presentation/splash/bloc/splash_state.dart';
 
-import 'package:app/service_locator.dart'; // Assume you're using service locators
+// Assume you're using service locators
 
 class SplashCubit extends Cubit<SplashState> {
   SplashCubit() : super(DisplaySplash());

@@ -7,13 +7,13 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Student Dashboard"),
+        title: const Text("Student Dashboard"),
         // actions: [Icon(Icons.circle)],
-        leading: Icon(Icons.arrow_back),
+        leading: const Icon(Icons.arrow_back),
       ),
       // bottomNavigationBar: BottomNavigationBar(),
 
-      body: Center(
+      body: const Center(
         child: Text("hello"),
       ),
     );

@@ -2,6 +2,11 @@ import { Request, Response } from "express";
 import College from "../models/college";
 import Faculty from "../models/faculty";
 
+interface FilterOptions {
+  branch: string;
+  role: string;
+}
+
 const generateRefreshAndAccessToken = async (faculty: any) => {
   try {
     const refreshToken = faculty.generateRefreshToken();
@@ -113,5 +118,64 @@ export const selectCollege = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.log(error.message);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const checkRole = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const user = req.user;
+    const faculty = await Faculty.findOne({ googleId: user.user_id });
+    if (!faculty) {
+      return res.status(404).json({ message: "Faculty not found" });
+    }
+    return res.status(200).json({
+      success: true,
+      role: faculty.role,
+    });
+  } catch (error: any) {
+    console.log(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getFacultyList = async (req: Request, res: Response) => {
+  try {
+    // Extract user and college ID
+    // @ts-ignore
+    const user = req.user;
+    // @ts-ignore
+    const college_id = req.collegeId;
+
+    // Extract optional query parameters
+    const branch = req.query.branch as string | undefined;
+    const role = req.query.role as string | undefined;
+    const assigned = req.query.assigned === "true";
+
+    // Build query dynamically
+    const query: any = {
+      faculty_college_id: college_id,
+      googleId: { $ne: user.user_id },
+    };
+
+    if (role) query.role = role;
+    if (branch) query.faculty_department_id = branch;
+
+    if (assigned) {
+      query.role = { $ne: "none" }; // Assigned faculties have a role
+    } else {
+      query.role = "none"; // Unassigned faculties
+    }
+
+    // Fetch faculties based on the query
+    const faculties = await Faculty.find(query).select("-password");
+
+    return res.status(200).json({
+      success: true,
+      faculties,
+    });
+  } catch (error: any) {
+    console.error("Error fetching faculty list:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

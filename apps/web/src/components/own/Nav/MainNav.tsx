@@ -44,19 +44,23 @@ export default function MainNav() {
     };
   }, [dropdownOpen]);
 
+  const pathname = usePathname();
+  const path = pathname.split("/")[1];
+
   const handleLogout = async () => {
     const auth = getAuth();
     try {
       logout();
       console.log("User signed out");
-      router.push("/authentication/studentLogin");
+      if (path === "college") {
+        router.push("/authentication/facultyLogin");
+      } else {
+        router.push("/authentication/studentLogin");
+      }
     } catch (error) {
       console.error("Error during logout:", error);
     }
   };
-
-  const pathname = usePathname();
-  const path = pathname.split("/")[1];
 
   return (
     <div className="flex flex-row items-center justify-between w-full px-2 pl-10 py-2 relative z-20 bg-white dark:bg-dark_main_background">

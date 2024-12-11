@@ -40,7 +40,8 @@ const drawerVariants = {
 
 const options: Option[] = [
   { name: "Dashboard", path: "/college/dashboard" },
-  { name: "Manage Students", path: "/college/student_list" },
+  { name: "Students", path: "/college/student_list" },
+  { name: "Faculty", path: "/college/faculty_list" },
   { name: "Job Postings", path: "/college/jobs" },
   { name: "Messages", path: "/college/messages/inbox" },
   { name: "Profile", path: "/college/profile" },
@@ -77,7 +78,7 @@ export default function FacultySidebar({ isIcon }: any) {
     try {
       logout();
       console.log("User signed out");
-      router.push("/authentication/studentLogin");
+      router.push("/authentication/facultyLogin");
     } catch (error) {
       console.error("Error during logout:", error);
     }
@@ -115,9 +116,12 @@ export default function FacultySidebar({ isIcon }: any) {
   );
 
   return (
-    <div className="flex overflow-hidden z-50">
+    <div className="flex overflow-hidden z-40">
       {!isLargeScreen && (
-        <IconButton onClick={toggleDrawer(!open)}>
+        <IconButton
+          onClick={toggleDrawer(!open)}
+          sx={{ position: "fixed", top: 15, left: 0, zIndex: 50 }}
+        >
           <MenuIcon />
         </IconButton>
       )}

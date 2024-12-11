@@ -41,7 +41,7 @@ const FacultySchema = new Schema<IFaculty>({
   faculty_contact_no: {
     type: String,
 
-    unique: true,
+    // unique: true,
   },
   faculty_address: {
     type: String,

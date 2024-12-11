@@ -64,10 +64,11 @@ const SignUpFormCollege = () => {
           }
         );
 
-        if (signCheckResponse.data.success == true) {
-          if (signCheckResponse.data.isFirstSignIn) {
-            router.push("/forms/selectCollege");
-          }
+        if (
+          signCheckResponse.data.success == true &&
+          signCheckResponse.data.isFirstSignIn
+        ) {
+          router.push("/forms/selectCollege");
         } else if (response.data.success === true) {
           console.log("User logged in successfully");
           router.push("/college/dashboard");

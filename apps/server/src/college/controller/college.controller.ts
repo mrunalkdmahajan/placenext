@@ -190,17 +190,25 @@ export const getFilteredStudentList = async (req: Request, res: Response) => {
 
     console.log("Placement Status:", placementStatus);
     console.log("Verified Status:", verifiedStatus);
-    console.log("Order Status:", branch);
+    console.log("Branch:", branch);
 
     // Find college by Google ID
-    const college = await College.findOne({ googleId: user.uid });
+    const college = await Faculty.findOne({
+      $and: [
+        { googleId: user.uid },
+        {
+          $or: [{ role: "admin" }, { role: "tpo" }, { role: "college-admin" }],
+        },
+      ],
+    });
     if (!college) {
       return res.status(404).json({ success: false, msg: "College not found" });
     }
+    console.log("College ID:", college.faculty_college_id);
 
     // Define the query conditions
     const queryConditions: any = {
-      stud_college_id: college._id.toString(),
+      stud_college_id: college.faculty_college_id,
     };
 
     // Apply other filters
@@ -221,7 +229,7 @@ export const getFilteredStudentList = async (req: Request, res: Response) => {
 
     // Fetch students based on the constructed conditions
     let students = await Student.find(queryConditions).populate("stud_info_id");
-    console.log("Students:", students);
+    // console.log("Students:", students);
 
     // If no students are found, return a 404 response
     if (!students.length) {

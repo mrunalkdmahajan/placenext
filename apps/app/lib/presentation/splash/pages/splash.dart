@@ -33,7 +33,7 @@ class SplashPage extends StatelessWidget {
                 onFinished: () {
                   // Navigate to the next screen after animation finishes
                   AppNavigator.pushAndReplacement(
-                      context, HomePage()); // Use your actual route here
+                      context, const HomePage()); // Use your actual route here
                 },
               ),
             ],
