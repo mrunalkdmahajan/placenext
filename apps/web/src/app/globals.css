@@ -67,3 +67,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.read-only-text {
+  user-select: none; /* Prevents text selection */
+}

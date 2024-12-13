@@ -1,12 +1,12 @@
 "use client";
 import Image from "next/image";
-import LogoSVG from "@/assets/logo.svg";
+
 import Link from "next/link";
 
 const LogoText = () => {
   return (
     <Link href={"/"}>
-      <div className="flex flex-row items-center gap-2  p-4">
+      <div className="flex flex-row items-center gap-2 p-2">
         <div>
           <Image
             src="/assets/PlaceNext_logo.png"
@@ -17,7 +17,7 @@ const LogoText = () => {
           />
         </div>
         <div>
-          <h1 className="text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-semibold">
+          <h1 className="text-lg text-justify text-black lg:text-xl xl:text-2xl 2xl:text-3xl font-semibold dark:text-white">
             Place<span className="font-extrabold">Next</span>
           </h1>
         </div>

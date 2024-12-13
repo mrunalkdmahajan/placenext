@@ -9,6 +9,7 @@ import {
   getJobAppliedDetailsById,
   getJobDetailsById,
   getJobForCollege,
+  getRecommededJobs,
   getStudentsJobStatistics,
   getStudentStatistics,
   getUserDetails,
@@ -16,6 +17,7 @@ import {
   signup,
 } from "../controller/auth";
 import { upload } from "../../middlewares/multer";
+import { getDeparments } from "../controller/student.controller";
 
 const studentRoutes = Router();
 
@@ -27,7 +29,7 @@ studentRoutes.post("/google_login", authenticateToken, signup);
 studentRoutes.post(
   "/register/applicationform",
   upload.fields([
-    // { name: "resume", maxCount: 1 },
+    { name: "resume", maxCount: 1 },
     { name: "sem1Marksheet", maxCount: 1 },
     { name: "sem2Marksheet", maxCount: 1 },
     { name: "sem3Marksheet", maxCount: 1 },
@@ -71,11 +73,13 @@ studentRoutes.get(
 studentRoutes.get("/companies", authenticateToken, getJobForCollege);
 studentRoutes.get("/company/:id", authenticateToken, getJobDetailsById);
 studentRoutes.get("/applied_jobs", authenticateToken, getJobAppliedByStudent);
+studentRoutes.get("/recommended_jobs", authenticateToken, getRecommededJobs);
 studentRoutes.get(
   "/applied_jobs/:id",
   authenticateToken,
   getJobAppliedDetailsById
 );
+studentRoutes.post("/department", authenticateToken, getDeparments);
 
 // student applying to job
 studentRoutes.post(

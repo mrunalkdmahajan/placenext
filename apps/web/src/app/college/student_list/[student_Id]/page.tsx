@@ -71,6 +71,28 @@ export default function StudentById() {
     }
   }, [student_Id]);
 
+  const handlePlaced = async () => {
+    try {
+      const res = await axios.post(
+        `${BackendUrl}/api/college/place_student`,
+        {
+          student_Id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(res.data);
+      if (res.data.success) {
+        router.push("/college/student_list");
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (error: any) {}
+  };
+
   const handleAccept = async () => {
     try {
       const res = await axios.post(
@@ -239,7 +261,11 @@ export default function StudentById() {
         <Button onClick={() => router.back()} className="mb-4 md:mb-0">
           Back
         </Button>
+
         <div className="flex space-x-4">
+          <Button onClick={handlePlaced} className="bg-green-500">
+            Marked Placed
+          </Button>
           <Button onClick={handleAccept} className="bg-green-500">
             Accept
           </Button>

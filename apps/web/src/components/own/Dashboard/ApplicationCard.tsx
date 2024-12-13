@@ -1,86 +1,69 @@
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
-import { BackendUrl } from "@/utils/constants";
 import { JobPosting } from "./ApplicationCards";
+import { usePathname } from "next/navigation";
 
 const ApplicationCard = ({ job }: { job: JobPosting }) => {
+  const pathname = usePathname();
+  const path = pathname.split("/")[1];
+
   const [isApplied, setIsApplied] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isNotInterested, setIsNotInterested] = useState(false);
 
-  const handleApply = async (jobId: string) => {
-    try {
-      const response = await axios.post(
-        `${BackendUrl}/api/student/apply_job`,
-        { jobId },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-
-      if (response.data.success) {
-        console.log("Application successful");
-        setIsApplied(true);
-      }
-    } catch (error) {
-      console.error("Error during application:", error);
-    }
-  };
-
-  const handleBookmark = () => {
-    setIsBookmarked(true);
-    console.log("Job bookmarked");
-  };
-
-  const handleNotInterested = () => {
-    setIsNotInterested(true);
-    console.log("Not interested in this job");
-  };
-
-  if (isNotInterested) return null; // Don't render the card if not interested
-
   return (
-    <div className="max-w-sm mx-auto p-4 bg-white border border-primary shadow-md rounded-lg mb-4">
-      <h3 className="text-lg font-bold">{job.title}</h3>
-
-      <p className="text-gray-700">{job.company}</p>
-      <p className="text-gray-500">{job.location}</p>
-      <p className="text-sm text-gray-400 mt-2">Posted on: {job.postedDate}</p>
-      <p className="text-gray-700 text-xs">{job.description}</p>
-
-      {/* <div className="mt-4 flex gap-4">
-        {isApplied ? (
-          <button
-            className="w-1/3 bg-primary text-white p-2 rounded cursor-not-allowed"
-            disabled
+    <div className="p-6 bg-white border border-gray-200 shadow-lg rounded-lg transition-transform hover:scale-105 hover:shadow-xl min-w-64 min-h-96 mb-6">
+      {/* Job Title & Company */}
+      <div className="mb-3">
+        <h3 className="text-xl font-semibold text-gray-900 truncate">
+          {job.title}
+        </h3>
+        <p className="text-sm text-gray-500">{job.company}</p>
+      </div>
+      {/* Location & Posted Date */}
+      <div className="flex justify-between text-sm text-gray-400 mb-2">
+        <span>{job.location}</span>
+        <span>Posted: {job.postedDate}</span>
+      </div>
+      {/* Job Description */}
+      <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+        {job.description}
+      </p>
+      {/* Eligibility & Salary */}
+      <div className="flex items-center justify-between mb-4">
+        {path === "student" ? (
+          <p
+            className={`text-sm font-medium ${job.isEligible ? "text-green-600" : "text-red-500"}`}
           >
-            Applied
-          </button>
+            Eligibility: {job.isEligible ? "Yes" : "No"}
+          </p>
         ) : (
-          <button
-            onClick={() => handleApply(job.id)}
-            className="w-32 h-12 bg-primary text-white p-2 rounded hover:bg-green-700"
-          >
-            Apply Now
-          </button>
+          ""
         )}
-
+        <p className="text-sm font-medium text-gray-800">{job.salary}</p>
+      </div>
+      {/* Interaction Buttons
+      <div className="flex gap-4">
         <button
-          onClick={handleBookmark}
-          className={`w-32 h-12 p-2 rounded ${isBookmarked ? "bg-third_back text-third_text" : "text-third_text bg-third_back hover:bg-yellow-200"}`}
+          onClick={() => setIsApplied(!isApplied)}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            isApplied
+              ? "bg-green-100 text-green-600"
+              : "bg-gray-100 hover:bg-gray-200"
+          }`}
+        >
+          {isApplied ? "Applied" : "Apply"}
+        </button>
+        <button
+          onClick={() => setIsBookmarked(!isBookmarked)}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            isBookmarked
+              ? "bg-yellow-100 text-yellow-600"
+              : "bg-gray-100 hover:bg-gray-200"
+          }`}
         >
           {isBookmarked ? "Bookmarked" : "Bookmark"}
-        </button>
-
-        <button
-          onClick={handleNotInterested}
-          className="w-32 h-12 bg-four_back text-four_text p-2 rounded hover:bg-four_text hover:text-white text-sm"
-        >
-          Not Interested
         </button>
       </div> */}
     </div>

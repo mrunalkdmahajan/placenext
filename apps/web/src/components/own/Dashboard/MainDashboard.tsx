@@ -22,7 +22,7 @@ export default function MainDashboard() {
 
   return (
     <div className="bg-primary_background h-full">
-      <h1>Student Statistics</h1>
+      <h1 className="">Student Statistics</h1>
     </div>
   );
 }

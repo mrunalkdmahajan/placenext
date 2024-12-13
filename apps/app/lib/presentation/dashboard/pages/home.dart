@@ -60,29 +60,15 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Student Dashboard"),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            AppNavigator.pop(context);
-          },
-        ),
+        title: const Text("Student Dashboard"),
+        // actions: [Icon(Icons.circle)],
+        leading: const Icon(Icons.arrow_back),
       ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    StudentStatisticsChart(
-                      companiesCameToCollege: companiesCameToCollege.length,
-                      appliedJobs: appliedJobs.length,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+      // bottomNavigationBar: BottomNavigationBar(),
+
+      body: const Center(
+        child: Text("hello"),
+      ),
     );
   }
 }

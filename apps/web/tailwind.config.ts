@@ -1,6 +1,21 @@
+import { dark, light } from "@mui/material/styles/createPalette";
 import type { Config } from "tailwindcss";
+const flattenColorPalette =
+  require("tailwindcss/lib/util/flattenColorPalette").default;
+const plugin = require("tailwindcss/plugin");
 
-const config = {
+const addVariablesForColors = plugin(function ({ addBase, theme }: any) {
+  const allColors = flattenColorPalette(theme("colors"));
+  const colorVariables = Object.fromEntries(
+    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+  );
+
+  addBase({
+    ":root": colorVariables,
+  });
+});
+
+const config: Config = {
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
@@ -8,7 +23,6 @@ const config = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
   ],
-  prefix: "",
   theme: {
     container: {
       center: true,
@@ -24,11 +38,15 @@ const config = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        primary: "#2568FF",
-        primary_background: "#EDEDFF",
-        secondary_background: "#FFFFFF",
-        secondary_text: "#202224",
+        light_main_background: "#FFFFFF",
+        dark_main_background: "#000000",
+        light_main_text: "#000000",
+        dark_main_text: "#FFFFFF",
+        light_primary_background: "#06AED5",
+        light_secondary_background: "#F3F3F3",
+        dark_secondary_background: "#5E5E5E",
         third_back: "#CCF0EB",
+        dark_bg_card: "#191A23",
         third_text: "#00B69B",
         four_back: "#FCD7D4",
         four_text: "#EF3826",
@@ -61,6 +79,15 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        aurora: {
+          from: { backgroundPosition: "50% 50%, 50% 50%" },
+          to: { backgroundPosition: "350% 50%, 350% 50%" },
+        },
+        scroll: {
+          to: {
+            transform: "translate(calc(-50% - 0.5rem))",
+          },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -71,12 +98,16 @@ const config = {
         },
       },
       animation: {
+        scroll:
+          "scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite",
+        aurora: "aurora 60s linear infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
-} satisfies Config;
+  plugins: [require("tailwindcss-animate"), addVariablesForColors],
+  prefix: "",
+};
 
 export default config;

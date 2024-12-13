@@ -1,4 +1,3 @@
-import MainDashboard from "@/components/own/Dashboard/MainDashboard";
 import MainNav from "@/components/own/Nav/MainNav";
 
 import StudentSidebar from "@/components/own/StudentSidebar";
@@ -23,10 +22,13 @@ export default function RootLayout({
         {/* this will contain sidebar */}
         <StudentSidebar />
       </div>
-      <div className="w-full h-full flex flex-col bg-primary_background">
-        {/* this will contain navbar and main content */}
+      <div className="fixed top-0 w-full z-20">
         <MainNav />
-        <div className="mt-20">{children}</div>
+      </div>
+      <div className="w-full h-full flex flex-col bg-primary_background overflow-auto">
+        {/* this will contain navbar and main content */}
+
+        <div className="mt-20 max-h-screen max-w-screen">{children}</div>
       </div>
     </div>
   );

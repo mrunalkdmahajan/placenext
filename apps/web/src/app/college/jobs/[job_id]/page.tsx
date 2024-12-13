@@ -3,8 +3,11 @@ import { BackendUrl } from "@/utils/constants";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@mui/material";
 
 const JobDetail = () => {
+  const router = useRouter();
   const { job_id } = useParams();
   const [job, setJob] = useState<any>(null);
   const [students, setStudents] = useState<any[]>([]);
@@ -34,6 +37,9 @@ const JobDetail = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Job Details */}
+      <Button onClick={() => router.back()} variant="contained">
+        Back
+      </Button>
       {job && (
         <div className="bg-white p-6 rounded-lg shadow-md mb-8">
           <h2 className="text-2xl font-bold mb-4">{job.job_title}</h2>

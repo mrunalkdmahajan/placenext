@@ -38,7 +38,7 @@ const JobEligibilityPieChart = ({ eligibleCount, notEligibleCount }: any) => {
   };
 
   return (
-    <div style={{ width: "400px", height: "400px" }}>
+    <div style={{ width: "90%", maxWidth: "400px", height: "400px" }}>
       <Pie data={data} options={options} />
     </div>
   );

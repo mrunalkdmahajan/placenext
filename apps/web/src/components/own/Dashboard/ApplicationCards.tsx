@@ -18,6 +18,7 @@ export interface JobPosting {
   postedDate: string;
   deadline: string;
   salary: string;
+  isEligible?: boolean;
   workingHours: string;
   basicRequirements: string[];
 }
@@ -41,7 +42,6 @@ const ApplicationCards = () => {
           }
         );
         console.log(response.data);
-        console.log(response.data.jobs.map((job: any) => job.isEligible));
         if (response.data.success) {
           const jobsData = response.data.jobs.map((job: any) => ({
             id: job._id,
@@ -50,11 +50,13 @@ const ApplicationCards = () => {
             location: job.job_location,
             postedDate: new Date(job.job_posted_date).toLocaleDateString(),
             deadline: job.job_deadline || "Not Specified",
+            isEligible: job.isEligible,
             description: job.job_description,
-            salary: `$${job.job_salary}`,
+            salary: `₹${job.job_salary}`,
             workingHours: job.job_timing,
             basicRequirements: job.job_requirements,
           }));
+          console.log(jobsData);
           setJobs(jobsData);
         }
       } catch (error) {
@@ -65,7 +67,7 @@ const ApplicationCards = () => {
   }, []);
 
   return (
-    <div className="w-full mx-auto py-2">
+    <div className="w-full mx-auto py-4 m-2">
       <h2 className="text-2xl font-bold mb-6">Job Postings</h2>
       {currentPath === "/college/jobs" && (
         <Button
@@ -77,19 +79,17 @@ const ApplicationCards = () => {
         </Button>
       )}
 
-      <div className="flex flex-row overflow-auto gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
         {jobs.map((job) => (
-          <Button onClick={() => router.push(`/student/applyjob/${job.id}`)}>
-            <ApplicationCard key={job.id} job={job} />
+          <Button
+            key={job.id}
+            className="w-full"
+            onClick={() => router.push(`/student/applyjob/${job.id}`)}
+          >
+            <ApplicationCard job={job} />
           </Button>
         ))}
       </div>
-      <p className="mt-4">
-        Looking for more jobs?
-        <Link className="text-[#56B280] px-2" href="/job-search">
-          Browse all jobs
-        </Link>
-      </p>
     </div>
   );
 };

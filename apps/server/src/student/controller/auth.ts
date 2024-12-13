@@ -8,6 +8,7 @@ import axios from "axios";
 import { Document_server_url } from "../../app";
 import Job from "../../company/models/job";
 import Application from "../models/application";
+import { jobs } from "googleapis/build/src/apis/jobs";
 const requiredFields = [
   "firstName",
   "middleName",
@@ -81,7 +82,7 @@ export const isFirstSignIn = async (req: Request, res: Response) => {
     }
 
     // @ts-ignore
-    if (!student.stud_info_id) {
+    if (student.stud_info_id == null) {
       return res.status(200).json({ success: true, isFirstSignIn: true });
     }
     return res.status(200).json({ success: true, isFirstSignIn: false });
@@ -129,6 +130,8 @@ export const applicationFrom = async (req: Request, res: Response) => {
       uploadMarksheet(req.files?.sem7Marksheet, "sem7Marksheet"),
       // @ts-ignore
       uploadMarksheet(req.files?.sem8Marksheet, "sem8Marksheet"),
+      // @ts-ignore
+      uploadMarksheet(req.files?.resume, "resume"),
     ];
 
     const [
@@ -140,6 +143,7 @@ export const applicationFrom = async (req: Request, res: Response) => {
       sem6sheet,
       sem7sheet,
       sem8sheet,
+      resume,
     ] = await Promise.all(marksheetPromises);
 
     const studentInfo = new StudentInfo({
@@ -167,9 +171,11 @@ export const applicationFrom = async (req: Request, res: Response) => {
       stud_hsc_board: fields.hscBoard,
       stud_ssc: fields.tenthPercentage,
       stud_ssc_board: fields.sscBoard,
+      stud_resume: resume,
       // stud_diploma: fields.diploma, // this is remaining
       // stud_diploma_board: fields.diplomaBoard, // this is remaining
       // stud_diploma_stream: fields.diplomaStream, // this is remaining
+      stud_prn: fields.prn,
       stud_alternate_email: fields.alternateEmail,
       stud_alternate_phone: fields.alternatePhoneNo,
       // stud_capAllotment: fields.capAllotment, // this is remaining
@@ -178,15 +184,15 @@ export const applicationFrom = async (req: Request, res: Response) => {
       stud_aadhar: fields.aadharNumber,
       stud_pan: fields.panNumber,
       // handicap_cert: fields.handicapCert, // this is remaining
-      // no_of_live_backlogs: fields.liveBacklogs, // this is remaining
-      // no_of_dead_backlogs: fields.deadBacklogs, // this is remaining
+      no_of_live_backlogs: fields.liveBacklogs,
+      no_of_dead_backlogs: fields.deadBacklogs,
       // stud_placement_status: fields.placementStatus, // this is remaining
       // stud_placement_package: fields.placementPackage, // this is remaining
       // stud_placement_company: fields.placementCompany, // this is remaining
       // stud_placement_date: fields.placementDate, // this is remaining
       // student_skills: fields.skills, // this is remaining
-      // stud_linkedIn: fields.linkedIn, // this is remaining
-      // stud_github: fields.github, // this is remaining
+      stud_linkedIn: fields.linkedIn, // this is remaining
+      stud_github: fields.github, // this is remaining
     });
 
     const savedStudentInfo = await studentInfo.save();
@@ -448,23 +454,24 @@ export const getJobForCollege = async (req: Request, res: Response) => {
     ];
 
     // Print grades for debugging
-    console.log("Grades:", grades);
+    // console.log("Grades:", grades);
 
     // Ensure grades are numbers and ignore empty strings
+    let validSemesters = 0;
     const totalGrades = grades.reduce((sum: any, grade: any) => {
       // Check if the grade is a valid number or a non-empty string that can be converted to a number
       return grade !== "" && !isNaN(Number(grade)) ? sum + Number(grade) : sum;
     }, 0);
 
     // Count valid semesters (where the grade is not an empty string and can be converted to a number)
-    const validSemesters = grades.filter(
-      (grade) => grade !== "" && !isNaN(Number(grade))
+    validSemesters = grades.filter(
+      (grade) => grade !== "" && grade !== null && !isNaN(Number(grade))
     ).length;
 
     // Calculate the average CGPI, avoiding division by zero
     const averageCGPI = validSemesters > 0 ? totalGrades / validSemesters : 0;
 
-    console.log("averageCGPI", averageCGPI);
+    // console.log("averageCGPI", averageCGPI);
 
     // Fetch all jobs posted at the student's college
     const jobs = await Job.find({
@@ -486,7 +493,7 @@ export const getJobForCollege = async (req: Request, res: Response) => {
         averageCGPI >= job.min_CGPI && // Use average CGPI
         job.branch_allowed.includes(student.stud_department);
       // job.passing_year.includes(student.stud_year);
-      console.log("isEligible", isEligible);
+      // console.log("isEligible", isEligible);
 
       return {
         ...job.toObject(), // Convert the job document to a plain object
@@ -516,6 +523,7 @@ export const getJobDetailsById = async (req: Request, res: Response) => {
     if (!job) {
       return res.status(404).json({ success: false, msg: "Job not found" });
     }
+    // console.log("Job", job);
 
     // Find the student using their Google ID
     const student = await Student.findOne({ googleId: user.uid });
@@ -546,21 +554,26 @@ export const getJobDetailsById = async (req: Request, res: Response) => {
     ];
 
     // Print grades for debugging
-    console.log("Grades:", grades);
+    // console.log("Grades:", grades);
 
     // Calculate total grades and valid semesters
-    const totalGrades = grades.reduce(
-      (sum, grade) =>
-        grade !== "" && !isNaN(Number(grade)) ? sum + Number(grade) : sum,
-      0
-    );
-    const validSemesters = grades.filter(
-      (grade) => grade !== "" && !isNaN(Number(grade))
+    let validSemesters = 0;
+    const totalGrades = grades.reduce((sum, grade) => {
+      if (grade !== "" && !isNaN(Number(grade))) {
+        return sum + Number(grade);
+      }
+      return sum;
+    }, 0);
+    // Count valid semesters (where the grade is not an empty string and can be converted to a number)
+    validSemesters = grades.filter(
+      (grade) => grade !== "" && grade !== null && !isNaN(Number(grade))
     ).length;
+    // console.log("totalGrades", totalGrades);
+    // console.log("validSemesters", validSemesters);
 
     // Calculate average CGPI, avoiding division by zero
     const averageCGPI = validSemesters > 0 ? totalGrades / validSemesters : 0;
-    console.log("averageCGPI", averageCGPI);
+    // console.log("averageCGPI", averageCGPI);
 
     // Determine eligibility for the specific job
     const isEligible =
@@ -569,7 +582,7 @@ export const getJobDetailsById = async (req: Request, res: Response) => {
       averageCGPI >= job.min_CGPI &&
       job.branch_allowed.includes(student.stud_department);
 
-    console.log("isEligible", isEligible);
+    // console.log("isEligible", isEligible);
 
     // Return the job details along with eligibility status
     return res
@@ -609,6 +622,18 @@ export const applyToJob = async (req: Request, res: Response) => {
     // Destructure job details from the request body
     const { app_job_id, app_status } = req.body;
 
+    const application = await Application.findOne({
+      // @ts-ignore
+      student: student._id,
+      app_job_id,
+    });
+
+    if (application) {
+      return res.status(400).json({
+        success: false,
+        msg: "You have already applied to this job",
+      });
+    }
     // Validate required fields
     if (!app_job_id) {
       return res.status(400).json({ msg: "All fields are required" });
@@ -668,7 +693,7 @@ export const getStudentsJobStatistics = async (req: Request, res: Response) => {
       "stud_info_id"
     );
 
-    console.log("Student", student);
+    // console.log("Student", student);
 
     if (!student) {
       return res.status(404).json({ success: false, msg: "Student not found" });
@@ -740,6 +765,53 @@ export const getJobAppliedByStudent = async (req: Request, res: Response) => {
     return res.status(200).json({ success: true, appliedJobs });
   } catch (error: any) {
     console.log("Error in getJobAppliedByStudent", error.message);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+export const getRecommededJobs = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const user = req.user;
+
+    // Find the student based on the Google ID from the request
+    const student = await Student.findOne({ googleId: user.uid });
+
+    if (!student) {
+      return res.status(404).json({ success: false, msg: "Student not found" });
+    }
+
+    // Find jobs that are allowed for the student's department
+    const jobs = await Job.find({
+      branch_allowed: { $in: [student.stud_department] }, // Check if student's department is in branch_allowed array
+    });
+
+    // If no jobs are found, return a 404 response
+    if (!jobs.length) {
+      return res
+        .status(404)
+        .json({ success: false, msg: "No recommended jobs found" });
+    }
+
+    // Find applications that match the student ID and job IDs
+    const appliedJobs = await Application.find({
+      student: student._id,
+      app_job_id: { $in: jobs.map((job) => job._id) }, // Check for job IDs in the jobs found
+    });
+
+    // Extract applied job IDs
+    const appliedJobIds = appliedJobs.map((application) =>
+      application.app_job_id.toString()
+    );
+
+    // Filter out jobs that the student has already applied for
+    const recommendedJobs = jobs.filter(
+      (job) => !appliedJobIds.includes(job._id.toString())
+    );
+
+    return res.status(200).json({ success: true, jobs: recommendedJobs });
+  } catch (error: any) {
+    console.log("Error in getRecommededJobs", error.message);
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 };

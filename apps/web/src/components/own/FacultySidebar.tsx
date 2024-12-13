@@ -10,6 +10,7 @@ import {
   ListItemText,
   IconButton,
   useMediaQuery,
+  Button,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import ImportContactsTwoToneIcon from "@mui/icons-material/ImportContactsTwoTone";
@@ -24,6 +25,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/navigation";
 import HelpCard from "./HelpCard";
 import LogoText from "./LogoText";
+import { getAuth } from "firebase/auth";
+import { logout } from "@/config/firebase-config";
 
 interface Option {
   name: string;
@@ -37,9 +40,10 @@ const drawerVariants = {
 
 const options: Option[] = [
   { name: "Dashboard", path: "/college/dashboard" },
-  { name: "Manage Students", path: "/college/student_list" },
+  { name: "Students", path: "/college/student_list" },
+  { name: "Faculty", path: "/college/faculty_list" },
   { name: "Job Postings", path: "/college/jobs" },
-  { name: "Messages", path: "/college/doctors" },
+  { name: "Messages", path: "/college/messages/inbox" },
   { name: "Profile", path: "/college/profile" },
   { name: "Settings", path: "/college/settings" },
 ];
@@ -69,6 +73,17 @@ export default function FacultySidebar({ isIcon }: any) {
     setOpen(newOpen);
   };
 
+  const handleLogout = async () => {
+    const auth = getAuth();
+    try {
+      logout();
+      console.log("User signed out");
+      router.push("/authentication/facultyLogin");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+
   const DrawerList = (
     <Box
       sx={{ width: isLargeScreen ? 210 : 240 }}
@@ -92,17 +107,21 @@ export default function FacultySidebar({ isIcon }: any) {
             ))}
           </List>
         </div>
-        <div className="p-2 h-full flex items-center justify-center">
+        {/* <div className="p-2 h-full flex items-center justify-center">
           <HelpCard />
-        </div>
+        </div> */}
+        <Button onClick={handleLogout}>Logout</Button>
       </div>
     </Box>
   );
 
   return (
-    <div className="flex overflow-hidden z-50">
+    <div className="flex overflow-hidden z-40">
       {!isLargeScreen && (
-        <IconButton onClick={toggleDrawer(!open)}>
+        <IconButton
+          onClick={toggleDrawer(!open)}
+          sx={{ position: "fixed", top: 15, left: 0, zIndex: 50 }}
+        >
           <MenuIcon />
         </IconButton>
       )}
