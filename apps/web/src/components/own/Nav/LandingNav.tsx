@@ -102,12 +102,12 @@ export default function LandingNav() {
             <NavOptions />
             <Link href="/authentication/studentLogin">
               <Button className="bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 w-10/12 px-4 py-2">
-                Student Login / Register
+                Student Login
               </Button>
             </Link>
             <Link href="/authentication/facultyLogin">
               <Button className="bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 w-10/12 px-4 py-2">
-                Faculty Login / Register
+                Faculty Login
               </Button>
             </Link>
           </motion.div>
