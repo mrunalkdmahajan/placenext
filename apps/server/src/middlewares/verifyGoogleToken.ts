@@ -27,7 +27,6 @@ export const authenticateToken = async (
 
       // @ts-ignore
       req.user = decodedUser;
-      console.log("User authenticated, calling next");
       next();
     } catch (error: any) {
       if (error.code === "auth/id-token-expired") {

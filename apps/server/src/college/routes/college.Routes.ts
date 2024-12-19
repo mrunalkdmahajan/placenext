@@ -9,6 +9,7 @@ import {
   getCollegeJob,
   getCollegeJobs,
   getColleges,
+  getDepartmentStatistics,
   getFilteredStudentDetailsInExcel,
   getFilteredStudentList,
   getJobDetailsById,
@@ -83,5 +84,11 @@ collegeRoutes.get("/colleges", authenticateToken, getColleges);
 collegeRoutes.get("/facultyProfile", authenticateToken, facultyProfile);
 
 collegeRoutes.post("/place_student", authenticateToken, placeStudent);
+
+collegeRoutes.get(
+  "/get_department_statistics",
+  authenticateToken,
+  getDepartmentStatistics
+);
 
 export default collegeRoutes;

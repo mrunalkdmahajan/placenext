@@ -66,8 +66,22 @@ class _HomePageState extends State<HomePage> {
       ),
       // bottomNavigationBar: BottomNavigationBar(),
 
-      body: const Center(
-        child: Text("hello"),
+      body: Center(
+        child: Column(
+          children: [
+            Text("hello"),
+
+            // Display loading spinner while fetching data
+            if (isLoading) CircularProgressIndicator(),
+
+            // Display student statistics once loaded
+            if (!isLoading)
+              StudentStatisticsChart(
+                companiesCameToCollege: companiesCameToCollege.length,
+                appliedJobs: appliedJobs.length,
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -111,13 +125,14 @@ class StudentStatisticsChart extends StatelessWidget {
             maxY: maxY > 0 ? maxY + 1 : 1, // Ensure maxY is at least 1
             barTouchData: BarTouchData(enabled: false),
             titlesData: FlTitlesData(
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              leftTitles: AxisTitles(
-                sideTitles: SideTitles(showTitles: true),
-              ),
-            ),
+
+                // bottomTitles: AxisTitles(
+                //   sideTitles: SideTitles(showTitles: false),
+                // ),
+                // leftTitles: AxisTitles(
+                //   sideTitles: SideTitles(showTitles: true),
+                // ),
+                ),
             borderData: FlBorderData(show: false),
             barGroups: [
               BarChartGroupData(

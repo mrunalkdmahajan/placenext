@@ -394,6 +394,8 @@ export const updateUserDetails = async (req: Request, res: Response) => {
 
 export const getStudentStatistics = async (req: Request, res: Response) => {
   try {
+    console.log("Inside getStudentStatistics");
+
     // @ts-ignore
     const user = req.user;
     const student = await Student.findOne({ googleId: user.uid }).populate(
@@ -413,9 +415,14 @@ export const getStudentStatistics = async (req: Request, res: Response) => {
       college: student.stud_college_id,
     });
 
+    console.log(
+      "Student statistics fetched successfully from student with id :",
+      student._id
+    );
+
     return res
       .status(200)
-      .json({ success: true, student, appliedJobs, companiesCameToCollege });
+      .json({ success: true, appliedJobs, companiesCameToCollege });
   } catch (error: any) {
     console.log("Error in getStudentStatistics", error.message);
   }

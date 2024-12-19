@@ -6,6 +6,7 @@ import Job from "../../company/models/job";
 import Application from "../../student/models/application";
 import * as XLSX from "xlsx";
 import Faculty from "../models/faculty";
+import Department from "../models/department";
 
 export const isFirstSignIn = async (req: Request, res: Response) => {
   try {
@@ -1033,6 +1034,64 @@ export const getColleges = async (req: Request, res: Response) => {
     return res.status(200).json({ success: true, colleges });
   } catch (error: any) {
     console.error("Error in getColleges:", error);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+export const getDepartmentStatistics = async (req: Request, res: Response) => {
+  try {
+    //@ts-ignore
+    const user = req.user;
+    const { year } = req.params;
+
+    // Find the faculty based on the user's Google ID
+    const faculty = await Faculty.findOne({ googleId: user.uid });
+
+    if (!faculty) {
+      return res.status(404).json({ msg: "Faculty not found" });
+    }
+
+    // Find students associated with the college ID of the faculty
+    const students = await Student.find({
+      stud_college_id: faculty.faculty_college_id,
+    })
+      .populate("stud_info_id") // Populate the student info
+      .select("stud_info_id");
+
+    // Extract unique years from students' placement years
+    const years = [
+      ...new Set(
+        //@ts-ignore
+        students.map((student) => student.stud_info_id?.stud_placement_year)
+      ),
+    ];
+
+    // Find the college based on the faculty's college ID
+    const college = await College.findById(faculty.faculty_college_id);
+
+    if (!college) {
+      return res.status(404).json({ msg: "College not found" });
+    }
+
+    // Fetch all departments in one query to minimize database hits
+    const departments = await Department.find({
+      _id: { $in: college.coll_departments },
+    }).select("dept_name");
+
+    // Extract the department names
+    const departmentNames = departments.map(
+      (department) => department.dept_name
+    );
+
+    console.log("Departments:", departmentNames);
+    console.log("Years:", years);
+
+    // Respond with years and departments
+    res
+      .status(200)
+      .json({ success: true, years, departments: departmentNames });
+  } catch (error: any) {
+    console.error("Error in getDepartmentStatistics:", error);
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 };

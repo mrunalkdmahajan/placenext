@@ -1,5 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:app/common/helper/navigator/app_navigator.dart';
+import 'package:app/presentation/auth/pages/student_login.dart';
 import 'package:app/presentation/dashboard/pages/home.dart';
 
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class SplashPage extends StatelessWidget {
                 onFinished: () {
                   // Navigate to the next screen after animation finishes
                   AppNavigator.pushAndReplacement(
-                      context, const HomePage()); // Use your actual route here
+                      context, StudentLogin()); // Use your actual route here
                 },
               ),
             ],

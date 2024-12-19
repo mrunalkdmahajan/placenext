@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import mongoose from "mongoose";
+import { IDepartment } from "./department";
 
 export interface ICollege extends Document {
   _id?: string;
@@ -10,7 +11,7 @@ export interface ICollege extends Document {
   coll_location: string;
   colLcontact_no: string;
   coll_affiliated_to: string;
-  coll_departments: string[];
+  coll_departments: IDepartment["_id"][];
   coll_no_of_stud: number;
   coll_courses_offered: string[];
   googleId: string;

@@ -43,7 +43,7 @@ export interface IStudentInfo extends Document {
   stud_placement_status: boolean;
   stud_placement_package: number;
   stud_placement_company: string;
-  stud_placement_date: Date;
+  stud_placement_year: number;
   student_skills: string[];
   stud_linkedIn?: string;
   stud_github?: string;
@@ -205,8 +205,8 @@ const Student_InfoSchema = new Schema<IStudentInfo>({
   stud_placement_company: {
     type: String,
   },
-  stud_placement_date: {
-    type: Date,
+  stud_placement_year: {
+    type: Number,
   },
   student_skills: {
     type: [String],

@@ -12,14 +12,14 @@ export const Document_server_url: string =
 app.use(
   cors()
   // {
-  //   origin: [
-  //     process.env.CLIENT_URL!,
-  //     "http://192.168.29.192",
-  //     "http://localhost:",
-  //     "http://10.0.2.2",
-  //     "http://192.168.29.192:8080",
-  //   ],
-  //   credentials: true,
+  // origin: [
+  //   process.env.CLIENT_URL!,
+  //   "http://192.168.29.192",
+  //   "http://localhost:",
+  //   "http://10.0.2.2",
+  //   "http://192.168.29.192:8080",
+  // ],
+  // credentials: true,
   // }
 );
 
