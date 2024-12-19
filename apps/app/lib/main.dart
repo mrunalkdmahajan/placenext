@@ -1,29 +1,70 @@
-import 'package:app/firebase_options.dart';
-import 'package:app/presentation/dashboard/pages/home.dart';
-import 'package:app/presentation/splash/pages/splash.dart';
+import 'package:app/pages/Auth/login_screen.dart';
+import 'package:app/pages/Dashboard/dashboard_screen.dart';
+import 'package:app/store/auth_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
+import 'package:app/firebase_options.dart';
+import 'package:provider/provider.dart';
 
-Future<void> main() async {
-  await dotenv.load(fileName: ".env");
+const BackendUrl = "http://192.168.29.234:8080";
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // await initializeDependencies();
-  return runApp(const MyApp());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) =>
+          LoginProvider(), // Provide LoginProvider to the entire app
+      child: const App(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatefulWidget {
+  const App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  User? _user;
+  String _accessToken = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    FirebaseAuth.instance.authStateChanges().listen((user) async {
+      if (user != null) {
+        final token = await user.getIdToken();
+        setState(() {
+          _user = user;
+          _accessToken = token ?? "";
+        });
+
+        // Set user and token in the LoginProvider
+        final loginProvider =
+            Provider.of<LoginProvider>(context, listen: false);
+        loginProvider.setUser(user);
+        loginProvider.setAccessToken(token ?? "");
+      } else {
+        setState(() {
+          _user = null;
+          _accessToken = "";
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const SplashPage(),
-      theme: ThemeData(
-          appBarTheme: const AppBarTheme(
-              backgroundColor: Color.fromARGB(1, 237, 237, 255))),
+      home: _user != null ? const HomeScreen() : const LoginScreen(),
     );
   }
 }

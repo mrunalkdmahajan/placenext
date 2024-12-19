@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -43,40 +40,51 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAmjAEleMtHfTT38K15EXGTbqwgN9Cc-6w',
-    appId: '1:225265442811:android:44bf8ac65ccfd622dab55e',
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyC6WJfXLAuGHaNAcVcpXEzooDUJWuH-op8',
+    appId: '1:225265442811:web:98d279c9f20b2b9adab55e',
     messagingSenderId: '225265442811',
     projectId: 'placenext-17bb0',
-    storageBucket: 'placenext-17bb0.appspot.com',
+    authDomain: 'placenext-17bb0.firebaseapp.com',
+    storageBucket: 'placenext-17bb0.firebasestorage.app',
+  );
+
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyAmjAEleMtHfTT38K15EXGTbqwgN9Cc-6w',
+    appId: '1:225265442811:android:07441c0bf86a2105dab55e',
+    messagingSenderId: '225265442811',
+    projectId: 'placenext-17bb0',
+    storageBucket: 'placenext-17bb0.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDR7eCVT7Odnn7LKt3qaOmf68k6Xv6axX8',
-    appId: '1:225265442811:ios:cb2e46d73e8a6b0edab55e',
+    appId: '1:225265442811:ios:b876c50ec39af420dab55e',
     messagingSenderId: '225265442811',
     projectId: 'placenext-17bb0',
-    storageBucket: 'placenext-17bb0.appspot.com',
+    storageBucket: 'placenext-17bb0.firebasestorage.app',
+    androidClientId: '225265442811-79vm63af9hjmi7nbh43jion3k4a9ujlp.apps.googleusercontent.com',
     iosClientId: '225265442811-jkh9bm5fjgma3gbtuhc8ckh8ke22bm8f.apps.googleusercontent.com',
     iosBundleId: 'com.example.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyDR7eCVT7Odnn7LKt3qaOmf68k6Xv6axX8',
-    appId: '1:225265442811:ios:cb2e46d73e8a6b0edab55e',
+    appId: '1:225265442811:ios:b876c50ec39af420dab55e',
     messagingSenderId: '225265442811',
     projectId: 'placenext-17bb0',
-    storageBucket: 'placenext-17bb0.appspot.com',
+    storageBucket: 'placenext-17bb0.firebasestorage.app',
+    androidClientId: '225265442811-79vm63af9hjmi7nbh43jion3k4a9ujlp.apps.googleusercontent.com',
     iosClientId: '225265442811-jkh9bm5fjgma3gbtuhc8ckh8ke22bm8f.apps.googleusercontent.com',
     iosBundleId: 'com.example.app',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyC6WJfXLAuGHaNAcVcpXEzooDUJWuH-op8',
-    appId: '1:225265442811:web:e204ee8f0034a2b8dab55e',
+    apiKey: 'AIzaSyB_yKh0CRJ98VMcMX9K16N1W2zmsbtDNjI',
+    appId: '1:225265442811:web:8ee0e2d3b9581569dab55e',
     messagingSenderId: '225265442811',
     projectId: 'placenext-17bb0',
     authDomain: 'placenext-17bb0.firebaseapp.com',
-    storageBucket: 'placenext-17bb0.appspot.com',
+    storageBucket: 'placenext-17bb0.firebasestorage.app',
   );
 }
