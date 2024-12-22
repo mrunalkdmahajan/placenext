@@ -7,6 +7,7 @@ import Application from "../../student/models/application";
 import * as XLSX from "xlsx";
 import Faculty from "../models/faculty";
 import Department from "../models/department";
+import { redis } from "../..";
 
 export const isFirstSignIn = async (req: Request, res: Response) => {
   try {
@@ -107,15 +108,31 @@ export const getAllStudentList = async (req: Request, res: Response) => {
     console.log("User UID:", user.uid);
 
     // Find college by Google ID
-    const college = await College.find({ googleId: user.uid });
-    if (!college.length) {
+    const faculty_coll = await Faculty.find({ googleId: user.uid }).select(
+      "faculty_college_id -_id"
+    );
+    //@ts-ignore
+    const collegeId = faculty_coll[0].faculty_college_id;
+    const redisKey = `students:college:${collegeId}`;
+    const cachedStudentList = await redis.get(redisKey);
+
+    console.log("College ID:", collegeId);
+
+    if (cachedStudentList) {
+      console.log("from cached student list");
+      return res
+        .status(200)
+        .json({ success: true, students: cachedStudentList });
+    }
+
+    if (!collegeId) {
       return res.status(404).json({ success: false, msg: "College not found" });
     }
 
-    console.log("College ID:", college[0]._id.toString());
+    // console.log("College ID:", collegeId);
 
     const students = await Student.find({
-      stud_college_id: college[0]._id.toString(),
+      stud_college_id: collegeId,
     });
     if (!students.length) {
       return res.status(404).json({ success: false, msg: "No students found" });
@@ -165,6 +182,8 @@ export const getAllStudentList = async (req: Request, res: Response) => {
       stud_year: placementStatusAndCGPI[index].stud_year,
     }));
 
+    // caching the data
+    await redis.set(redisKey, responseData, { EX: 600 });
     return res.status(200).json({ success: true, students: responseData });
   } catch (error: any) {
     console.error("Error in getAllStudentList:", error);
@@ -194,7 +213,7 @@ export const getFilteredStudentList = async (req: Request, res: Response) => {
     console.log("Branch:", branch);
 
     // Find college by Google ID
-    const college = await Faculty.findOne({
+    const faculty = await Faculty.findOne({
       $and: [
         { googleId: user.uid },
         {
@@ -202,14 +221,14 @@ export const getFilteredStudentList = async (req: Request, res: Response) => {
         },
       ],
     });
-    if (!college) {
+    if (!faculty) {
       return res.status(404).json({ success: false, msg: "College not found" });
     }
-    console.log("College ID:", college.faculty_college_id);
+    console.log("College ID:", faculty.faculty_college_id);
 
     // Define the query conditions
     const queryConditions: any = {
-      stud_college_id: college.faculty_college_id,
+      stud_college_id: faculty.faculty_college_id,
     };
 
     // Apply other filters
@@ -415,14 +434,21 @@ export const getStudentStatistics = async (req: Request, res: Response) => {
     const user = req.user;
 
     // Find college by Google ID
-    const college = await College.findOne({ googleId: user.uid });
-    if (!college) {
+    const faculty = await Faculty.findOne({ googleId: user.uid });
+    if (!faculty?.faculty_college_id) {
       return res.status(404).json({ success: false, msg: "College not found" });
+    }
+
+    const redisKey = `studentsStatistics:college:${faculty.faculty_college_id}`;
+    const cachedstudents = await redis.get(redisKey);
+
+    if (cachedstudents) {
+      return res.status(200).json({ success: true, students: cachedstudents });
     }
 
     // Find all students associated with the college
     const students = await Student.find({
-      stud_college_id: college._id.toString(),
+      stud_college_id: faculty.faculty_college_id,
     });
     if (!students.length) {
       return res.status(404).json({ success: false, msg: "No students found" });
@@ -467,6 +493,19 @@ export const getStudentStatistics = async (req: Request, res: Response) => {
     }, 0);
     const averagePackage = totalPlaced > 0 ? totalPackage / totalPlaced : 0;
 
+    await redis.set(
+      redisKey,
+      {
+        totalStudents,
+        totalPlaced,
+        totalNotPlaced,
+        averagePackage,
+        studentsByDepartment,
+        placementData,
+      },
+      { EX: 600 }
+    ); // caching the data for 10 minutes
+
     return res.status(200).json({
       success: true,
       totalStudents,
@@ -489,20 +528,29 @@ export const getCollegeJobs = async (req: Request, res: Response) => {
     console.log(user);
 
     // Find college by Google ID
-    const college = await College.findOne({ googleId: user.uid });
-    if (!college) {
-      return res.status(404).json({ success: false, msg: "College not found" });
+    const faculty = await Faculty.findOne({ googleId: user.uid });
+    if (!faculty) {
+      return res.status(404).json({ success: false, msg: "Faculty not found" });
     }
-    console.log(college);
+    console.log(faculty);
 
+    if (!faculty) {
+      return res.status(404).json({ success: false, msg: "Faculty not found" });
+    }
+    const redisKey = `jobs:college:${faculty.faculty_college_id}`;
+
+    const cachedJobs = await redis.get(redisKey);
+    if (cachedJobs) {
+      return res.status(200).json({ success: true, jobs: cachedJobs });
+    }
     // Find all jobs associated with the college
     const jobs = await Job.find({
-      job_college_id: college._id.toString(),
+      job_college_id: faculty.faculty_college_id,
     });
     if (!jobs.length) {
       return res.status(404).json({ success: false, msg: "No jobs found" });
     }
-
+    await redis.set(redisKey, jobs, { EX: 600 }); // caching the data for 10 minutes
     return res.status(200).json({ success: true, jobs });
   } catch (error: any) {
     console.error("Error in getCollegeJobs:", error);
@@ -567,13 +615,14 @@ export const createJobByCollege = async (req: Request, res: Response) => {
     }
 
     // Find the college based on the logged-in user
-    const foundCollege = await College.findOne({
+    const faculty = await Faculty.findOne({
       googleId: LogincollegeUser.uid,
     });
 
-    if (!foundCollege) {
-      return res.status(400).json({ msg: "College not found" });
+    if (!faculty) {
+      return res.status(400).json({ msg: "Faculty not found" });
     }
+    const redisKey = `jobs:college:${faculty.faculty_college_id}`;
 
     // Create new job
     const newJob = new Job({
@@ -593,10 +642,15 @@ export const createJobByCollege = async (req: Request, res: Response) => {
       passing_year,
       job_timing,
       status,
-      college: foundCollege._id, // Link to college
+      college: faculty.faculty_college_id, // Link to college
     });
 
     await newJob.save();
+
+    // if we job is created and someone is using cached for that updating the cached
+    const jobs = await Job.find();
+    await redis.set(redisKey, jobs, { EX: 600 });
+
     return res.status(200).json({ success: true, msg: "Job created" });
   } catch (error: any) {
     console.log("Error in createJobByCollege", error.message);
@@ -639,12 +693,23 @@ export const getCollegeJob = async (req: Request, res: Response) => {
   try {
     // @ts-ignore
     const user = req.user;
-    const college = await College.findOne({ googleId: user.uid });
-    if (!college) {
+    const faculty = await Faculty.findOne({ googleId: user.uid });
+    if (!faculty) {
       return res.status(404).json({ success: false, msg: "College not found" });
     }
+    const redisKey = `jobs:college:${faculty.faculty_college_id}`;
+    const cachedJobs = await redis.get(redisKey);
 
-    const jobs = await Job.find({ college: college._id });
+    if (cachedJobs) {
+      return res.status(200).json({ success: true, jobs: cachedJobs });
+    }
+
+    const jobs = await Job.find({ college: faculty.faculty_college_id });
+    if (!jobs.length) {
+      return res.status(404).json({ success: false, msg: "No jobs found" });
+    }
+
+    await redis.set(redisKey, jobs, { EX: 120 });
     return res.status(200).json({ success: true, jobs });
   } catch (error: any) {
     console.log("Error in getCollegeJob", error.message);
@@ -979,9 +1044,19 @@ export const facultyProfile = async (req: Request, res: Response) => {
     const faculty = await College.findOne({ googleId: user.uid }).select(
       "-googleId"
     );
+
+    const redisKey = `faculty:profile:${user.uid}`;
+    const cachedFaculty = await redis.get(redisKey);
+
+    if (cachedFaculty) {
+      return res.status(200).json({ success: true, faculty: cachedFaculty });
+    }
+
     if (!faculty) {
       return res.status(404).json({ success: false, msg: "Faculty not found" });
     }
+
+    await redis.set(redisKey, faculty, { EX: 120 });
     return res.status(200).json({ success: true, faculty });
   } catch (error: any) {
     console.log("Error in facultyProfile", error.message);
