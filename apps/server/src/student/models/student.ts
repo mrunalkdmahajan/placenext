@@ -2,6 +2,7 @@ import { model, Schema, Document } from "mongoose";
 import mongoose from "mongoose";
 import { ICollege } from "../../college/models/college";
 import { IStudentInfo } from "./info_student";
+import { IDepartment } from "../../college/models/department";
 
 export interface IStudent extends Document {
   // _id: string;
@@ -13,7 +14,7 @@ export interface IStudent extends Document {
   stud_course: string;
   stud_year: number;
   current_year: number;
-  stud_department: string;
+  stud_department: IDepartment["_id"];
   stud_college_id: mongoose.Types.ObjectId;
   googleId: string;
   stud_info_id: mongoose.Types.ObjectId;
@@ -52,7 +53,8 @@ const IStudentSchema = new Schema<IStudent>({
     type: Number,
   },
   stud_department: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Department",
     required: true,
   },
   stud_college_id: {

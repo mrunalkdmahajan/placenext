@@ -1054,9 +1054,7 @@ export const getDepartmentStatistics = async (req: Request, res: Response) => {
     // Find students associated with the college ID of the faculty
     const students = await Student.find({
       stud_college_id: faculty.faculty_college_id,
-    })
-      .populate("stud_info_id") // Populate the student info
-      .select("stud_info_id");
+    }).populate("stud_info_id"); // Populate the student info
 
     // Extract unique years from students' placement years
     const years = [
@@ -1072,24 +1070,60 @@ export const getDepartmentStatistics = async (req: Request, res: Response) => {
     if (!college) {
       return res.status(404).json({ msg: "College not found" });
     }
+    console.log(college.coll_departments);
 
     // Fetch all departments in one query to minimize database hits
     const departments = await Department.find({
       _id: { $in: college.coll_departments },
-    }).select("dept_name");
+    });
 
     // Extract the department names
     const departmentNames = departments.map(
       (department) => department.dept_name
     );
 
-    console.log("Departments:", departmentNames);
-    console.log("Years:", years);
+    // Initialize an empty object to hold department statistics
+    const departmentStatistics: any = {};
 
-    // Respond with years and departments
-    res
-      .status(200)
-      .json({ success: true, years, departments: departmentNames });
+    // Loop through each department and calculate placement stats
+    // console.log("Students:", students);
+    // console.log("Departments:", departments);
+
+    for (const department of departments) {
+      console.log("Department curr:", department);
+
+      const placed = students.filter(
+        (student) =>
+          student.stud_department?.toString() === department._id.toString() &&
+          //@ts-ignore
+          student.stud_info_id.stud_placement_status === true
+      ).length;
+
+      const notPlaced = students.filter((student) => {
+        return (
+          student.stud_department?.toString() === department._id.toString() &&
+          //@ts-ignore
+          student.stud_info_id?.stud_placement_status === false
+        );
+      }).length;
+
+      departmentStatistics[department.dept_name] = {
+        placed,
+        notPlaced,
+      };
+    }
+
+    console.log("Departments Names:", departmentNames);
+    console.log("Years:", years);
+    console.log("Department Statistics:", departmentStatistics);
+
+    // Respond with years and department statistics
+
+    res.status(200).json({
+      success: true,
+      years,
+      departments: departmentStatistics,
+    });
   } catch (error: any) {
     console.error("Error in getDepartmentStatistics:", error);
     return res.status(500).json({ msg: "Internal Server Error" });

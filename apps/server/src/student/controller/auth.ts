@@ -432,7 +432,9 @@ export const getJobForCollege = async (req: Request, res: Response) => {
   try {
     // @ts-ignore
     const user = req.user;
-    const student = await Student.findOne({ googleId: user.uid });
+    const student = await Student.findOne({ googleId: user.uid }).populate(
+      "stud_department"
+    );
 
     if (!student) {
       return res.status(404).json({ success: false, msg: "Student not found" });
@@ -498,7 +500,8 @@ export const getJobForCollege = async (req: Request, res: Response) => {
         studentInfo.no_of_dead_backlogs <= job.max_no_dead_kt &&
         studentInfo.no_of_live_backlogs <= job.max_no_live_kt &&
         averageCGPI >= job.min_CGPI && // Use average CGPI
-        job.branch_allowed.includes(student.stud_department);
+        //@ts-ignore
+        job.branch_allowed.includes(student?.stud_department?.dept_name);
       // job.passing_year.includes(student.stud_year);
       // console.log("isEligible", isEligible);
 
@@ -533,7 +536,9 @@ export const getJobDetailsById = async (req: Request, res: Response) => {
     // console.log("Job", job);
 
     // Find the student using their Google ID
-    const student = await Student.findOne({ googleId: user.uid });
+    const student = await Student.findOne({ googleId: user.uid }).populate(
+      "stud_department"
+    );
     if (!student) {
       return res.status(404).json({ success: false, msg: "Student not found" });
     }
@@ -587,7 +592,8 @@ export const getJobDetailsById = async (req: Request, res: Response) => {
       studentInfo.no_of_dead_backlogs <= job.max_no_dead_kt &&
       studentInfo.no_of_live_backlogs <= job.max_no_live_kt &&
       averageCGPI >= job.min_CGPI &&
-      job.branch_allowed.includes(student.stud_department);
+      //@ts-ignore
+      job.branch_allowed.includes(student?.stud_department?.dept_name);
 
     // console.log("isEligible", isEligible);
 
@@ -697,7 +703,7 @@ export const getStudentsJobStatistics = async (req: Request, res: Response) => {
     // @ts-ignore
     const user = req.user;
     const student = await Student.findOne({ googleId: user.uid }).populate(
-      "stud_info_id"
+      "stud_info_id stud_department"
     );
 
     // console.log("Student", student);
@@ -729,7 +735,8 @@ export const getStudentsJobStatistics = async (req: Request, res: Response) => {
         studentInfo.no_of_dead_backlogs <= job.max_no_dead_kt &&
         studentInfo.no_of_live_backlogs <= job.max_no_live_kt &&
         // studentInfo.averageCGPI >= job.min_CGPI && // Use average CGPI
-        job.branch_allowed.includes(studentInfo.stud_department);
+        //@ts-ignore
+        job.branch_allowed.includes(studentInfo?.stud_department?.dept_name);
       // Add branch allowed or passing year check if needed
 
       if (isEligible) {
