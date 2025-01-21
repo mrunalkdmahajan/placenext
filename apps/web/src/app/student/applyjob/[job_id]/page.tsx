@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 
+import useLoadingStore from "@/store/loadingStore";
+
 interface Job {
   _id: string; // MongoDB IDs are typically strings
   job_title: string;
@@ -32,6 +34,7 @@ interface Job {
 }
 
 const FinalApplication = () => {
+  const { setLoading } = useLoadingStore();
   const router = useRouter();
   const [job, setJob] = useState<Job | null>(null);
   const [isChecked, setIsChecked] = useState(false);
@@ -41,6 +44,7 @@ const FinalApplication = () => {
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(
           `${BackendUrl}/api/student/company/${job_id}`,
           {
@@ -52,6 +56,8 @@ const FinalApplication = () => {
         setJob(response.data.job);
       } catch (error) {
         console.error("Error fetching job details:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -92,6 +98,7 @@ const FinalApplication = () => {
     }
 
     try {
+      setLoading(true);
       const formData = new FormData();
       formData.append("app_cover_letter", cvFile);
       formData.append("app_job_id", job_id as string);
@@ -124,6 +131,8 @@ const FinalApplication = () => {
         autoClose: 3000,
       });
       console.log("Error applying for job:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -132,79 +141,105 @@ const FinalApplication = () => {
   }
 
   return (
-    <div>
-      <Button onClick={() => router.back()} className="text-white">
-        {" "}
-        Back
-      </Button>
-      <div className="max-w-lg mx-auto p-5 bg-white rounded shadow-md">
-        <h2 className="text-xl font-bold mb-4">
-          {job.job_title} - {job.job_type}
-        </h2>
-        <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-          {job.isEligible === true ? "Yes" : "No"}
-        </button>
-        <h3 className="text-lg font-semibold mb-2">{job.company_name}</h3>
-        <p className="text-gray-700 mb-2">{job.job_description}</p>
-        <p className="text-gray-600">Location: {job.job_location}</p>
-        <p className="text-gray-600">
-          Salary: ${job.job_salary.toLocaleString()}
-        </p>
-        <p className="text-gray-600">
-          Posted on: {new Date(job.job_posted_date).toLocaleDateString()}
-        </p>
-        <p className="text-gray-600">Deadline: 2024-09-30</p>{" "}
-        {/* You can add deadline if available */}
-        <p className="text-gray-600">Working Hours: {job.job_timing}</p>
-        {/* Eligibility Criteria */}
-        <h4 className="font-semibold mt-4">Eligibility Criteria:</h4>
-        <p className="text-gray-600">Max Dead KTs: {job.max_no_dead_kt}</p>
-        <p className="text-gray-600">Max Live KTs: {job.max_no_live_kt}</p>
-        <p className="text-gray-600">Minimum CGPI: {job.min_CGPI}</p>
-        <p className="text-gray-600">
-          Passing Year: {job.passing_year.join(", ")}
-        </p>
-        <p className="text-gray-600">
-          Branches Allowed: {job.branch_allowed.join(", ")}
-        </p>
-        <h4 className="font-semibold mt-4">Job Requirements:</h4>
-        <ul className="list-disc list-inside mb-4">
-          {job.job_requirements.map((req, index) => (
-            <li key={index} className="text-gray-600">
-              {req}
-            </li>
-          ))}
-        </ul>
-        {/* CV Upload Section */}
-        <div className="mt-4">
-          <label className="block mb-2 font-semibold text-gray-700">
-            Upload your CV:
-          </label>
-          <input
-            type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={handleFileChange}
-            className="block w-full text-gray-700 border border-gray-300 rounded-md shadow-sm"
-          />
-        </div>
-        <div className="flex items-center mt-4">
-          <input
-            type="checkbox"
-            id="disclaimer"
-            checked={isChecked}
-            onChange={handleCheckboxChange}
-            className="mr-2 leading-tight"
-          />
-          <label htmlFor="disclaimer" className="text-gray-700">
-            I have reviewed my resume before applying.
-          </label>
-        </div>
+    <div className=" mx-auto mt-20 w-full p-5 bg-white rounded shadow-md dark:bg-dark_main_background">
+      <h2 className="text-2xl font-bold mb-4 md:text-3xl lg:text-4xl">
+        {job.job_title} - {job.job_type}
+      </h2>
+      <button className="mt-4 px-4 py-2 bg-light_primary_background text-white rounded hover:bg-[#00749a]">
+        {job.isEligible === true ? "Yes" : "No"}
+      </button>
+      <h3 className="text-lg font-semibold mb-2 md:text-xl lg:text-2xl">
+        {job.company_name}
+      </h3>
+      <p className="text-gray-800 mb-2 dark:text-slate-200 font-semibold">
+        {job.job_description}
+      </p>
+      <p className="text-gray-800 dark:text-slate-200 font-medium">
+        Location: {job.job_location}
+      </p>
+      <p className="text-gray-800 dark:text-slate-200 font-medium">
+        Salary: ${job.job_salary.toLocaleString()}
+      </p>
+      <p className="text-gray-800 dark:text-slate-200 font-medium">
+        Posted on: {new Date(job.job_posted_date).toLocaleDateString()}
+      </p>
+      <p className="text-gray-800 dark:text-slate-200 font-medium">
+        Deadline: 2024-09-30
+      </p>{" "}
+      {/* You can add deadline if available */}
+      <p className="text-gray-800 dark:text-slate-200 font-medium">
+        Working Hours: {job.job_timing}
+      </p>
+      {/* Eligibility Criteria */}
+      <h4 className="font-semibold mt-4 dark:text-slate-200">
+        Eligibility Criteria:
+      </h4>
+      <p className="text-gray-600 dark:text-slate-200">
+        Max Dead KTs: {job.max_no_dead_kt}
+      </p>
+      <p className="text-gray-600 dark:text-slate-200">
+        Max Live KTs: {job.max_no_live_kt}
+      </p>
+      <p className="text-gray-600 dark:text-slate-200">
+        Minimum CGPI: {job.min_CGPI}
+      </p>
+      <p className="text-gray-600 dark:text-slate-200">
+        Passing Year: {job.passing_year.join(", ")}
+      </p>
+      <p className="text-gray-600 dark:text-slate-200">
+        Branches Allowed: {job.branch_allowed.join(", ")}
+      </p>
+      <h4 className="font-semibold mt-4 dark:text-slate-200">
+        Job Requirements:
+      </h4>
+      <ul className="list-disc list-inside mb-4">
+        {job.job_requirements.map((req, index) => (
+          <li key={index} className="text-gray-600 dark:text-slate-200">
+            {req}
+          </li>
+        ))}
+      </ul>
+      {/* CV Upload Section */}
+      <div className="mt-4">
+        <label className="block mb-2 font-semibold text-gray-700 dark:text-slate-200">
+          Upload your CV:
+        </label>
+        <input
+          type="file"
+          accept=".pdf,.doc,.docx"
+          onChange={handleFileChange}
+          className="block w-full text-gray-700 border border-gray-300 rounded-md shadow-sm"
+        />
+      </div>
+      <div className="flex items-center mt-4">
+        <input
+          type="checkbox"
+          id="disclaimer"
+          checked={isChecked}
+          onChange={handleCheckboxChange}
+          className="mr-2 leading-tight"
+        />
+        <label
+          htmlFor="disclaimer"
+          className="text-gray-700 dark:text-slate-200"
+        >
+          I have reviewed my resume before applying.
+        </label>
+      </div>
+      <div className="flex items-center justify-between mt-4">
         <button
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="mt-4 px-4 py-2 bg-light_primary_background text-white rounded hover:bg-[#00749a]"
           onClick={handleApplyClick}
         >
           Apply
         </button>
+        <Button
+          onClick={() => router.back()}
+          className="text-black bg-gray-200 hover:bg-gray-300"
+        >
+          {" "}
+          Back
+        </Button>
       </div>
     </div>
   );

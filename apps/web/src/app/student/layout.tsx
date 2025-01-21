@@ -28,7 +28,7 @@ export default function RootLayout({
       <div className="w-full h-full flex flex-col bg-primary_background overflow-auto">
         {/* this will contain navbar and main content */}
 
-        <div className="mt-20 max-h-screen max-w-screen">{children}</div>
+        {children}
       </div>
     </div>
   );

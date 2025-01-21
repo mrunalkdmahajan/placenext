@@ -6,7 +6,7 @@ import { uploadToGoogleDrive } from "../../config/Google";
 import College from "../../college/models/college";
 import axios from "axios";
 import { Document_server_url } from "../../app";
-import Job from "../../company/models/job";
+import Job, { IJob } from "../../company/models/job";
 import Application from "../models/application";
 import { jobs } from "googleapis/build/src/apis/jobs";
 const requiredFields = [
@@ -240,7 +240,7 @@ export const getAllCollegeList = async (req: Request, res: Response) => {
   try {
     const colleges = await College.find({}, "coll_name");
 
-    const collegeList = colleges.map((college) => ({
+    const collegeList = colleges.map((college: any) => ({
       id: college._id,
       name: college.coll_name,
     }));
@@ -495,7 +495,7 @@ export const getJobForCollege = async (req: Request, res: Response) => {
     //can we print reasone for not eligible
 
     // Determine eligibility for each job
-    const jobsWithEligibility = jobs.map((job) => {
+    const jobsWithEligibility = jobs.map((job: any) => {
       const isEligible =
         studentInfo.no_of_dead_backlogs <= job.max_no_dead_kt &&
         studentInfo.no_of_live_backlogs <= job.max_no_live_kt &&
@@ -730,7 +730,7 @@ export const getStudentsJobStatistics = async (req: Request, res: Response) => {
     let eligibleCount = 0;
     let notEligibleCount = 0;
 
-    jobs.forEach((job) => {
+    jobs.forEach((job: IJob) => {
       const isEligible =
         studentInfo.no_of_dead_backlogs <= job.max_no_dead_kt &&
         studentInfo.no_of_live_backlogs <= job.max_no_live_kt &&
@@ -810,17 +810,17 @@ export const getRecommededJobs = async (req: Request, res: Response) => {
     // Find applications that match the student ID and job IDs
     const appliedJobs = await Application.find({
       student: student._id,
-      app_job_id: { $in: jobs.map((job) => job._id) }, // Check for job IDs in the jobs found
+      app_job_id: { $in: jobs.map((job: any) => job._id) }, // Check for job IDs in the jobs found
     });
 
     // Extract applied job IDs
-    const appliedJobIds = appliedJobs.map((application) =>
+    const appliedJobIds = appliedJobs.map((application: any) =>
       application.app_job_id.toString()
     );
 
     // Filter out jobs that the student has already applied for
     const recommendedJobs = jobs.filter(
-      (job) => !appliedJobIds.includes(job._id.toString())
+      (job: any) => !appliedJobIds.includes(job._id.toString())
     );
 
     return res.status(200).json({ success: true, jobs: recommendedJobs });

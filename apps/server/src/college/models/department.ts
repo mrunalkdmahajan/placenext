@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
 import mongoose from "mongoose";
 import { IFaculty } from "./faculty";
+import { primarydb } from "../..";
 
 export interface IDepartment extends Document {
   _id?: string;
@@ -20,5 +21,5 @@ const DepartmentSchema = new Schema<IDepartment>({
   },
 });
 
-const Department = model<IDepartment>("Department", DepartmentSchema);
+const Department = primarydb.model("Department", DepartmentSchema);
 export default Department;

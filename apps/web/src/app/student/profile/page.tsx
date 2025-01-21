@@ -4,7 +4,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { BackendUrl } from "@/utils/constants";
 
+import useLoadingStore from "@/store/loadingStore";
+
 const Profile = () => {
+  const { setLoading } = useLoadingStore();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
     firstName: "",
@@ -70,6 +73,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        setLoading(true);
         const res = await axios.get(
           `${BackendUrl}/api/student/get_user_details`,
           {
@@ -78,7 +82,7 @@ const Profile = () => {
             },
           }
         );
-        console.log(res.data);
+        // console.log(res.data);
         if (res.data.success) {
           const { student } = res.data;
           const {
@@ -156,6 +160,8 @@ const Profile = () => {
       } catch (error) {
         console.error(error);
         toast.error("Failed to fetch profile.");
+      } finally {
+        setLoading(false);
       }
     };
 

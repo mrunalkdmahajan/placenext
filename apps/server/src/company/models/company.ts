@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
 
 import mongoose from "mongoose";
+import { primarydb } from "../..";
 
 export interface ICompany extends Document {
   _id?: string;
@@ -21,7 +22,7 @@ export interface ICompany extends Document {
   comp_courses_offered: string[];
 }
 
-const ICompanySchema = new Schema<ICompany>({
+const CompanySchema = new Schema<ICompany>({
   comp_name: {
     type: String,
     required: true,
@@ -84,4 +85,6 @@ const ICompanySchema = new Schema<ICompany>({
   },
 });
 
-export default model<ICompany>("ICompany", ICompanySchema);
+const Company = primarydb.model("company", CompanySchema);
+
+export default Company;

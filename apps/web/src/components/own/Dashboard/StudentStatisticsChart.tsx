@@ -45,7 +45,8 @@ const StudentStatisticsChart: React.FC = () => {
           }
         );
         if (response.data.success) {
-          const stats = response.data;
+          const stats = response.data.studentsData;
+          console.log(stats);
 
           const totalStudents = stats.totalStudents;
           const barData = {
@@ -150,7 +151,7 @@ const StudentStatisticsChart: React.FC = () => {
   };
 
   return (
-    <div className=" mx-auto overflow-hidden fixed p-2 md:px-20 lg:px-10">
+    <div className=" mx-auto overflow-hidden  p-2 md:px-20 lg:px-10">
       <h1 className="text-lg font-bold mb-6">Student Placement Statistics</h1>
 
       <div className="flex flex-col lg:flex-row items-center justify-between">

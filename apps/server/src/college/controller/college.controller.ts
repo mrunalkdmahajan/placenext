@@ -139,7 +139,7 @@ export const getAllStudentList = async (req: Request, res: Response) => {
     }
 
     const placementStatusAndCGPI = await Promise.all(
-      students.map(async (student) => {
+      students.map(async (student: any) => {
         const studentInfo = await StudentInfo.findById(student.stud_info_id);
 
         // Extract grades and filter out null or undefined values
@@ -175,7 +175,7 @@ export const getAllStudentList = async (req: Request, res: Response) => {
     // console.log("Students:", students);
 
     // Merge the student data with their placement status and aggregate CGPI
-    const responseData = students.map((student, index) => ({
+    const responseData = students.map((student: any, index: number) => ({
       student,
       placementStatus: placementStatusAndCGPI[index].placementStatus,
       aggregateCGPI: placementStatusAndCGPI[index].aggregateCGPI,
@@ -184,6 +184,7 @@ export const getAllStudentList = async (req: Request, res: Response) => {
 
     // caching the data
     await redis.set(redisKey, responseData, { EX: 600 });
+    await redis.expire(redisKey, 600);
     return res.status(200).json({ success: true, students: responseData });
   } catch (error: any) {
     console.error("Error in getAllStudentList:", error);
@@ -277,7 +278,7 @@ export const getFilteredStudentList = async (req: Request, res: Response) => {
 
     // Calculate CGPI and gather placement status
     const placementStatusAndCGPI = await Promise.all(
-      students.map(async (student) => {
+      students.map(async (student: any) => {
         const studentInfo = await StudentInfo.findById(
           student.stud_info_id
         ).lean();
@@ -316,7 +317,7 @@ export const getFilteredStudentList = async (req: Request, res: Response) => {
     );
 
     // Merge the student data with their placement status and aggregate CGPI
-    const responseData = students.map((student, index) => ({
+    const responseData = students.map((student: any, index: number) => ({
       student,
       placementStatus: placementStatusAndCGPI[index].placementStatus,
       aggregateCGPI: placementStatusAndCGPI[index].aggregateCGPI,
@@ -443,7 +444,9 @@ export const getStudentStatistics = async (req: Request, res: Response) => {
     const cachedstudents = await redis.get(redisKey);
 
     if (cachedstudents) {
-      return res.status(200).json({ success: true, students: cachedstudents });
+      return res
+        .status(200)
+        .json({ success: true, studentsData: cachedstudents });
     }
 
     // Find all students associated with the college
@@ -456,7 +459,7 @@ export const getStudentStatistics = async (req: Request, res: Response) => {
 
     // Fetch student information and placement statuses
     const placementData = await Promise.all(
-      students.map(async (student) => {
+      students.map(async (student: any) => {
         const studentInfo = await StudentInfo.findById(student.stud_info_id);
         return studentInfo ? studentInfo : null; // Return null if not found
       })
@@ -472,7 +475,7 @@ export const getStudentStatistics = async (req: Request, res: Response) => {
     const studentsByDepartment = placementData.reduce(
       (acc, info) => {
         if (info) {
-          const dept = students.find((s) =>
+          const dept = students.find((s: any) =>
             s.stud_info_id.equals(info._id)
           )?.stud_department;
           if (dept) {
@@ -493,27 +496,19 @@ export const getStudentStatistics = async (req: Request, res: Response) => {
     }, 0);
     const averagePackage = totalPlaced > 0 ? totalPackage / totalPlaced : 0;
 
-    await redis.set(
-      redisKey,
-      {
-        totalStudents,
-        totalPlaced,
-        totalNotPlaced,
-        averagePackage,
-        studentsByDepartment,
-        placementData,
-      },
-      { EX: 600 }
-    ); // caching the data for 10 minutes
-
-    return res.status(200).json({
-      success: true,
+    const studentsData = {
       totalStudents,
       totalPlaced,
       totalNotPlaced,
       averagePackage,
       studentsByDepartment,
-      placementData, // Optional: Include all placement data if needed
+      placementData,
+    };
+    await redis.set(redisKey, studentsData, { EX: 600 }); // caching the data for 10 minutes
+    await redis.expire(redisKey, 600);
+    return res.status(200).json({
+      success: true,
+      studentsData,
     });
   } catch (error: any) {
     console.error("Error in getStudentStatistics:", error);
@@ -551,6 +546,7 @@ export const getCollegeJobs = async (req: Request, res: Response) => {
       return res.status(404).json({ success: false, msg: "No jobs found" });
     }
     await redis.set(redisKey, jobs, { EX: 600 }); // caching the data for 10 minutes
+    await redis.expire(redisKey, 600);
     return res.status(200).json({ success: true, jobs });
   } catch (error: any) {
     console.error("Error in getCollegeJobs:", error);
@@ -650,7 +646,7 @@ export const createJobByCollege = async (req: Request, res: Response) => {
     // if we job is created and someone is using cached for that updating the cached
     const jobs = await Job.find();
     await redis.set(redisKey, jobs, { EX: 600 });
-
+    await redis.expire(redisKey, 600);
     return res.status(200).json({ success: true, msg: "Job created" });
   } catch (error: any) {
     console.log("Error in createJobByCollege", error.message);
@@ -710,6 +706,7 @@ export const getCollegeJob = async (req: Request, res: Response) => {
     }
 
     await redis.set(redisKey, jobs, { EX: 120 });
+    await redis.expire(redisKey, 120);
     return res.status(200).json({ success: true, jobs });
   } catch (error: any) {
     console.log("Error in getCollegeJob", error.message);
@@ -1057,6 +1054,7 @@ export const facultyProfile = async (req: Request, res: Response) => {
     }
 
     await redis.set(redisKey, faculty, { EX: 120 });
+    await redis.expire(redisKey, 120);
     return res.status(200).json({ success: true, faculty });
   } catch (error: any) {
     console.log("Error in facultyProfile", error.message);
@@ -1117,10 +1115,20 @@ export const getDepartmentStatistics = async (req: Request, res: Response) => {
   try {
     //@ts-ignore
     const user = req.user;
-    const { year } = req.params;
+    let { year }: any = req.params;
+
+    if (!year) {
+      year = new Date().getFullYear();
+    }
 
     // Find the faculty based on the user's Google ID
     const faculty = await Faculty.findOne({ googleId: user.uid });
+
+    const redisKey = `departmentStatistics:college${faculty?.faculty_college_id}:year:${year}`;
+    const cachedData = await redis.get(redisKey);
+    if (cachedData) {
+      return res.status(200).json({ success: true, ...cachedData });
+    }
 
     if (!faculty) {
       return res.status(404).json({ msg: "Faculty not found" });
@@ -1154,7 +1162,7 @@ export const getDepartmentStatistics = async (req: Request, res: Response) => {
 
     // Extract the department names
     const departmentNames = departments.map(
-      (department) => department.dept_name
+      (department: any) => department.dept_name
     );
 
     // Initialize an empty object to hold department statistics
@@ -1168,13 +1176,13 @@ export const getDepartmentStatistics = async (req: Request, res: Response) => {
       console.log("Department curr:", department);
 
       const placed = students.filter(
-        (student) =>
+        (student: any) =>
           student.stud_department?.toString() === department._id.toString() &&
           //@ts-ignore
           student.stud_info_id.stud_placement_status === true
       ).length;
 
-      const notPlaced = students.filter((student) => {
+      const notPlaced = students.filter((student: any) => {
         return (
           student.stud_department?.toString() === department._id.toString() &&
           //@ts-ignore
@@ -1193,12 +1201,16 @@ export const getDepartmentStatistics = async (req: Request, res: Response) => {
     console.log("Department Statistics:", departmentStatistics);
 
     // Respond with years and department statistics
+    await redis.set(redisKey, { years, departments: departmentStatistics });
+    await redis.expire(redisKey, 600);
 
     res.status(200).json({
       success: true,
       years,
       departments: departmentStatistics,
     });
+    const ttl = await redis.ttl(redisKey);
+    console.log("TTL:", ttl);
   } catch (error: any) {
     console.error("Error in getDepartmentStatistics:", error);
     return res.status(500).json({ msg: "Internal Server Error" });

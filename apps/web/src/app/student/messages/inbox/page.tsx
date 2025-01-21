@@ -1,11 +1,10 @@
-
 // import SignUpForm from "@/components/own/Form/SignUpForm";
 import Vector from "../assets/MobileLogin.svg";
-import MessageList from  "@/components/own/Dashboard/MessageList"
-import MessageSidebar from  "@/components/own/Dashboard/MessageSidebar"
+import MessageList from "@/components/own/Dashboard/MessageList";
+import MessageSidebar from "@/components/own/Dashboard/MessageSidebar";
 const SignUp = () => {
-  return (  
-    <div className="min-h-screen flex">
+  return (
+    <div className="h-full mt-20 flex">
       {/* Fixed Sidebar */}
       <div className="w-64 fixed h-full p-4">
         <MessageSidebar />

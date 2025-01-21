@@ -1,4 +1,5 @@
 import { model, Schema, Document } from "mongoose";
+import { primarydb } from "../..";
 
 export interface IStudentInfo extends Document {
   _id: string;
@@ -221,5 +222,5 @@ const Student_InfoSchema = new Schema<IStudentInfo>({
   },
 });
 
-const StudentInfo = model<IStudentInfo>("StudentInfo", Student_InfoSchema);
+const StudentInfo = primarydb.model("StudentInfo", Student_InfoSchema);
 export default StudentInfo;

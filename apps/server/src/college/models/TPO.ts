@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 
 import mongoose from "mongoose";
 import { IFaculty } from "./faculty";
+import { primarydb } from "../..";
 
 export interface ITPO extends Document {
   _id?: string;
@@ -46,5 +47,5 @@ const TPOSchema = new Schema<ITPO>({
   },
 });
 
-const TPO = model<ITPO>("TPO", TPOSchema);
+const TPO = primarydb.model("TPO", TPOSchema);
 export default TPO;

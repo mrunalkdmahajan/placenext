@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 import mongoose from "mongoose";
 import { IStudent } from "../../student/models/student";
 import { ICollege } from "../../college/models/college";
+import { primarydb } from "../..";
 
 export interface IJob extends Document {
   _id: string;
@@ -97,5 +98,5 @@ const JobSchema = new Schema<IJob>({
   },
 });
 
-const Job = model<IJob>("Job", JobSchema);
+const Job = primarydb.model("Job", JobSchema);
 export default Job;

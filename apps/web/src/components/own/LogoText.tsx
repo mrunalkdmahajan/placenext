@@ -17,7 +17,7 @@ const LogoText = () => {
           />
         </div>
         <div>
-          <h1 className="text-lg text-justify text-black lg:text-xl xl:text-2xl 2xl:text-3xl font-semibold dark:text-white">
+          <h1 className="text-lg text-justify text-black lg:text-lg xl:text-xl 2xl:text-3xl font-semibold dark:text-white">
             Place<span className="font-extrabold">Next</span>
           </h1>
         </div>

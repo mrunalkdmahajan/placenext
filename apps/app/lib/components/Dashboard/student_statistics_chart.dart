@@ -47,7 +47,7 @@ class StudentStatisticsChart extends StatelessWidget {
     return BarChartData(
       barGroups: _createBarGroups(companiesCameToCollege, appliedJobs),
       borderData: FlBorderData(show: false),
-      gridData: FlGridData(show: false),
+      gridData: const FlGridData(show: false),
       titlesData: FlTitlesData(
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
@@ -80,8 +80,9 @@ class StudentStatisticsChart extends StatelessWidget {
             },
           ),
         ),
-        topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        rightTitles:
+            const AxisTitles(sideTitles: SideTitles(showTitles: false)),
       ),
       barTouchData: BarTouchData(
         touchTooltipData: BarTouchTooltipData(

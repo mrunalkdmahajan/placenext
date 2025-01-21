@@ -2,6 +2,7 @@ import { Schema, model, Document } from "mongoose";
 import mongoose from "mongoose";
 import { IJob } from "../../company/models/job";
 import { IStudent } from "./student";
+import { primarydb } from "../..";
 
 export interface IApplication extends Document {
   _id: string;
@@ -34,5 +35,5 @@ const ApplicationSchema = new Schema<IApplication>({
   },
 });
 
-const Application = model<IApplication>("Application", ApplicationSchema);
+const Application = primarydb.model("Application", ApplicationSchema);
 export default Application;

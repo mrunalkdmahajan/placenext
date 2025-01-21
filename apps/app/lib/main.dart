@@ -64,7 +64,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: _user != null ? const HomeScreen() : const LoginScreen(),
+      home: _user != null ? const DashboardScreen() : const LoginScreen(),
     );
   }
 }

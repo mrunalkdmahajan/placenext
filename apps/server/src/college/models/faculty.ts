@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { IDepartment } from "./department";
 import jwt from "jsonwebtoken";
 import { ICollege } from "./college";
+import { primarydb } from "../..";
 
 export interface IFaculty extends Document {
   _id?: string;
@@ -126,5 +127,5 @@ FacultySchema.methods.generateAccessToken = function () {
   });
 };
 
-const Faculty = model<IFaculty>("Faculty", FacultySchema);
+const Faculty = primarydb.model("Faculty", FacultySchema);
 export default Faculty;

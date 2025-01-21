@@ -107,15 +107,16 @@ export const isUserVerified = () => {
 // Firebase Auth state listener
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // User is signed in
     console.log("User signed in:", user);
 
-    // Get the token for the currently signed-in user
-    user.getIdToken().then((token) => {
-      console.log("Current user's token:", token);
+    // Get and store the fresh token whenever the auth state changes
+    user.getIdToken(true).then((newToken) => {
+      console.log("Updated Access Token:", newToken);
+      localStorage.setItem("accessToken", newToken); // Store the updated access token
+      //@ts-ignore
+      localStorage.setItem("refreshToken", user.stsTokenManager.refreshToken); // Store the updated refresh token
     });
   } else {
-    // No user is signed in
     console.log("No user signed in");
   }
 });

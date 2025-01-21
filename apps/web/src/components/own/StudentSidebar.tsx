@@ -84,7 +84,7 @@ export default function StudentSidebar({ isIcon }: any) {
 
   const DrawerList = (
     <Box
-      sx={{ width: isLargeScreen ? 210 : 240 }}
+      sx={{ width: isLargeScreen ? 220 : 240 }}
       role="presentation"
       className="h-full flex flex-col bg-white dark:bg-dark_main_background"
     >
@@ -151,10 +151,10 @@ export default function StudentSidebar({ isIcon }: any) {
         onClose={toggleDrawer(false)}
         variant={isLargeScreen ? "persistent" : "temporary"}
         sx={{
-          width: isLargeScreen ? 210 : 240,
+          width: isLargeScreen ? 220 : 240,
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: {
-            width: isLargeScreen ? 210 : 240,
+            width: isLargeScreen ? 220 : 240,
             boxSizing: "border-box",
           },
         }}
@@ -166,7 +166,7 @@ export default function StudentSidebar({ isIcon }: any) {
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           style={{
             height: "100%",
-            width: isLargeScreen ? 210 : 240,
+            width: isLargeScreen ? 220 : 240,
             overflow: "hidden",
           }}
         >

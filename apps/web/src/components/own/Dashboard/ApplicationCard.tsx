@@ -13,10 +13,10 @@ const ApplicationCard = ({ job }: { job: JobPosting }) => {
   const [isNotInterested, setIsNotInterested] = useState(false);
 
   return (
-    <div className="p-6 bg-white border border-gray-200 shadow-lg rounded-lg transition-transform hover:scale-105 hover:shadow-xl min-w-64 min-h-96 mb-6">
+    <div className="p-6 bg-white dark:bg-dark_bg_card border border-gray-200 shadow-lg rounded-lg transition-transform hover:scale-105 hover:shadow-xl min-w-72 w-96 min-h-96 mb-6">
       {/* Job Title & Company */}
       <div className="mb-3">
-        <h3 className="text-xl font-semibold text-gray-900 truncate">
+        <h3 className="text-xl font-semibold text-black dark:text-white truncate">
           {job.title}
         </h3>
         <p className="text-sm text-gray-500">{job.company}</p>
@@ -41,7 +41,9 @@ const ApplicationCard = ({ job }: { job: JobPosting }) => {
         ) : (
           ""
         )}
-        <p className="text-sm font-medium text-gray-800">{job.salary}</p>
+        <p className="text-lg font-medium text-gray-800 dark:text-white">
+          {job.salary}
+        </p>
       </div>
       {/* Interaction Buttons
       <div className="flex gap-4">

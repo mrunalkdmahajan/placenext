@@ -31,7 +31,7 @@ testRoutes.get("/", async (req, res) => {
     // Fetch associated departments
     const departments = college.coll_departments || [];
     const collegeWithDepartment = await Promise.all(
-      departments.map(async (departmentId) => {
+      departments.map(async (departmentId: string) => {
         return await Department.findById(departmentId);
       })
     );

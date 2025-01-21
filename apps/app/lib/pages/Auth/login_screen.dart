@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       Navigator.pushReplacement(context, MaterialPageRoute(
         builder: (context) {
-          return const HomeScreen();
+          return const DashboardScreen();
         },
       ));
 
@@ -100,8 +100,8 @@ class _LoginScreenState extends State<LoginScreen> {
           FilledButton(
             style: ButtonStyle(
               backgroundColor:
-                  MaterialStateProperty.all<Color>(const Color(0xFF30D9FF)),
-              padding: MaterialStateProperty.all<EdgeInsets>(
+                  WidgetStateProperty.all<Color>(const Color(0xFF30D9FF)),
+              padding: WidgetStateProperty.all<EdgeInsets>(
                 const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               ),
             ),

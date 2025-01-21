@@ -51,7 +51,7 @@ const AppliedJobs = () => {
 
   return (
     <div
-      className={`w-full mx-auto py-6 ${appliedJobs.length === 0 ? "hidden" : ""} my-2`}
+      className={`w-full mx-auto h-full py-6 ${appliedJobs.length === 0 ? "hidden" : ""} my-2`}
     >
       <h2 className="text-2xl font-bold mb-6">Applied Jobs</h2>
       {darkMode}

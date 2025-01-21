@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { ICollege } from "../../college/models/college";
 import { IStudentInfo } from "./info_student";
 import { IDepartment } from "../../college/models/department";
+import { primarydb } from "../..";
 
 export interface IStudent extends Document {
   // _id: string;
@@ -82,5 +83,5 @@ const IStudentSchema = new Schema<IStudent>({
   },
 });
 
-const Student = model<IStudent>("Student", IStudentSchema);
+const Student = primarydb.model("Student", IStudentSchema);
 export default Student;

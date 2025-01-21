@@ -1,4 +1,5 @@
 "use client";
+import DepartmentStatistics from "@/components/own/Dashboard/College/Department_Statistics";
 import MainDashboard from "@/components/own/Dashboard/MainDashboard";
 import StudentStatisticsChart from "@/components/own/Dashboard/StudentStatisticsChart";
 import { BackendUrl } from "@/utils/constants";
@@ -8,8 +9,9 @@ import { useEffect, useState } from "react";
 
 export default function Dashboard() {
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <StudentStatisticsChart />
+      <DepartmentStatistics />
     </div>
   );
 }

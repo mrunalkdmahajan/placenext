@@ -6,6 +6,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, Bounce } from "react-toastify";
+import Loading from "@/components/own/Loading";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -46,6 +47,7 @@ export default function RootLayout({
           theme="light"
           transition={Bounce}
         />
+        <Loading />
       </body>
     </html>
   );
