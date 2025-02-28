@@ -6,6 +6,7 @@ import JobEligibilityPieChart from "@/components/own/Dashboard/JobEligibilityPie
 import MainDashboard from "@/components/own/Dashboard/MainDashboard";
 import RecommendedJob from "@/components/own/Dashboard/RecommendedJobs";
 import { BackendUrl } from "@/utils/constants";
+import JobRecommendation from "@/components/own/JobRecommendation"
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -85,6 +86,7 @@ export default function Dashboard() {
         />
       </div>
       <AppliedJobs />
+      <JobRecommendation/>
       <RecommendedJob />
     </div>
   );

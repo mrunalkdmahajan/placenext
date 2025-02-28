@@ -21,17 +21,18 @@ import MainDashboard from "@/components/own/Dashboard/MainDashboard";
 import StudentStatisticsChart from "@/components/own/Dashboard/StudentStatisticsChart";
 import DoubleBarChart from "@/components/own/Dashboard/FacultyStatistics2";
 import LineChart from "@/components/own/Dashboard/lineChart";
-import PieChart from "@/components/own/Dashboard/PieCharts"
+import PieChart from "@/components/own/Dashboard/PieCharts";
+import PlacementData from "@/components/own/PlacementData"
 
 
 export default function Dashboard() {
   return (
     <div>
-      <StudentStatisticsChart />
-      <DepartmentStatistics />
-      <DoubleBarChart />
+      <PlacementData/>
+      {/* <DoubleBarChart />
       <LineChart />
-      <PieChart />
+      <PieChart /> */}
+      
     </div>
   );
 }
