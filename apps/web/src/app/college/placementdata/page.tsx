@@ -20,7 +20,7 @@ import DepartmentStatistics from "@/components/own/Dashboard/College/Department_
 import MainDashboard from "@/components/own/Dashboard/MainDashboard";
 import StudentStatisticsChart from "@/components/own/Dashboard/StudentStatisticsChart";
 import DoubleBarChart from "@/components/own/Dashboard/FacultyStatistics2";
-import LineChart from "@/components/own/Dashboard/lineChart";
+import LineChart from "@/components/own/Dashboard/BarChart";
 import PieChart from "@/components/own/Dashboard/PieCharts";
 import PlacementData from "@/components/own/PlacementData"
 

@@ -40,7 +40,7 @@ const drawerVariants = {
 const options: Option[] = [
   { name: "Dashboard", path: "/student/dashboard" },
   { name: "Apply for Jobs", path: "/student/applyjob" },
-  { name: "Placement Data", path: "/student/placementdata" },
+  { name: "Job Recommendation", path: "/student/jobrecommendation" },
   { name: "Placement Statistics", path: "/student/placementstatistics" },
   { name: "Messages", path: "/student/messages/inbox" },
   { name: "Profile", path: "/student/profile" },

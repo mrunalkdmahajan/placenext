@@ -179,7 +179,7 @@ const JobCreationForm: React.FC = () => {
               "job_title",
               "job_type",
               "job_location",
-              "job_salary",
+              "job_salary(lakhs)",
               "job_description",
               "job_posted_date",
               "yr_of_exp_req",

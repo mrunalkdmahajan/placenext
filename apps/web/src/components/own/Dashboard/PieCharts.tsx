@@ -14,16 +14,26 @@ ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
 const SalaryRangePieChart: React.FC = () => {
   const [data, setData] = useState<any>(null);
-  const [selectedYear, setSelectedYear] = useState<number>(2025);
+  const [selectedYear, setSelectedYear] = useState<string>("2024-2025");
   const [selectedDepartment, setSelectedDepartment] = useState<string>("All");
   const [selectedCompany, setSelectedCompany] = useState<string>("All");
 
-  const salaryData: Record<number, Record<string, Record<string, number[]>>> = {};
+  const salaryData: Record<string, Record<string, Record<string, number[]>>> = {};
 
-  const years = [2025, 2024, 2023, 2022, 2021, 2020];
-  const departments = ["All", "Computer Science", "Mechanical", "Electrical", "Civil", "Electronics"];
+  // Correct year range format
+  const years = [
+    "2024-2025",
+    "2023-2024",
+    "2022-2023",
+    "2021-2022",
+    "2020-2021",
+    "2019-2020",
+  ];
+
+  const departments = ["All", "Computer Engineering", "Information technology", "Electronics", "Electronics and Telecommunication", "Automation and Robotics","AI and Data Science"];
   const companies = ["All", "Accenture", "Adobe", "Google", "Microsoft", "Amazon", "IBM"];
 
+  // Fill in mock salary data for the sake of this example
   years.forEach((year) => {
     salaryData[year] = {};
     departments.forEach((dept) => {
@@ -109,11 +119,11 @@ const SalaryRangePieChart: React.FC = () => {
         <select
           className="p-2 border border-gray-300 rounded"
           value={selectedYear}
-          onChange={(e) => setSelectedYear(Number(e.target.value))}
+          onChange={(e) => setSelectedYear(e.target.value)}
         >
           {years.map((year) => (
             <option key={year} value={year}>
-              {year}
+              {year} {/* Display the year range like 2024-2025 */}
             </option>
           ))}
         </select>

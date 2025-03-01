@@ -84,7 +84,7 @@ const AppliedJobs = () => {
                 {appliedJob.app_job_id.job_description}
               </Typography>
               <Typography variant="body2">
-                <strong>Salary: </strong> ₹{appliedJob.app_job_id.job_salary}
+                <strong>Salary: </strong> {appliedJob.app_job_id.job_salary} lpa
               </Typography>
               <Typography variant="body2">
                 <strong>Working Hours: </strong>{" "}

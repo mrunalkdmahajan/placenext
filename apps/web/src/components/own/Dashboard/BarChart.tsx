@@ -1,18 +1,16 @@
-// components/LineChart.tsx
 "use client";
-import { Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   Title,
   Tooltip,
   Legend,
-  LineElement,
-  PointElement,
+  BarElement,
   CategoryScale,
   LinearScale,
   ChartOptions,
 } from "chart.js";
-import ChartDataLabels from "chartjs-plugin-datalabels"; // Import the data labels plugin
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useEffect, useState } from "react";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
@@ -20,36 +18,38 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  LineElement,
-  PointElement,
+  BarElement,
   CategoryScale,
   LinearScale,
-  ChartDataLabels // Register the data labels plugin
+  ChartDataLabels
 );
 
-const LineChart: React.FC = () => {
+const BarChart: React.FC = () => {
   const [data, setData] = useState<any>(null);
   const [selectedDepartment, setSelectedDepartment] = useState("Engineering");
 
   useEffect(() => {
-    // Dummy data for maximum salary for each year from 2015 to 2023
     const departmentData: Record<string, number[]> = {
-      Engineering: [35000, 55000, 43000, 65000, 60000, 30000, 80000, 85000, 90000],
-      Marketing: [30000, 45000, 50000, 55000, 58000, 60000, 62000, 70000, 75000],
-      Finance: [40000, 50000, 55000, 60000, 65000, 68000, 72000, 75000, 80000],
+      Engineering: [9.5, 15.5, 13.5, 18.5, 17.0, 10.5, 19.0, 19.5, 20.0],
+      Marketing: [10.0, 14.0, 15.0, 16.0, 16.5, 17.0, 17.5, 18.0, 18.5],
+      Finance: [11.0, 13.0, 14.0, 15.0, 16.0, 16.5, 17.0, 17.5, 18.0],
     };
 
+    const years = [
+      "2024-2025", "2023-2024", "2022-2023", "2021-2022", "2020-2021",
+      "2019-2020", "2018-2019", "2017-2018", "2016-2017"
+    ];
+
     const chartData = {
-      labels: ["2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023"], // Years on x-axis
+      labels: years,
       datasets: [
         {
-          label: "Max Salary",
-          data: departmentData[selectedDepartment], // Use selected department's data
-          backgroundColor: "rgba(75, 192, 192, 0.6)", // Background color for the line
-          borderColor: "rgba(75, 192, 192, 1)", // Border color for the line
+          label: "Max Salary (LPA)",
+          data: departmentData[selectedDepartment],
+          backgroundColor: "rgba(75, 192, 192, 0.6)",
+          borderColor: "rgba(75, 192, 192, 1)",
           borderWidth: 2,
-          fill: false, // Do not fill the area under the line
-          pointRadius: 5, // Size of points
+          barThickness: 30,
         },
       ],
     };
@@ -58,18 +58,17 @@ const LineChart: React.FC = () => {
   }, [selectedDepartment]);
 
   if (!data) {
-    return <div>Loading...</div>; // Loading state
+    return <div>Loading...</div>;
   }
 
-  // Line chart options
-  const lineOptions: ChartOptions<"line"> = {
+  const barOptions: ChartOptions<"bar"> = {
     responsive: true,
     plugins: {
       tooltip: {
         callbacks: {
           label: (tooltipItem) => {
             const value = tooltipItem.raw as number;
-            return `Max Salary: ${value}`;
+            return `Max Salary: ${value} LPA`;
           },
         },
       },
@@ -81,20 +80,20 @@ const LineChart: React.FC = () => {
         display: true,
         align: "top",
         anchor: "end",
-        formatter: (value: number) => {
-          return `${value}`; // Display salary value
-        },
+        formatter: (value: number) => `${value} LPA`,
       },
     },
     scales: {
       x: {
-        beginAtZero: true,
         ticks: {
-          autoSkip: false, // Show all year labels
+          autoSkip: false,
         },
       },
       y: {
         beginAtZero: true,
+        ticks: {
+          callback: (value: number) => `${value} LPA`,
+        },
       },
     },
   };
@@ -103,7 +102,7 @@ const LineChart: React.FC = () => {
     <div className="container mx-auto p-4 md:px-10 lg:px-8">
       <h1 className="text-lg font-bold mb-6">Maximum Salary from 2015 to 2023</h1>
       <div className="mb-4">
-        <Select value={selectedDepartment} onValueChange={(value) => setSelectedDepartment(value)}>
+        <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
           <SelectTrigger>
             <SelectValue placeholder="Select Department" />
           </SelectTrigger>
@@ -115,10 +114,10 @@ const LineChart: React.FC = () => {
         </Select>
       </div>
       <div className="mb-8 lg:w-400">
-        <Line style={{ width: 400 }} data={data} options={lineOptions} />
+        <Bar style={{ width: 400 }} data={data} options={barOptions} />
       </div>
     </div>
   );
 };
 
-export default LineChart;
+export default BarChart;

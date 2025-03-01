@@ -30,8 +30,9 @@ const ApplicationCard = ({ job }: { job: JobPosting }) => {
       <p className="text-sm text-gray-600 mb-4 line-clamp-3">
         {job.description}
       </p>
+      <br />
       {/* Eligibility & Salary */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-center mb-4">
         {path === "student" ? (
           <p
             className={`text-sm font-medium ${job.isEligible ? "text-green-600" : "text-red-500"}`}
@@ -41,9 +42,11 @@ const ApplicationCard = ({ job }: { job: JobPosting }) => {
         ) : (
           ""
         )}
-        <p className="text-lg font-medium text-gray-800 dark:text-white">
-          {job.salary}
-        </p>
+        </div>
+        <div className="flex items-center justify-center mb-4">
+          <p className="text-sm font-medium text-gray-800 dark:text-white">
+            Salary: {job.salary} lpa
+          </p>
       </div>
       {/* Interaction Buttons
       <div className="flex gap-4">

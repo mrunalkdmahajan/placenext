@@ -30,7 +30,8 @@ const DoubleBarChart: React.FC = () => {
   useEffect(() => {
     // Updated dummy data where Jobs Offered is always greater than Students Placed
     const chartData = {
-      labels: ["2019", "2020", "2021", "2022", "2023"], // Last 5 years on x-axis
+      labels: ["2019-20", "2020-21", "2021-22", "2022-23", "2023-24"], // Last 5 years on x-axis
+
       datasets: [
         {
           label: "Jobs Offered",
