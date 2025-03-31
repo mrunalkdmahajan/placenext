@@ -37,7 +37,7 @@ const drawerVariants = {
 };
 
 const options: Option[] = [
-  { name: "Dashboard", path: "/student/dashboard" },
+  { name: "Dashboard", path: "/company2/CompanyProfile" },
   { name: "Apply for Jobs", path: "/student/applyjob" },
   { name: "Messages", path: "/messages/inbox" },
   { name: "Profile", path: "/student/profile" },

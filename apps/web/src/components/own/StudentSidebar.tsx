@@ -42,6 +42,7 @@ const options: Option[] = [
   { name: "Apply for Jobs", path: "/student/applyjob" },
   { name: "Job Recommendation", path: "/student/jobrecommendation" },
   { name: "Placement Statistics", path: "/student/placementstatistics" },
+  { name: "trial", path: "/student/trial" },
   { name: "Messages", path: "/student/messages/inbox" },
   { name: "Profile", path: "/student/profile" },
   { name: "Settings", path: "/student/settings" },
