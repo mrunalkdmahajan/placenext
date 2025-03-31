@@ -1,4 +1,4 @@
-
+"use client";
 import React, { useState } from 'react';
 import {
   Table,
@@ -70,10 +70,10 @@ const SelectedStudents = () => {
   });
   
   // Get unique departments for filter
-  const departments = ['all', ...new Set(students.map(student => student.department))];
+  const departments = ['all', ...Array.from(new Set(students.map(student => student.department)))];
   
   // Get unique positions for filter
-  const positions = ['all', ...new Set(students.map(student => student.position))];
+  const positions = ['all', ...Array.from(new Set(students.map(student => student.position)))];
   
   const handleDownload = () => {
     // Create CSV content

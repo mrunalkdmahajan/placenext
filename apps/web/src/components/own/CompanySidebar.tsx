@@ -37,10 +37,13 @@ const drawerVariants = {
 };
 
 const options: Option[] = [
-  { name: "Dashboard", path: "/company2/CompanyProfile" },
-  { name: "Apply for Jobs", path: "/student/applyjob" },
-  { name: "Messages", path: "/messages/inbox" },
-  { name: "Profile", path: "/student/profile" },
+  { name: "Dashboard", path: "/company2/Dashboard" },
+  { name: "Job Posting", path: "/company2/JobPosting" },
+  { name: "Hiring Rounds", path: "/company2/HiringRounds" },
+  { name: "Selected Students", path: "/company2/SelectedStudents" },
+  { name: "Messages", path: "/company2/Messages" },
+  { name: "Messages", path: "/company2/Messages" },
+  { name: "Profile", path: "/company2/CompanyProfile" },
   { name: "Settings", path: "/settings" },
 ];
 
@@ -104,7 +107,7 @@ export default function CompanySidebar({ isIcon }: any) {
           </List>
         </div>
         <div className="p-2 h-full flex items-center justify-center">
-          <HelpCard />
+          {/* <HelpCard /> */}
         </div>
         <Button onClick={handleLogout}>Logout</Button>
       </div>

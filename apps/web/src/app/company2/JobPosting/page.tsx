@@ -1,7 +1,8 @@
-
+"use client";
 import React, { useState } from 'react';
 import { JobCard } from '@/components/own/Company/jobs/JobCard';
-import { Button } from '@/components/ui/company/button';
+// import { JobCard } from 'C:/Users/mruna/Documents/project/sem6/placenext/apps/web/src/components/own/Company/jobs/JobCard';
+import { Button } from '@/components/own/Company/ui/button';
 import { PlusCircle, Search, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/company/input';
 import { 
@@ -131,7 +132,7 @@ const JobPostings = () => {
   const handleSubmit = () => {
     if (isEditMode) {
       // Update existing job
-      setJobs(jobs.map(job => job.id === newJob.id ? newJob : job));
+      setJobs(jobs.map(job => job.id === newJob.id ? { ...newJob, postDate: job.postDate } : job));
       toast({
         title: "Job Updated Successfully",
         description: "Your job has been updated and notifications sent to TPO",
