@@ -1,3 +1,4 @@
+"use client"
 
 import React, { useState } from 'react';
 import { 
@@ -54,18 +55,35 @@ const departmentData = [
   { name: 'Others', value: 5 },
 ];
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+// Consistent color palette
+const THEME_COLORS = {
+  primary: '#4F46E5', // indigo-600
+  secondary: '#10B981', // emerald-500
+  accent1: '#F59E0B', // amber-500
+  accent2: '#EF4444', // red-500
+  accent3: '#8B5CF6', // violet-500
+};
+
+const CHART_COLORS = [
+  THEME_COLORS.primary,
+  THEME_COLORS.secondary,
+  THEME_COLORS.accent1,
+  THEME_COLORS.accent2,
+  THEME_COLORS.accent3,
+];
 
 const Dashboard = () => {
   const [department, setDepartment] = useState('all');
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
-        <div className="flex items-center gap-4">
+    <div className="container mx-auto px-4 py-8 space-y-6 transition-all">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
+          Placement Dashboard
+        </h1>
+        <div className="w-full sm:w-auto">
           <Select value={department} onValueChange={setDepartment}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full sm:w-[200px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
               <SelectValue placeholder="Select Department" />
             </SelectTrigger>
             <SelectContent>
@@ -80,75 +98,70 @@ const Dashboard = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Total Placements</CardDescription>
-            <CardTitle className="text-3xl">1,248</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xs text-green-500">↑ 12% from previous year</div>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <StatsCard 
+          title="Total Placements" 
+          value="1,248" 
+          change="12%" 
+          trend="up" 
+          description="from previous year"
+        />
         
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Average Package</CardDescription>
-            <CardTitle className="text-3xl">₹8.5 LPA</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xs text-green-500">↑ 8% from previous year</div>
-          </CardContent>
-        </Card>
+        <StatsCard 
+          title="Average Package" 
+          value="₹8.5 LPA" 
+          change="8%" 
+          trend="up" 
+          description="from previous year"
+        />
         
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Highest Package</CardDescription>
-            <CardTitle className="text-3xl">₹25 LPA</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xs text-green-500">↑ 15% from previous year</div>
-          </CardContent>
-        </Card>
+        <StatsCard 
+          title="Highest Package" 
+          value="₹25 LPA" 
+          change="15%" 
+          trend="up" 
+          description="from previous year"
+        />
         
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Active Recruiters</CardDescription>
-            <CardTitle className="text-3xl">42</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xs text-green-500">↑ 5 new this year</div>
-          </CardContent>
-        </Card>
+        <StatsCard 
+          title="Active Recruiters" 
+          value="42" 
+          change="5" 
+          trend="up" 
+          description="new this year"
+        />
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Placements by Year</CardTitle>
-            <CardDescription>Total number of placements over the last 5 years</CardDescription>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        <Card className="overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm">
+          <CardHeader className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 md:p-6">
+            <CardTitle className="text-lg md:text-xl font-semibold text-gray-900 dark:text-gray-100">Placements by Year</CardTitle>
+            <CardDescription className="text-sm text-gray-500 dark:text-gray-400">Total number of placements over the last 5 years</CardDescription>
           </CardHeader>
-          <CardContent className="h-80">
+          <CardContent className="p-4 md:p-6 h-72 md:h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={yearlyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="year" />
-                <YAxis />
-                <Tooltip formatter={(value) => `${value} students`} />
+              <BarChart data={yearlyData} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                <XAxis dataKey="year" tick={{ fill: '#6B7280' }} />
+                <YAxis tick={{ fill: '#6B7280' }} />
+                <Tooltip 
+                  formatter={(value) => `${value} students`} 
+                  contentStyle={{ backgroundColor: '#FFF', borderRadius: '0.375rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                />
                 <Legend />
-                <Bar dataKey="placements" fill="#3B82F6" name="Students Placed" />
+                <Bar dataKey="placements" fill={THEME_COLORS.primary} name="Students Placed" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Department-wise Placement</CardTitle>
-            <CardDescription>Distribution of placements across departments</CardDescription>
+        <Card className="overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm">
+          <CardHeader className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 md:p-6">
+            <CardTitle className="text-lg md:text-xl font-semibold text-gray-900 dark:text-gray-100">Department-wise Placement</CardTitle>
+            <CardDescription className="text-sm text-gray-500 dark:text-gray-400">Distribution of placements across departments</CardDescription>
           </CardHeader>
-          <CardContent className="h-80">
+          <CardContent className="p-4 md:p-6 h-72 md:h-80">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -162,36 +175,63 @@ const Dashboard = () => {
                   dataKey="value"
                 >
                   {departmentData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value) => `${value}%`} />
+                <Tooltip 
+                  formatter={(value) => `${value}%`} 
+                  contentStyle={{ backgroundColor: '#FFF', borderRadius: '0.375rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card className="col-span-1 lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Maximum Salary Trends</CardTitle>
-            <CardDescription>Highest salary offered over the last 5 years (in LPA)</CardDescription>
+        <Card className="col-span-1 lg:col-span-2 overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm">
+          <CardHeader className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 md:p-6">
+            <CardTitle className="text-lg md:text-xl font-semibold text-gray-900 dark:text-gray-100">Maximum Salary Trends</CardTitle>
+            <CardDescription className="text-sm text-gray-500 dark:text-gray-400">Highest salary offered over the last 5 years (in LPA)</CardDescription>
           </CardHeader>
-          <CardContent className="h-80">
+          <CardContent className="p-4 md:p-6 h-72 md:h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={salaryData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="year" />
-                <YAxis />
-                <Tooltip formatter={(value) => `₹${value} LPA`} />
+              <BarChart data={salaryData} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                <XAxis dataKey="year" tick={{ fill: '#6B7280' }} />
+                <YAxis tick={{ fill: '#6B7280' }} />
+                <Tooltip 
+                  formatter={(value) => `₹${value} LPA`} 
+                  contentStyle={{ backgroundColor: '#FFF', borderRadius: '0.375rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                />
                 <Legend />
-                <Bar dataKey="maxSalary" fill="#10B981" name="Maximum Salary (LPA)" />
+                <Bar dataKey="maxSalary" fill={THEME_COLORS.secondary} name="Maximum Salary (LPA)" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
       </div>
     </div>
+  );
+};
+
+// Reusable stats card component
+const StatsCard = ({ title, value, change, trend, description }:any) => {
+  return (
+    <Card className="overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm">
+      <CardHeader className="pb-2 p-4 md:p-6">
+        <CardDescription className="text-sm text-gray-500 dark:text-gray-400">
+          {title}
+        </CardDescription>
+        <CardTitle className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
+          {value}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="pt-0 px-4 pb-4 md:px-6 md:pb-6">
+        <div className={`text-xs font-medium flex items-center ${trend === 'up' ? 'text-emerald-600' : 'text-red-600'}`}>
+          {trend === 'up' ? '↑' : '↓'} {change} {description}
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
