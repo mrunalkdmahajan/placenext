@@ -1,12 +1,12 @@
 "use client";
 import { useEffect } from "react";
 import useThemeStore from "@/store/store";
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer, Bounce } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import Loading from "@/components/own/Loading";
+import { Toaster } from "@/components/ui/company/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,18 +35,18 @@ export default function RootLayout({
       <body className={inter.className}>
         {children}
         <ToastContainer
-          position="top-right"
-          autoClose={3000}
+          position="bottom-right"
+          autoClose={5000}
           hideProgressBar={false}
-          newestOnTop={false}
+          newestOnTop
           closeOnClick
           rtl={false}
           pauseOnFocusLoss
           draggable
           pauseOnHover
           theme="light"
-          transition={Bounce}
         />
+        <Toaster/>
         <Loading />
       </body>
     </html>

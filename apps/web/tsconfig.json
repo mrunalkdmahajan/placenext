@@ -28,6 +28,6 @@
     ".next/types/**/*.ts",
     ".next/types/app/(auth)/layout.tsx",
     ".next/types/app/(auth)/signup/page.tsx"
-  ],
+, "src/components/auth/grg"  ],
   "exclude": ["node_modules"]
 }
