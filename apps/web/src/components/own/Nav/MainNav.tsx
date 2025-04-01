@@ -71,7 +71,7 @@ export default function MainNav() {
           </div>
         ) : (
           <div>
-            <h1 className="text-lg font-bold">Student Dashboard</h1>
+            {/* <h1 className="text-lg font-bold">Student Dashboard</h1> */}
           </div>
         )}
       </div>

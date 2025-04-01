@@ -1,4 +1,4 @@
-
+"use client";
 import React, { useState } from 'react';
 import { 
   Card, 
@@ -213,10 +213,10 @@ Best Regards,
                       <CardDescription>Automatically sent to TPO when a new job is posted</CardDescription>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="icon" onClick={() => handleCopy(templates.jobPosting.body)}>
+                      <Button variant="outline" size="sm" onClick={() => handleCopy(templates.jobPosting.body)}>
                         <Copy className="h-4 w-4" />
                       </Button>
-                      <Button variant="outline" size="icon" onClick={() => handleEdit('jobPosting')}>
+                      <Button variant="outline" size="sm" onClick={() => handleEdit('jobPosting')}>
                         {editMode.jobPosting ? <Check className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
                       </Button>
                     </div>
@@ -243,10 +243,10 @@ Best Regards,
                       <CardDescription>Automatically sent to TPO after each hiring round is completed</CardDescription>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="icon" onClick={() => handleCopy(templates.roundCompletion.body)}>
+                      <Button variant="outline" size="sm" onClick={() => handleCopy(templates.roundCompletion.body)}>
                         <Copy className="h-4 w-4" />
                       </Button>
-                      <Button variant="outline" size="icon" onClick={() => handleEdit('roundCompletion')}>
+                      <Button variant="outline" size="sm" onClick={() => handleEdit('roundCompletion')}>
                         {editMode.roundCompletion ? <Check className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
                       </Button>
                     </div>
@@ -273,10 +273,10 @@ Best Regards,
                       <CardDescription>Automatically sent to TPO after the final selection is made</CardDescription>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="icon" onClick={() => handleCopy(templates.finalSelection.body)}>
+                      <Button variant="outline" size="sm" onClick={() => handleCopy(templates.finalSelection.body)}>
                         <Copy className="h-4 w-4" />
                       </Button>
-                      <Button variant="outline" size="icon" onClick={() => handleEdit('finalSelection')}>
+                      <Button variant="outline" size="sm" onClick={() => handleEdit('finalSelection')}>
                         {editMode.finalSelection ? <Check className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
                       </Button>
                     </div>
